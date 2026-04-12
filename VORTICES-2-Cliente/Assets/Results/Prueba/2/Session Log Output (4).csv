@@ -1,0 +1,18 @@
+Timestamp;Date;Type;Detail
+15:52:10.5307975;24-02-2025;Session Status;Start;Environment: Circular;Display Mode: Plane;Dimension: 1,3,1;Browsing Mode: Online;;
+15:52:23.6357943;24-02-2025;Category;Added;Url: https://www.latercera.com/;Name: Prueba 7;
+15:52:38.3600368;24-02-2025;Category;Removed;Url: https://www.latercera.com/;Name: Prueba 7;
+15:52:40.3606929;24-02-2025;Category;Added;Url: https://www.latercera.com/;Name: Prueba 6;
+15:52:42.0607946;24-02-2025;Category;Removed;Url: https://www.latercera.com/;Name: Prueba 6;
+15:52:45.1185161;24-02-2025;Category;Added;Url: https://www.latercera.com/;Name: Prueba 6;
+15:52:45.9911411;24-02-2025;Category;Removed;Url: https://www.latercera.com/;Name: Prueba 6;
+15:53:01.8514387;24-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Prueba 6;
+15:53:03.7265649;24-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Prueba 6;
+15:53:10.0417688;24-02-2025;Selection;Selected;Url: https://www.google.cl/?hl=es;
+15:53:16.2285017;24-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Prueba 6;
+15:53:17.0492738;24-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Prueba 6;
+15:53:25.0887038;24-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Prueba 7;
+15:53:26.0269956;24-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Prueba 7;
+15:53:30.2153242;24-02-2025;Selection;Selected;Url: https://www.latercera.com/;
+15:53:33.7781637;24-02-2025;Category;Added;Url: https://www.latercera.com/;Name: Prueba 7;
+15:53:34.7673629;24-02-2025;Category;Removed;Url: https://www.latercera.com/;Name: Prueba 7;

@@ -1,0 +1,9 @@
+﻿{
+    "menuTitle": "Circular environment",
+
+    "description1": "Welcome to the circular environment.\n\nIn here, multimedia or Information Objects can be seen, interacted and categorized. When pressing Start, they will appear beside you.",
+    "description2": "Press the A button when looking directly at an element to select it. (From yellow border to green)\n\nThen, use the tools in your right hand to categorize or sort information objects.\n\nYou can move through the objects by holding the (Grip) trigger and then moving the controller towards the gizmo's shapes.\n\nPress the start button down below, add categories to elements then press the finish button to end the experience.",
+
+    "startButton": "Start",
+    "finishButton": "Finish"
+}

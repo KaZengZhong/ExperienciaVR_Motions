@@ -1,0 +1,9 @@
+{
+    "menuTitle": "Entorno Circular",
+
+    "description1": "Bienvenido al entorno circular.\n\nEn este lugar es posible interactuar con objetos de información o multimedia para luego ser categorizados. Al presionar Iniciar, estos aparecerán a tu lado.",
+    "description2": "Presiona el botón A mirando directamente a un elemento para seleccionarlo. (borde amarillo a verde)\n\nLuego, usa la herramienta acoplada a tu mano derecha para categorizarlo o ordenar elementos. \n\nPuedes moverte através de los objetos presionando el gatillo (Grip) y moviendo el control hacia las esferas.\n\nPresiona Iniciar, añade categorias a elementos y presiona Finalizar para terminar.",
+
+    "startButton": "Inicio",
+    "finishButton": "Finalizar"
+}

@@ -1,0 +1,9 @@
+﻿{
+    "menuTitle": "Museum environment",
+
+    "description1": "Welcome to the museum environment.\n\nIn this place, multimedia or information objects will be placed in the exhibition frames for free-movement viewing and categorizing.",
+    "description2": "Press the A button when looking directly at an element to select it. (Yellow border to green)\n\nThen, use the tools in your right hand to categorize or sort information objects.\n\nYou can move around pointing to the floor then pressing the (Grip) trigger.\n\nPress the start button down below, add categories to elements then press the Finish button to end the experience.",
+
+    "startButton": "Start",
+    "finishButton": "Finish"
+}

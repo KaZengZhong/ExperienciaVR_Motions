@@ -1,0 +1,5 @@
+Timestamp;Date;Type;Detail
+18:15:01.5316362;20-02-2025;Session Status;Start;Environment: Circular;Display Mode: Plane;Dimension: 1,3,1;Browsing Mode: Online;;
+18:15:14.3760484;20-02-2025;Selection;Selected;Url: https://www.google.cl/?hl=es;
+18:15:24.7101407;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:15:41.8615945;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;

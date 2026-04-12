@@ -1,0 +1,1347 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Vortices.Fade" Collapsed="true">
+    <Position X="29" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQSAAAEAECCAAABAAAAAAAkAAAAEAAAAAAiAAAAAgAA=</HashCode>
+      <FileName>Assets\Scripts\Action\Fade.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.FadeScreen" Collapsed="true">
+    <Position X="32.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAEAACCAAAAAACAABAgAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Action\FadeScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.FadeUI" Collapsed="true">
+    <Position X="15" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IACAAAEAACCAAAAAAAAAAAgAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Action\FadeUI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.LoadingSmall" Collapsed="true">
+    <Position X="23.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAwAQAAAAAAAAAAAAAQAACAAAIQAgAAAIBA=</HashCode>
+      <FileName>Assets\Scripts\Action\LoadingSmall.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.RotateToObject" Collapsed="true">
+    <Position X="29" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASAAAAAAQIAAAAEAAAAAAAAAAAAAQAAAIAAAQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Action\RotateToObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.LoadLocalController" Collapsed="true">
+    <Position X="25.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAwAAAAAAABACAAAAQgAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Controller\LoadLocalController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.LoggingController" Collapsed="true">
+    <Position X="29" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAQAIwCAACAAAAAAAAEAIAAAAAAAAABA=</HashCode>
+      <FileName>Assets\Scripts\Controller\LoggingController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.LogEntry" Collapsed="true">
+    <Position X="27.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAgABAAAAAAAIAQAAgAA=</HashCode>
+      <FileName>Assets\Scripts\Controller\LoggingController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.RenderController" Collapsed="true">
+    <Position X="25.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAEAAAAAAFgAAABAAABAAMAAAAAAAAAQAAAIQAAAA=</HashCode>
+      <FileName>Assets\Scripts\Controller\RenderController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CircularSpawnBase" Collapsed="true">
+    <Position X="1.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QB+KTAAATEqAFwACADEQA4JKQBAgAUEMABRCEAAgAGA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Abstract\CircularSpawnBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MuseumSpawnBase" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABGAAACAQEAAAgQAAAAAAAAAAAAAAUAAABAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Abstract\MuseumSpawnBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SpawnGroup" Collapsed="true">
+    <Position X="9.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgTEgIEABADAIAAABggBAEAEgABFQIAQAgICg=</HashCode>
+      <FileName>Assets\Scripts\DataType\Abstract\SpawnGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SpawnPanel" Collapsed="true">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAIAAAgEAAACQACAACAAAAAAQAAAAACQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Abstract\SpawnPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MuseumBase" Collapsed="true">
+    <Position X="12.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\MuseumBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MuseumElement" Collapsed="true">
+    <Position X="23.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQEgIAABIBAAAAAAgkAAAAEiAEFAKAQAgICA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\MuseumElement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.PlaneBase" Collapsed="true">
+    <Position X="0.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAQAIAQQACAAEAAQICgAAAAAEFgABAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\PlaneBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.PlaneGroup" Collapsed="true">
+    <Position X="8.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\PlaneGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.RadialBase" Collapsed="true">
+    <Position X="2.75" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAARAIAQAoABQACgCEAAQICgAAAAEEEAABAwCAAAAI=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\RadialBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.RadialGroup" Collapsed="true">
+    <Position X="10.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAIgAAAAAAIAAAAAjEBAAAAAAAAAAAACCCAEAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Position\RadialGroup.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CircularList" Collapsed="true">
+    <Position X="18.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Tool\CircularList.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CoroutineUtils" Collapsed="true">
+    <Position X="25.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Tool\CoroutineUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MaterialUtils" Collapsed="true">
+    <Position X="16.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Tool\MaterialUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SceneTransitionManager" Collapsed="true">
+    <Position X="30.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAECBAAAAAAQAgAAgAAAgAAACQAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Manager\SceneTransitionManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SessionManager" Collapsed="true">
+    <Position X="23.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAARCRAEAAACIAAQYBAAABABEIEARABgCAEoSA=</HashCode>
+      <FileName>Assets\Scripts\Manager\SessionManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CircularPanel" Collapsed="true">
+    <Position X="10.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAEAABAAQAAARAIAAAAAAUAJAAAEQAKAA=</HashCode>
+      <FileName>Assets\Scripts\UI\CircularPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CategoryController" Collapsed="true">
+    <Position X="30.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAACQAACKgCAIAACQAAAAAAQQQAAgAAAQA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\CategoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.ElementCategoryController" Collapsed="true">
+    <Position X="23.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAQAQABACAAAQAACCAAAAARAAAAAAAOAAQAAAAAAQA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\ElementCategoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.ElementCategorySaveData" Collapsed="true">
+    <Position X="25.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\ElementCategoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SessionElementCategory" Collapsed="true">
+    <Position X="22" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\ElementCategoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.ElementCategory" Collapsed="true">
+    <Position X="22" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAEQAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\ElementCategoryController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.FilePathController" Collapsed="true">
+    <Position X="16.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAACAABIAKBAAAAgAQAAgFAkAAAACAAAAIAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\FilePathController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SessionController" Collapsed="true">
+    <Position X="20.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAgAAAQAAQIZABACgABCJICAEAAAwAAAAKAgBAKIA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\SessionController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SessionSaveData" Collapsed="true">
+    <Position X="27.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Controller\SessionController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CategoryRemoveButton" Collapsed="true">
+    <Position X="32.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAAAAAAAAAgAAAAAAAAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\CategoryRemoveButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.SessionRemoveButton" Collapsed="true">
+    <Position X="25.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAEAAAAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\SessionRemoveButton.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.TextDropdown" Collapsed="true">
+    <Position X="20.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\TextDropdown.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.TextInputField" Collapsed="true">
+    <Position X="22" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAEECAAAAAAAIAAAAAAAAAAAAAIAAAAAAAMAAg=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\TextInputField.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.TextScrollView" Collapsed="true">
+    <Position X="23.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgBAACAAAAAQAgAIABAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\TextScrollView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.TextSlider" Collapsed="true">
+    <Position X="25.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\TextSlider.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.TextToggle" Collapsed="true">
+    <Position X="27.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\TextToggle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.ToggleGroup2" Collapsed="true">
+    <Position X="15" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgBAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Generic\ToggleGroup2.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.HandKeyboard" Collapsed="true">
+    <Position X="25.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIMACAAAMAAAAAJAAAAAEAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\HandKeyboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.InfoPanel" Collapsed="true">
+    <Position X="29" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAgCEAAAAAAAAAAAAAIAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\InfoPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.CategorySelector" Collapsed="true">
+    <Position X="15" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAgAAAWAcABAqAAABAQAAAAAACCSAQCAAAMCgA=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\CategorySelector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.Element" Collapsed="true">
+    <Position X="20.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAgQAAAgERkiFUBAAjQARxKpAAIIAEEEApQFCCQGAMA=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\Element.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.PanelToggle" Collapsed="true">
+    <Position X="15" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAQAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\PanelToggle.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.UICategory" Collapsed="true">
+    <Position X="16.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAAAQAAAAAAAAAIgAIAAAQAAAAgAAAAAGAAAAAAQ=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\UICategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.UIElementCategory" Collapsed="true">
+    <Position X="18.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAAAQAAAAAAAAAAAAIAAIAAAAAAAAAAAGAAAAAAQ=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\UIElementCategory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.UISession" Collapsed="true">
+    <Position X="20.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQBAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAAAGAAAAAQA=</HashCode>
+      <FileName>Assets\Scripts\UI\Integrated\UISession.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MainMenuPanel" Collapsed="true">
+    <Position X="32.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAQAQAAAAiAAAICECgQAAAAAAIAQAAABAAQAACAA=</HashCode>
+      <FileName>Assets\Scripts\UI\MainMenuPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.MuseumPanel" Collapsed="true">
+    <Position X="8.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQCAAAAABAAQCAAQAIAAAAAAAABAEAAQAKCA=</HashCode>
+      <FileName>Assets\Scripts\UI\MuseumPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vortices.OptionsPanel" Collapsed="true">
+    <Position X="29" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAACAgAAAAAAAJAgAAAAABAACAAIAAAAQAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\OptionsPanel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FadeOutOfBounds" Collapsed="true">
+    <Position X="30.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQEAAAAAAAAAAAAAAAAAAAAQAgIAAAAAAAAAAAACUA=</HashCode>
+      <FileName>Assets\Scripts\Action\FadeOutOfBounds.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MaintainAxis" Collapsed="true">
+    <Position X="15" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAEAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Action\MaintainAxis.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DontDestroyOnLoad" Collapsed="true">
+    <Position X="29" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Tool\DontDestroyOnLoad.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ListUtils" Collapsed="true">
+    <Position X="22" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAICAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\DataType\Tool\ListUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="LayoutGroup3D" Collapsed="true">
+    <Position X="20.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kCQMwaABAgJAKgAASgIAAIQAEIARgBABhAAgAABQBAg=</HashCode>
+      <FileName>Assets\Thirdparty\3D Layout\LayoutGroup3D.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TaskCoroutine" Collapsed="true">
+    <Position X="15" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAQAACAAAAAAAAQAAAAAAAAAAAAIIAAAAABEAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Scripts\TaskCoroutine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TaskManager" Collapsed="true">
+    <Position X="16.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Scripts\TaskCoroutine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FillValueNumber" Collapsed="true">
+    <Position X="22" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Sleek essential UI Pack\Scripts\FillValueNumber.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ActiveStateToggler" Collapsed="true">
+    <Position X="15" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ActiveStateToggler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ApplicationManager" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ApplicationManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChangeColor" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAIAAAAAgAAAAAAAAAAAAAAAAAAAAEAAAAAAAAACCA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ChangeColor.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DragMe" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="15" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAABAAAAAAAgAAAAABAEAAgAAAAACAQAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\DragMe.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DragPanel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAMAAAAAABAAAAAAAAAAAIAAAAAAAAAAEI=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\DragPanel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="DropMe" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAgAAAAAAAAAAAAQAAAAAgAAEAAAAQAQAACAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\DropMe.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="PanelManager" Collapsed="true">
+    <Position X="32.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AogAAAAIAAAAQAIAAAIAAAAAAAAAAABAAKQAAAAACAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\PanelManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResizePanel" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="27.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAgAAIAAAAAABAAAAAAAACAAAAAAACAAAAAEI=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ResizePanel.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="ScrollDetailTexture" Collapsed="true">
+    <Position X="16.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAABAAAAAAAAAQKAAAAAAAAAAAAgIAAAAAAAIiAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ScrollDetailTexture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ShowSliderValue" Collapsed="true">
+    <Position X="29" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\ShowSliderValue.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TiltWindow" Collapsed="true">
+    <Position X="32.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAIADAAAAAAAAAAAAAAAAAAAAAAAAACAAAAACA=</HashCode>
+      <FileName>Assets\Thirdparty\Unity UI Samples\Scripts\TiltWindow.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Assets.Thirdparty.Scripts.TextureScaler" Collapsed="true">
+    <Position X="29" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Scripts\TextureScaler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.AuthRequestedEventArgs" Collapsed="true">
+    <Position X="20.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAACAAAQAAAAACAAAAAAAAAAAAACAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\AuthRequestedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.BaseKeyboard" Collapsed="true">
+    <Position X="4.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABEAAQAAAAgQAAAAoAAAAQAAAEAAAgAAAAAQFAAIA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\BaseKeyboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.BaseWebView" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BDUiFToQBfsisUx0UaDA/RCFokkssEnEaqcq5sEJWkA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\BaseWebView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.BaseWebViewPrefab" Collapsed="true">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>SnYH8hEQAQhMgEAQQDEkQhagpUlAiHlpEWhizGuADYA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\BaseWebViewPrefab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.CanvasKeyboard" Collapsed="true">
+    <Position X="3.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACEACAAQAAAAAQAAAAAAAAgAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\CanvasKeyboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.CanvasPointerInputDetector" Collapsed="true">
+    <Position X="11.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAACAAAAAAQAAAAAACABAAAAEAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\CanvasPointerInputDetector.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.CanvasWebViewPrefab" Collapsed="true">
+    <Position X="3.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EgQAAAkUACBAAMEAQAQAAaACQkAgAK0IAEACAEAAjAI=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\CanvasWebViewPrefab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ClickedEventArgs" Collapsed="true">
+    <Position X="20.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ClickedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ConsoleMessageEventArgs" Collapsed="true">
+    <Position X="22" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAABAAAAIAABAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ConsoleMessageEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Cookie" Collapsed="true">
+    <Position X="23.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAIEAQgAAAQAQgAAABAAIAAgAAAAACA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Cookie.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.DefaultPointerInputDetector" Collapsed="true">
+    <Position X="11.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCSQBAAAAgAIgAQARQBIAAAAAUIhACQEAAkBESQAAIg=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\DefaultPointerInputDetector.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vuplex.WebView.DownloadChangedEventArgs" Collapsed="true">
+    <Position X="30.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAACQBQAACAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\DownloadChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.EventArgs&lt;T&gt;" Collapsed="true">
+    <Position X="27.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\EventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.FileSelectionEventArgs" Collapsed="true">
+    <Position X="18.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAQAAQAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\FileSelectionEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.FocusedInputFieldChangedEventArgs" Collapsed="true">
+    <Position X="23.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\FocusedInputFieldChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ObsoletionMessages" Collapsed="true">
+    <Position X="27.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACgAECAAAAAgoAAAAABABAAAAAAgAAAEAIACAAABQEA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWebView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Keyboard" Collapsed="true">
+    <Position X="5.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQCEACAAAAAAAAQAIAAAAAAgAAAAAAACAIAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Keyboard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.KeyboardUi" Collapsed="true">
+    <Position X="16.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\KeyboardUi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.MockCookieManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="18.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAAAAAAQAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAI=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\MockCookieManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Vuplex.WebView.MockWebPlugin" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="20.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAQQABAgASAAAAAAAAQQAAFAAgAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\MockWebPlugin.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Vuplex.WebView.MockWebView" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="22" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ADSAFDJQAKAyoMBUEYRARREAAgwgNAHkCIMqJAEBQkI=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\MockWebView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Vuplex.WebView.PageLoadFailedException" Collapsed="true">
+    <Position X="30.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\PageLoadFailedException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.PointerEventArgs" Collapsed="true">
+    <Position X="16.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EEAAAAAAAAAAgAAAAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\PointerEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.PointerOptions" Collapsed="true">
+    <Position X="18.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\PointerOptions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.PopupRequestedEventArgs" Collapsed="true">
+    <Position X="22" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\PopupRequestedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ProgressChangedEventArgs" Collapsed="true">
+    <Position X="23.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAACAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ProgressChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ScriptDialogEventArgs" Collapsed="true">
+    <Position X="32.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ScriptDialogEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ScriptDialogEventArgs&lt;T&gt;" Collapsed="true">
+    <Position X="15" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ScriptDialogEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.ScrolledEventArgs" Collapsed="true">
+    <Position X="18.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ScrolledEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.TerminatedEventArgs" Collapsed="true">
+    <Position X="18.5" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\TerminatedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.UrlActionType" Collapsed="true">
+    <Position X="23.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAgAgAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\UrlActionType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.UrlChangedEventArgs" Collapsed="true">
+    <Position X="25.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAACQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\UrlChangedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Web" Collapsed="true">
+    <Position X="30.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACIAAAAAARwANAgASAAAIAAAAAAAAVAAgAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Web.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.WebPluginFactory" Collapsed="true">
+    <Position X="32.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAIAAAAAAQAAAAQABAAgAgAAABgAACQECAQ4AAAAAo=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\WebPluginFactory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.WebViewPrefab" Collapsed="true">
+    <Position X="5.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAkEACBAAEEkIAQAAQAAAAQgAAwQAMBCAAEABAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\WebViewPrefab.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.WebViewUnavailableException" Collapsed="true">
+    <Position X="16.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\WebViewUnavailableException.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.StandaloneCookieManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="32.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACEAAAAAAAQAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAI=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Scripts\StandaloneCookieManager.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Vuplex.WebView.StandaloneWebPlugin" Collapsed="true">
+    <Position X="8.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAQQABAgASAAAAAAAAAAAAFAAgAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Scripts\StandaloneWebPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.StandaloneWebView" Collapsed="true">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DhSjVHnypCJUmMWX4ag5RzYGcogNlEUkgEZCnDa5dmY=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Scripts\StandaloneWebView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vuplex.WebView.WindowsWebPlugin" Collapsed="true">
+    <Position X="8.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAAEAAAAAAAAAAAAAQQAAEAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Windows\Scripts\WindowsWebPlugin.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vuplex.WebView.WindowsWebView" Collapsed="true">
+    <Position X="0.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAACAAAAAAAAQIAAEAAAAQBAAAAAgAAAAECCA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Windows\Scripts\WindowsWebView.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.BridgeMessage" Collapsed="true">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\BridgeMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.CachingGetter&lt;TResult&gt;" Collapsed="true">
+    <Position X="22" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAIABAAAIAAAAEAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\CachingGetter.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.CanvasViewportMaterialView" Collapsed="true">
+    <Position X="5.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAABAAAAAEAAAACgAIAAIAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\CanvasViewportMaterialView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.ConsoleBridgeMessage" Collapsed="true">
+    <Position X="7.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAIAAAAAACAAAAEAAAAAEAAAAAAAACA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\ConsoleBridgeMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.CursorHelper" Collapsed="true">
+    <Position X="27.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\CursorHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.DownloadMessage" Collapsed="true">
+    <Position X="32.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAQAAACAAAAAAAAAACQBQAACAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\DownloadMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.FileSelectionMessage" Collapsed="true">
+    <Position X="20.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAQAAQAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\FileSelectionMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.JsonArrayWrapper&lt;T&gt;" Collapsed="true">
+    <Position X="30.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\JsonArrayWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.KeyboardManager" Collapsed="true">
+    <Position X="15" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQFAACAAAAAAAkAAIAIABAMCGAAIADCQAIACCBAAEg=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\KeyboardManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.LabelAttribute" Collapsed="true">
+    <Position X="18.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\LabelAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.KeyboardEventArgs" Collapsed="true">
+    <Position X="32.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\NativeKeyboardListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.NativeKeyboardListener" Collapsed="true">
+    <Position X="25.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAwAIAAAAAAAEGCAAASAEAAgEAAAAAhAAIAAIASAAFA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\NativeKeyboardListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.StringBridgeMessage" Collapsed="true">
+    <Position X="0.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAACAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\StringBridgeMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.StringWithIdBridgeMessage" Collapsed="true">
+    <Position X="3" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAgA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\StringWithIdBridgeMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.ThreadDispatcher" Collapsed="true">
+    <Position X="30.75" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACQEAAAAACAAAAAAAQAAAAAAAAAEBAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\ThreadDispatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.UrlChangedMessage" Collapsed="true">
+    <Position X="5.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\UrlChangedMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.UrlAction" Collapsed="true">
+    <Position X="22" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACQAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\UrlChangedMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.ViewportMaterialView" Collapsed="true">
+    <Position X="5.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAABAAAAAEAAAACAAIAAIAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\ViewportMaterialView.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.VulkanDelayedTextureDestroyer" Collapsed="true">
+    <Position X="27.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAACAAAAIAAAABAAAAAAAAAAAAIIiCAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\VulkanDelayedTextureDestroyer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.VXUtils" Collapsed="true">
+    <Position X="29" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQCAAAACAAAAAAAAAgAAAAAAAAABIAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\VXUtils.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.WebViewLogger" Collapsed="true">
+    <Position X="15" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAIAgACAAAAAEAAAAAAAAQAMAgAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\WebViewLogger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.XritPointerEventHelper" Collapsed="true">
+    <Position X="20.25" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAACAAAAAAAAAAAAAAAAAAAAAAQAACAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\XritPointerEventHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.XRSettingsWrapper" Collapsed="true">
+    <Position X="22" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAAAAAAAAAAAAAACAAAAhAAAAIAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\XRSettingsWrapper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.MacWebPluginRegistrant" Collapsed="true">
+    <Position X="30.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Mac\Scripts\Internal\MacWebPluginRegistrant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Internal.WindowsWebPluginRegistrant" Collapsed="true">
+    <Position X="18.5" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Windows\Scripts\WindowsWebPluginRegistrant.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.AdvancedWebViewDemo" Collapsed="true">
+    <Position X="16.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABAAACAAAABBAAgAAAAJAABAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\AdvancedWebViewDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.CameraRotator" Collapsed="true">
+    <Position X="23.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAACAAAAAAAAAAAAAAAAAEAAAACIAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\CameraRotator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.CanvasPopupDemo" Collapsed="true">
+    <Position X="25.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\CanvasPopupDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.CanvasWebViewDemo" Collapsed="true">
+    <Position X="27.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\CanvasWebViewDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.CanvasWorldSpaceDemo" Collapsed="true">
+    <Position X="29" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\CanvasWorldSpaceDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.HardwareKeyboardListener" Collapsed="true">
+    <Position X="27.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\HardwareKeyboardListener.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.PopupDemo" Collapsed="true">
+    <Position X="20.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\PopupDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vuplex.WebView.Demos.SimpleWebViewDemo" Collapsed="true">
+    <Position X="30.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Demos\Scripts\SimpleWebViewDemo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Vuplex.WebView.FindResult" Collapsed="true">
+    <Position X="15" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithFind.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vuplex.WebView.TouchEvent" Collapsed="true">
+    <Position X="16.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAQAAGAAAAAAAAAAAAQAAAgAAAAg=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\TouchEvent.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Vuplex.WebView.WebViewOptions" Collapsed="true">
+    <Position X="18.5" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAEA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\WebViewOptions.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Vuplex.WebView.ICookieManager" Collapsed="true">
+    <Position X="15" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ICookieManager.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IPointerInputDetector" Collapsed="true">
+    <Position X="16.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCAAAAAAAAAAgAQAAQAAAAAAAEABAAAAAAAAAAQAAIA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IPointerInputDetector.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWebView" Collapsed="true">
+    <Position X="20.25" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ADQAFDIAAKAioEBUEQBARREAAgAgIAHECIIqJAEBQkA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWebView.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithChangingTexture" Collapsed="true">
+    <Position X="22" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithChangingTexture.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithCursorType" Collapsed="true">
+    <Position X="23.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithCursorType.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithDownloads" Collapsed="true">
+    <Position X="25.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAgAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithDownloads.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithFallbackVideo" Collapsed="true">
+    <Position X="27.25" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgIAAAAAAAAAEAAAAIAAAAAAAAAQAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithFallbackVideo.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithFileSelection" Collapsed="true">
+    <Position X="29" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithFileSelection.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithFind" Collapsed="true">
+    <Position X="30.75" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithFind.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithKeyDownAndUp" Collapsed="true">
+    <Position X="32.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithKeyDownAndUp.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithMovablePointer" Collapsed="true">
+    <Position X="15" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithMovablePointer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithMutableAudio" Collapsed="true">
+    <Position X="16.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithMutableAudio.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithNative2DMode" Collapsed="true">
+    <Position X="18.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAASIAAIAAAAAACAAAAAACAAAAAIAAAAgAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithNative2DMode.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithNativeOnScreenKeyboard" Collapsed="true">
+    <Position X="20.25" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithNativeOnScreenKeyboard.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithPdfCreation" Collapsed="true">
+    <Position X="22" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithPdfCreation.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithPixelDensity" Collapsed="true">
+    <Position X="23.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithPixelDensity.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithPointerDownAndUp" Collapsed="true">
+    <Position X="25.5" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithPointerDownAndUp.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithPopups" Collapsed="true">
+    <Position X="27.25" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAiAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithPopups.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithSettableUserAgent" Collapsed="true">
+    <Position X="29" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithSettableUserAgent.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.IWithTouch" Collapsed="true">
+    <Position X="30.75" Y="13.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\IWithTouch.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Vuplex.WebView.Internal.IWebPlugin" Collapsed="true">
+    <Position X="18.5" Y="13" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQQABAgASAAAAAAAAAQAAFAAgAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\Internal\IWebPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Vortices.Result" Collapsed="true">
+    <Position X="23.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAggAEAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Controller\LoadLocalController.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vortices.MainMenuId" Collapsed="true">
+    <Position X="15" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQEAAQAAAAAAAAAAAABAABAABABAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\MainMenuPanel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vortices.FrameLimit" Collapsed="true">
+    <Position X="25.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\OptionsPanel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CircularId" Collapsed="true">
+    <Position X="18.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAoAAAAAAAEAABAAAAAAQAAAAGAhAAAAAAAQAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\CircularPanel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MuseumId" Collapsed="true">
+    <Position X="18.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAEAAAAAAAAAQAAAAAAgAAAAAAAQAAA=</HashCode>
+      <FileName>Assets\Scripts\UI\MuseumPanel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LayoutStyle" Collapsed="true">
+    <Position X="32.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAgAgAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\3D Layout\LayoutGroup3D.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LayoutAxis3D" Collapsed="true">
+    <Position X="30.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAE=</HashCode>
+      <FileName>Assets\Thirdparty\3D Layout\LayoutGroup3D.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="LayoutAxis2D" Collapsed="true">
+    <Position X="29" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAYAA=</HashCode>
+      <FileName>Assets\Thirdparty\3D Layout\LayoutGroup3D.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Alignment" Collapsed="true">
+    <Position X="15" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAAAEAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\Thirdparty\3D Layout\LayoutGroup3D.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.ConsoleMessageLevel" Collapsed="true">
+    <Position X="20.25" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAYAAAAAAABAAAAgAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ConsoleMessageLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.DragMode" Collapsed="true">
+    <Position X="22" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAACAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\DragMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.FocusedInputFieldType" Collapsed="true">
+    <Position X="23.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAEAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\FocusedInputFieldType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.KeyModifier" Collapsed="true">
+    <Position X="27.25" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAgAAAAAAAAAAAAAAIAAAIAAAAEAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\KeyModifier.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.MouseButton" Collapsed="true">
+    <Position X="16.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACACQAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\MouseButton.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.PopupMode" Collapsed="true">
+    <Position X="20.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAACAAAAAAAAAAIAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\PopupMode.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.ProgressChangeType" Collapsed="true">
+    <Position X="22" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAIAAAAAQBAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\ProgressChangeType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.TerminationType" Collapsed="true">
+    <Position X="25.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\TerminationType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.TouchEventType" Collapsed="true">
+    <Position X="27.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAQKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\TouchEventType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.WebPluginType" Collapsed="true">
+    <Position X="29" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAIBAAAAAAAAAABAAAAAAABAIAgBAAAAAAAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Core\Scripts\WebPluginType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Vuplex.WebView.ChromiumLogLevel" Collapsed="true">
+    <Position X="16.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAIAAAQAAAACAABAAAAAAAAAAAAAAAEAEAAA=</HashCode>
+      <FileName>Assets\Thirdparty\Vuplex\WebView\Standalone\Scripts\ChromiumLogLevel.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

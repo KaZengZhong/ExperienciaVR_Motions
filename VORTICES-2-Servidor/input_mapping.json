@@ -1,0 +1,924 @@
+{
+    "allInputActionsModeData": [
+        {
+            "modeName": "VorticesActions",
+            "inputActions": [
+                {
+                    "actionName": "Select Element",
+                    "actionMap": "Vortices Actions",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Elements Push",
+                    "actionMap": "Vortices Actions",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Elements Pull",
+                    "actionMap": "Vortices Actions",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Move Elements",
+                    "actionMap": "Vortices Actions",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "2D Vector",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "modeName": "UiActions",
+            "inputActions": [
+                {
+                    "actionName": "Navigate",
+                    "actionMap": "XRI UI",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "Gamepad",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "Joystick",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "Keyboard",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "up",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "down",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "left",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "right",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Submit",
+                    "actionMap": "XRI UI",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Cancel",
+                    "actionMap": "XRI UI",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Point",
+                    "actionMap": "XRI UI",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Click",
+                    "actionMap": "XRI UI",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "ScrollWheel",
+                    "actionMap": "XRI UI",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "MiddleClick",
+                    "actionMap": "XRI UI",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "RightClick",
+                    "actionMap": "XRI UI",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "modeName": "XRHead",
+            "inputActions": [
+                {
+                    "actionName": "Position",
+                    "actionMap": "XRI Head",
+                    "controlType": "Vector3",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Rotation",
+                    "actionMap": "XRI Head",
+                    "controlType": "Quaternion",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "modeName": "XRLeftController",
+            "inputActions": [
+                {
+                    "actionName": "Position",
+                    "actionMap": "XRI LeftHand",
+                    "controlType": "Vector3",
+                    "inputBindings": [
+                        {
+                            "bindingName": "Vector 3 Fallback",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "first",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "second",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "third",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Rotation",
+                    "actionMap": "XRI LeftHand",
+                    "controlType": "Quaternion",
+                    "inputBindings": [
+                        {
+                            "bindingName": "Quaternion Fallback",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "first",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "second",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "third",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Tracking State",
+                    "actionMap": "XRI LeftHand",
+                    "controlType": "Integer",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Haptic Device",
+                    "actionMap": "XRI LeftHand",
+                    "controlType": "",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Select",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Select Value",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Activate",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Activate Value",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "UI Press",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "UI Press Value",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Rotate Anchor",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Translate Anchor",
+                    "actionMap": "XRI LeftHand Interaction",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Select",
+                    "actionMap": "XRI LeftHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Mode Activate",
+                    "actionMap": "XRI LeftHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Mode Cancel",
+                    "actionMap": "XRI LeftHand Locomotion",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Turn",
+                    "actionMap": "XRI LeftHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Move",
+                    "actionMap": "XRI LeftHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "modeName": "XRRightController",
+            "inputActions": [
+                {
+                    "actionName": "Position",
+                    "actionMap": "XRI RightHand",
+                    "controlType": "Vector3",
+                    "inputBindings": [
+                        {
+                            "bindingName": "Vector 3 Fallback",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "first",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "second",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "third",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Rotation",
+                    "actionMap": "XRI RightHand",
+                    "controlType": "Quaternion",
+                    "inputBindings": [
+                        {
+                            "bindingName": "Quaternion Fallback",
+                            "isComposite": true,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "first",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "second",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        },
+                        {
+                            "bindingName": "third",
+                            "isComposite": false,
+                            "isPartOfComposite": true,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Tracking State",
+                    "actionMap": "XRI RightHand",
+                    "controlType": "Integer",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Haptic Device",
+                    "actionMap": "XRI RightHand",
+                    "controlType": "",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Select",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Select Value",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Activate",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Activate Value",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "UI Press",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "UI Press Value",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Axis",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Rotate Anchor",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Translate Anchor",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "A",
+                    "actionMap": "XRI RightHand Interaction",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Select",
+                    "actionMap": "XRI RightHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Mode Activate",
+                    "actionMap": "XRI RightHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Teleport Mode Cancel",
+                    "actionMap": "XRI RightHand Locomotion",
+                    "controlType": "Button",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Turn",
+                    "actionMap": "XRI RightHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                },
+                {
+                    "actionName": "Move",
+                    "actionMap": "XRI RightHand Locomotion",
+                    "controlType": "Vector2",
+                    "inputBindings": [
+                        {
+                            "bindingName": "",
+                            "isComposite": false,
+                            "isPartOfComposite": false,
+                            "path": "Default"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

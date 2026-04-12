@@ -1,0 +1,74 @@
+{
+    "mainmenuTitle": "Menú principal",
+
+    "appTitle": "VoRTIcES 2.0: \nVirtual Reality Experimentation System",
+
+    "startButton": "Inicio",
+    "optionsButton": "Opciones",
+    "joinButton": "Unirse",
+    "aboutButton": "Acerca",
+    "exitButton": "Salir",
+
+    "sessionTitle": "Elige una sesión, un número de identificación de usuario y el entorno a utilizar para continuar...",
+    "sessionUserid": "Id de usuario",
+    "sessionEnvironment": "Entornos Disponibles",
+    "sessionNew": "Nuevo nombre de sesión...",
+
+    "categoryTitle": "Escoge las categorías que serán utilizadas para clasificar objetos.",
+    "categoryNew": "Nombre de categoría...",
+
+    "next": "Siguiente",
+
+    "optionsTitle": "Configuración de Aplicación",
+    "optionsLanguage": "Idioma",
+    "optionsResolution": "Resolución\n (Requiere reinicio)",
+    "optionsQuality": "Cálidad gráfica",
+    "optionsVolume": "Volumen",
+
+    "about": "InTeractiOn Lab 2022 \n <color=#3498db><u><link=interaction-lab.info>interaction-lab.info</link></u></color>\nMOTIONS\n<color=#3498db><u><link=motions.informatica.usach.cl>motions.informatica.usach.cl</link></u></color>\n\n- Sebastián Verdugo\n- Roberto González Ibañez\n\nAgradecimientos a Esteban Gaete, el equipo de MOTIONS y los creadores de Assets que ayudaron en este proyecto.",
+    
+    "environmentsettingsTitle": "Configuración de Entorno",
+
+    "browsingModeTitle": "Selecciona un modo de exploración de Objetos de información.",
+    "browsingModeDescription": "Modo Local le permite al usuario escoger archivos \nde carpetas en disco local como objetos de información.\nModo Online le permite al usuario escoger un archivo \nde texto con urls a mostrar como objetos de información.\n(Modo Online requiere internet)",
+    "browsingModeLocal": "Modo Local",
+    "browsingModeOnline": "Modo Online",
+
+    "fileLocalTitle": "Seleccione los archivos o carpetas a mostrar.",
+    "fileOnlineTitle": "Seleccione un archivo de texto o carpeta con urls.",
+    "fileSupported": "Archivos soportados: ",
+    "fileUnsupported": "Archivos no soportados: ",
+    "fileSelect": "Seleccionar archivos...",
+    "fileSelectMultiple": " archivos seleccionados de ",
+    "fileSelectSingle": " archivo seleccionado de ",
+    "fileFolderMultiple": " carpetas.",
+    "fileFolderSingle": "1 carpeta.",
+
+    "displaymodeTitle": "Seleccione el modo de muestra de Objetos de información",
+    "displaymodeDesc": "Modo Plano muestra objetos frente al usuario en foma de cubo. \nModo radial muestra objetos alrededor del usuario en forma de esfera. \n Volumétrico permite al usuario cambiar entre capas de objetos de información.",
+    "displaymodePlane": "Modo Plano",
+    "displaymodeRadial": "Modo Radial",
+    "displaymodeVolumetric": "Volumétrico",
+
+    "dimensionplanexTitle": "¿Cuántas columnas de Objetos de información se mostrarán?",
+    "dimensionplaneyTitle": "¿Cuántas filas de Objetos de información se mostrarán?",
+    "dimensionplanezTitle": "¿Cuántas capas de Objetos de información se mostrarán?",
+
+    "dimensionradialxTitle": "¿Cuántos Objetos de información se mostrarán en cada anillo de elementos?",
+    "dimensionradialyTitle": "¿Cuántos anillos de Objetos de información se mostrarán?",
+    "dimensionradialzTitle": "¿Cuántas capas de Objetos de información se mostrarán?",
+
+    "postloadTitle": "Presiona siguiente para lanzar la sesión.",
+
+    "righthandSelectorTitle": "Categorizar",
+    "righthandSortTitle": "Ordenar",
+    "righthandSelectorEmpty": "Selecciona un objeto de información a categorizar.",
+    "righthandCategorizebutton": "Categorizar",
+    "righthandSortbutton": "Ordenar",
+
+    "elementCategorized": "Categorizado",
+
+    "loading": "Cargando...",
+
+    "empty": ""
+}

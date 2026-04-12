@@ -1,0 +1,17 @@
+Timestamp;Date;Type;Detail
+18:25:56.8416987;20-02-2025;Session Status;Start;Environment: Circular;Display Mode: Plane;Dimension: 1,3,1;Browsing Mode: Online;;
+18:26:08.8583601;20-02-2025;Selection;Selected;Url: https://www.google.cl/?hl=es;
+18:26:18.5574546;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:31.3818952;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:34.5236411;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:34.5573108;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:39.2773288;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:52.8227498;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:52.8579845;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:26:56.5280941;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Adios;
+18:27:01.7542782;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Adios;
+18:27:03.6215810;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:27:38.1529389;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:27:38.1877171;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Hola;
+18:27:39.3904921;20-02-2025;Category;Removed;Url: https://www.google.cl/?hl=es;Name: Adios;
+18:27:39.4217722;20-02-2025;Category;Added;Url: https://www.google.cl/?hl=es;Name: Adios;

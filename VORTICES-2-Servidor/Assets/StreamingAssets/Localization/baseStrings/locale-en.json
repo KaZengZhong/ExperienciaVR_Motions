@@ -1,0 +1,74 @@
+﻿{
+    "mainmenuTitle": "Main Menu",
+
+    "appTitle": "VoRTIcES 2.0: \nVirtual Reality Experimentation System",
+
+    "startButton": "Start",
+    "optionsButton": "Options",
+    "joinButton": "Unirse a una Sesion",
+    "aboutButton": "About",
+    "exitButton": "Exit",
+
+    "sessionTitle": "Select a session, an user identification number and the enviroment to be used to continue...",
+    "sessionUserid": "User Id",
+    "sessionEnvironment": "Available Environments",
+    "sessionNew": "New session name...",
+
+    "categoryTitle": "Choose the categories that will be used to classify information objects.",
+    "categoryNew": "New category name...",
+
+    "next": "Next",
+
+    "optionsTitle": "Application Settings",
+    "optionsLanguage": "Language",
+    "optionsResolution": "Resolution\n (Needs Restart)",
+    "optionsQuality": "Quality Level",
+    "optionsVolume": "Volume",
+
+    "about": "InTeractiOn Lab 2022 \n <color=#3498db><u><link=interaction-lab.info>interaction-lab.info</link></u></color>\nMOTIONS\n<color=#3498db><u><link=motions.informatica.usach.cl>motions.informatica.usach.cl</link></u></color>\n\n- Sebastián Verdugo\n- Roberto González Ibañez\n\nRegards to Esteban Gaete, the MOTIONS team and the asset developers who helped with this project.",
+    
+    "environmentsettingsTitle": "Environment Settings",
+
+    "browsingModeTitle": "Select a Information Object browsing mode",
+    "browsingModeDescription": "Local mode lets the user choose files from folders in local drives as Information Objects.\nOnline mode lets the user choose a text file with urls to be shown as Information Objects.\n(Online mode requires access to internet)",
+    "browsingModeLocal": "Local Mode",
+    "browsingModeOnline": "Online Mode",
+
+    "fileLocalTitle": "Please select the files or folders to be displayed.",
+    "fileOnlineTitle": "Please select a url text file or folders containing url text files.",
+    "fileSupported": "Supported files: ",
+    "fileUnsupported": "Unsupported files: ",
+    "fileSelect": "Select files...",
+    "fileSelectMultiple": " files selected from ",
+    "fileSelectSingle": " file selected from ",
+    "fileFolderMultiple": " folders.",
+    "fileFolderSingle": "1 folder.",
+
+    "displaymodeTitle": "Select display mode to be used to show the Information Objects.",
+    "displaymodeDesc": "Plane mode displays items in front of the user in a box-shaped form.\nRadial mode displays items around the user in a spherical-shaped form.\nVolumetric option enables the user to swap between layers of information Objects.",
+    "displaymodePlane": "Plane Mode",
+    "displaymodeRadial": "Radial Mode",
+    "displaymodeVolumetric": "Volumetric",
+
+    "dimensionplanexTitle": "How many columns of Information Objects will be displayed?",
+    "dimensionplaneyTitle": "How many rows of Information Objects will be displayed?",
+    "dimensionplanezTitle": "How many layers of Information Objects will be displayed?",
+
+    "dimensionradialxTitle": "How many elements in each Information Object ring will be displayed? (At least 3 per ring)",
+    "dimensionradialyTitle": "How many Information Object rings will be displayed?",
+    "dimensionradialzTitle": "How many layers of Information Object rings will be displayed?",
+
+    "postloadTitle": "Press next to launch the session.",
+
+    "righthandSelectorTitle": "Categorize",
+    "righthandSortTitle": "Category Sort",
+    "righthandSelectorEmpty": "Select an Information Object to categorize.",
+    "righthandCategorizebutton": "Categorize",
+    "righthandSortbutton": "Sort",
+
+    "elementCategorized": "Categorized",
+
+    "loading": "Loading...",
+
+    "empty": ""
+}
