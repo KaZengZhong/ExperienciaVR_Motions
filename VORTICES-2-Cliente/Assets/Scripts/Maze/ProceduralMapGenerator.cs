@@ -1,25 +1,31 @@
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.Interaction.Toolkit;
 
 namespace Vortices
 {
     public class ProceduralMapGenerator : MonoBehaviour
     {
-        [Header("Configuración del mapa")]
-        public int minRooms = 5;
-        public int maxRooms = 10;
-        public float roomSize = 10f;
+        [Header("Configuración del laberinto")]
+        public int gridWidth = 7;
+        public int gridHeight = 7;
+        public float cellSize = 4f;
         public float wallHeight = 3f;
+        public float wallThickness = 0.2f;
 
         [Header("Materiales")]
         public Material wallMaterial;
         public Material floorMaterial;
         public Material ceilingMaterial;
 
-        // Datos generados
-        private List<Vector2Int> roomPositions = new List<Vector2Int>();
-        private List<(Vector2Int, Vector2Int)> corridors = new List<(Vector2Int, Vector2Int)>();
+        // Grid de celdas — true = visitada
+        private bool[,] visited;
+        // Paredes — horizontal[x,y] = pared entre (x,y) y (x,y+1)
+        //         — vertical[x,y]   = pared entre (x,y) y (x+1,y)
+        private bool[,] wallsHorizontal; // pared norte de celda (x,y)
+        private bool[,] wallsVertical;   // pared este de celda (x,y)
+
+        private Vector2Int startCell;
+        private Vector2Int goalCell;
 
         void Start()
         {
@@ -28,136 +34,154 @@ namespace Vortices
 
         public void GenerateMap()
         {
-            roomPositions.Clear();
-            corridors.Clear();
+            // Inicializar grids
+            visited = new bool[gridWidth, gridHeight];
+            wallsHorizontal = new bool[gridWidth, gridHeight + 1];
+            wallsVertical = new bool[gridWidth + 1, gridHeight];
 
-            int roomCount = Random.Range(minRooms, maxRooms + 1);
+            // Todas las paredes activas al inicio
+            for (int x = 0; x <= gridWidth; x++)
+                for (int y = 0; y < gridHeight; y++)
+                    wallsVertical[x, y] = true;
 
-            roomPositions.Add(Vector2Int.zero);
+            for (int x = 0; x < gridWidth; x++)
+                for (int y = 0; y <= gridHeight; y++)
+                    wallsHorizontal[x, y] = true;
 
-            Vector2Int[] directions = {
-                Vector2Int.up,
-                Vector2Int.down,
-                Vector2Int.left,
-                Vector2Int.right
-            };
+            // Celda de inicio: esquina (0,0)
+            startCell = Vector2Int.zero;
+            // Celda meta: esquina opuesta
+            goalCell = new Vector2Int(gridWidth - 1, gridHeight - 1);
 
-            int attempts = 0;
-            while (roomPositions.Count < roomCount && attempts < 1000)
-            {
-                attempts++;
-                Vector2Int existingRoom = roomPositions[Random.Range(0, roomPositions.Count)];
-                Vector2Int direction = directions[Random.Range(0, directions.Length)];
-                Vector2Int newRoom = existingRoom + direction;
+            // Recursive Backtracker DFS
+            RecursiveBacktrack(startCell.x, startCell.y);
 
-                if (!roomPositions.Contains(newRoom))
-                {
-                    roomPositions.Add(newRoom);
-                    corridors.Add((existingRoom, newRoom));
-                }
-            }
-            // Posicionar jugador en el centro de la sala inicial
+            SpawnMaze();
+
+            Debug.Log($"[Maze] Laberinto {gridWidth}x{gridHeight} generado. Inicio: {startCell}, Meta: {goalCell}");
+
             GameObject xrOrigin = GameObject.Find("XR Origin");
             if (xrOrigin != null)
-            {
-                xrOrigin.transform.position = new Vector3(0, 1.6f, 0);
-            }
-
-            SpawnMap();
-            Debug.Log($"[Maze] Mapa generado con {roomPositions.Count} salas y {corridors.Count} pasillos.");
+                xrOrigin.transform.position = new Vector3(
+                    startCell.x * cellSize + cellSize / 2f,
+                    0,
+                    startCell.y * cellSize + cellSize / 2f
+                );
         }
 
-        private void SpawnMap()
+        private void RecursiveBacktrack(int x, int y)
+        {
+            visited[x, y] = true;
+
+            // Direcciones aleatorias
+            List<Vector2Int> directions = new List<Vector2Int>
+            {
+                Vector2Int.up, Vector2Int.down,
+                Vector2Int.left, Vector2Int.right
+            };
+            Shuffle(directions);
+
+            foreach (Vector2Int dir in directions)
+            {
+                int nx = x + dir.x;
+                int ny = y + dir.y;
+
+                if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight && !visited[nx, ny])
+                {
+                    // Derribar pared entre (x,y) y (nx,ny)
+                    if (dir == Vector2Int.right) wallsVertical[x + 1, y] = false;
+                    if (dir == Vector2Int.left)  wallsVertical[x, y] = false;
+                    if (dir == Vector2Int.up)    wallsHorizontal[x, y + 1] = false;
+                    if (dir == Vector2Int.down)  wallsHorizontal[x, y] = false;
+
+                    RecursiveBacktrack(nx, ny);
+                }
+            }
+        }
+
+        private void SpawnMaze()
         {
             foreach (Transform child in transform)
                 Destroy(child.gameObject);
 
-            foreach (Vector2Int pos in roomPositions)
+            for (int x = 0; x < gridWidth; x++)
             {
-                Vector3 worldPos = new Vector3(pos.x * roomSize, 0, pos.y * roomSize);
-                SpawnRoom(pos, worldPos);
+                for (int y = 0; y < gridHeight; y++)
+                {
+                    Vector3 cellCenter = new Vector3(
+                        x * cellSize + cellSize / 2f,
+                        0,
+                        y * cellSize + cellSize / 2f
+                    );
+
+                    // Piso
+                    Material fm = floorMaterial;
+                    if (x == goalCell.x && y == goalCell.y)
+                    {
+                        fm = new Material(floorMaterial != null ? floorMaterial : new Material(Shader.Find("Standard")));
+                        fm.color = new Color(0.8f, 0.2f, 0.2f, 1f);
+                    }
+                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), fm);
+
+                    // Techo
+                    SpawnCube(gameObject, $"Ceiling_{x}_{y}",
+                        cellCenter + new Vector3(0, wallHeight, 0),
+                        new Vector3(cellSize, 0.1f, cellSize), ceilingMaterial, false);
+
+                    // Pared sur (y=0 de cada celda)
+                    if (wallsHorizontal[x, y])
+                        SpawnCube(gameObject, $"WallS_{x}_{y}",
+                            new Vector3(cellCenter.x, wallHeight / 2f, y * cellSize),
+                            new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+
+                    // Pared oeste (x=0 de cada celda)
+                    if (wallsVertical[x, y])
+                        SpawnCube(gameObject, $"WallW_{x}_{y}",
+                            new Vector3(x * cellSize, wallHeight / 2f, cellCenter.z),
+                            new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
+                }
             }
+
+            // Paredes del borde norte
+            for (int x = 0; x < gridWidth; x++)
+                SpawnCube(gameObject, $"WallN_{x}",
+                    new Vector3(x * cellSize + cellSize / 2f, wallHeight / 2f, gridHeight * cellSize),
+                    new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+
+            // Paredes del borde este
+            for (int y = 0; y < gridHeight; y++)
+                SpawnCube(gameObject, $"WallE_{y}",
+                    new Vector3(gridWidth * cellSize, wallHeight / 2f, y * cellSize + cellSize / 2f),
+                    new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
+
+            StaticBatchingUtility.Combine(gameObject);
         }
 
-        private void SpawnRoom(Vector2Int gridPos, Vector3 worldPos)
+        private void Shuffle(List<Vector2Int> list)
         {
-            GameObject room = new GameObject($"Room_{gridPos.x}_{gridPos.y}");
-            room.transform.parent = transform;
-            room.transform.position = worldPos;
-
-            float w = roomSize;
-            float h = wallHeight;
-            float half = w / 2f;
-
-            // Piso
-            SpawnCube(room, "Floor", new Vector3(0, 0, 0), new Vector3(w, 0.1f, w), floorMaterial);
-            // Techo
-            SpawnCube(room, "Ceiling", new Vector3(0, h, 0), new Vector3(w, 0.1f, w), ceilingMaterial);
-
-            // Paredes — solo donde NO hay pasillo
-            bool openNorth = corridors.Contains((gridPos, gridPos + Vector2Int.up)) ||
-                             corridors.Contains((gridPos + Vector2Int.up, gridPos));
-            bool openSouth = corridors.Contains((gridPos, gridPos + Vector2Int.down)) ||
-                             corridors.Contains((gridPos + Vector2Int.down, gridPos));
-            bool openEast  = corridors.Contains((gridPos, gridPos + Vector2Int.right)) ||
-                             corridors.Contains((gridPos + Vector2Int.right, gridPos));
-            bool openWest  = corridors.Contains((gridPos, gridPos + Vector2Int.left)) ||
-                             corridors.Contains((gridPos + Vector2Int.left, gridPos));
-
-            if (!openNorth)
-                SpawnCube(room, "Wall_N", new Vector3(0, h/2f, half), new Vector3(w, h, 0.2f), wallMaterial);
-            else
-                SpawnWallWithOpening(room, "Wall_N", new Vector3(0, h/2f, half), true, w, h, half);
-
-            if (!openSouth)
-                SpawnCube(room, "Wall_S", new Vector3(0, h/2f, -half), new Vector3(w, h, 0.2f), wallMaterial);
-            else
-                SpawnWallWithOpening(room, "Wall_S", new Vector3(0, h/2f, -half), true, w, h, half);
-
-            if (!openEast)
-                SpawnCube(room, "Wall_E", new Vector3(half, h/2f, 0), new Vector3(0.2f, h, w), wallMaterial);
-            else
-                SpawnWallWithOpening(room, "Wall_E", new Vector3(half, h/2f, 0), false, w, h, half);
-
-            if (!openWest)
-                SpawnCube(room, "Wall_W", new Vector3(-half, h/2f, 0), new Vector3(0.2f, h, w), wallMaterial);
-            else
-                SpawnWallWithOpening(room, "Wall_W", new Vector3(-half, h/2f, 0), false, w, h, half);
-        }
-
-        private void SpawnWallWithOpening(GameObject room, string name, Vector3 center, bool isNorthSouth, float w, float h, float half)
-        {
-            // Apertura de 2 unidades de ancho y altura completa
-            float openingWidth = 2f;
-            float sideWidth = (w - openingWidth) / 2f;
-
-            if (isNorthSouth)
+            for (int i = list.Count - 1; i > 0; i--)
             {
-                // Dos segmentos a los lados de la apertura
-                SpawnCube(room, name + "_L", center + new Vector3(-half + sideWidth/2f, 0, 0),
-                    new Vector3(sideWidth, h, 0.2f), wallMaterial);
-                SpawnCube(room, name + "_R", center + new Vector3(half - sideWidth/2f, 0, 0),
-                    new Vector3(sideWidth, h, 0.2f), wallMaterial);
-            }
-            else
-            {
-                SpawnCube(room, name + "_L", center + new Vector3(0, 0, -half + sideWidth/2f),
-                    new Vector3(0.2f, h, sideWidth), wallMaterial);
-                SpawnCube(room, name + "_R", center + new Vector3(0, 0, half - sideWidth/2f),
-                    new Vector3(0.2f, h, sideWidth), wallMaterial);
+                int j = Random.Range(0, i + 1);
+                Vector2Int temp = list[i];
+                list[i] = list[j];
+                list[j] = temp;
             }
         }
 
-        private void SpawnCube(GameObject parent, string name, Vector3 localPos, Vector3 scale, Material mat)
+        private GameObject SpawnCube(GameObject parent, string name, Vector3 worldPos, Vector3 scale, Material mat, bool hasCollider = true)
         {
             GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
             cube.name = name;
             cube.transform.parent = parent.transform;
-            cube.transform.localPosition = localPos;
+            cube.transform.position = worldPos;
             cube.transform.localScale = scale;
-
             if (mat != null)
                 cube.GetComponent<Renderer>().material = mat;
+            if (!hasCollider)
+                Destroy(cube.GetComponent<BoxCollider>());
+            if (name.StartsWith("Wall") || name.StartsWith("Ceiling"))
+                cube.isStatic = true;
+            return cube;
         }
     }
 }
