@@ -19,6 +19,10 @@ namespace Vortices
 
         [Header("Tótems")]
         public GameObject totemPrefab;
+        [Tooltip("Altura a la que se monta el tótem en la pared (en metros)")]
+        public float totemWallHeight = 1.4f;
+        [Tooltip("Separación del tótem respecto a la superficie de la pared")]
+        public float totemWallOffset = 0.05f;
 
         [Header("Ruta")]
         [Tooltip("Color de los marcadores de ruta")]
@@ -73,16 +77,18 @@ namespace Vortices
             RecursiveBacktrack(startCell.x, startCell.y);
 
             // Calcular la ruta completa una sola vez — sirve de referencia para el largo parcial
-            fullPath       = FindPath(startCell, goalCell);
-            totalTotemCount = Mathf.Max(1, (gridWidth * gridHeight) / 10);
+            // totalTotemCount se establece dentro de SpawnTotems según cuántos se logran colocar
+            fullPath        = FindPath(startCell, goalCell);
+            totalTotemCount = 1; // valor provisional, se actualiza en SpawnTotems
 
             SpawnMaze();
-            SpawnTotems();
+            SpawnTotems(); // actualiza totalTotemCount al final
 
-            int stepsPerTotem = fullPath != null ? fullPath.Count / totalTotemCount : 0;
+            int stepsPerTotem = (fullPath != null && totalTotemCount > 0)
+                ? fullPath.Count / totalTotemCount : 0;
             Debug.Log($"[Maze] {gridWidth}x{gridHeight} generado. " +
                       $"Ruta completa: {fullPath?.Count} celdas. " +
-                      $"Tótems: {totalTotemCount}. " +
+                      $"Tótems en intersecciones: {totalTotemCount}. " +
                       $"Pasos visibles por tótem: {stepsPerTotem}");
 
             GameObject xrOrigin = GameObject.Find("XR Origin");
@@ -194,37 +200,185 @@ namespace Vortices
                 return;
             }
 
-            List<Vector2Int> candidates = new List<Vector2Int>();
-            for (int x = 0; x < gridWidth; x++)
-                for (int y = 0; y < gridHeight; y++)
-                    if (!(x == startCell.x && y == startCell.y) && !(x == goalCell.x && y == goalCell.y))
-                        candidates.Add(new Vector2Int(x, y));
+            // Buscar puntos de decisión: cualquier celda del laberinto con 3+ vecinos accesibles
+            // No es necesario que estén en la ruta óptima
+            List<Vector2Int> decisionPoints = FindAllDecisionPoints();
 
-            Shuffle(candidates);
+            // Excluir inicio y meta
+            decisionPoints.RemoveAll(c => c == startCell || c == goalCell);
+            Shuffle(decisionPoints);
 
             int placed = 0;
-            foreach (Vector2Int cell in candidates)
+            foreach (Vector2Int cell in decisionPoints)
             {
-                if (placed >= totalTotemCount) break;
+                // Buscar una cara de pared disponible en esta celda para montar el tótem
+                WallFace? face = FindAdjacentWallFace(cell);
+                if (face == null) continue;
 
-                Vector3 pos = new Vector3(
-                    cell.x * cellSize + cellSize / 2f,
-                    0,
-                    cell.y * cellSize + cellSize / 2f
+                // Posición: superficie de la pared de la intersección
+                // El prefab tiene el pivot en el punto de montaje (bracket de la pared),
+                // así que lo colocamos EN la pared y el cuerpo se extiende hacia el interior de la celda.
+                // totemWallOffset separa el pivot de la geometría de la pared para evitar z-fighting.
+                Vector3 totemPos = new Vector3(
+                    face.Value.position.x + face.Value.inwardNormal.x * totemWallOffset,
+                    totemWallHeight,
+                    face.Value.position.z + face.Value.inwardNormal.z * totemWallOffset
                 );
 
-                Vector3 center = new Vector3(gridWidth * cellSize / 2f, 0, gridHeight * cellSize / 2f);
-                Quaternion rotation = Quaternion.Euler(0, Quaternion.LookRotation(center - pos).eulerAngles.y, 0);
+                // Rota para que la cara del tótem mire hacia el interior de la celda
+                // (usando la normal de la pared más cercana como referencia de orientación)
+                Quaternion totemRot = Quaternion.LookRotation(face.Value.inwardNormal, Vector3.up);
 
-                GameObject totemObj = Instantiate(totemPrefab, pos, rotation);
+                // Instanciar primero en el origen para calcular bounds sin rotación
+                GameObject totemObj = Instantiate(totemPrefab, totemPos, totemRot);
+                totemObj.name = $"Totem_{cell.x}_{cell.y}";
+
+                // Compensar el desfase interno del prefab:
+                // el mesh 3D puede no estar centrado en el pivot del prefab.
+                // Calculamos el centro real del visual (XZ) y corregimos la posición.
+                Renderer[] totemRenderers = totemObj.GetComponentsInChildren<Renderer>();
+                bool hasNonCanvasRenderer = false;
+                Bounds totemBounds = new Bounds(totemPos, Vector3.zero);
+                foreach (Renderer r in totemRenderers)
+                {
+                    // Ignorar renderers de Canvas (UI) — solo nos importa el mesh 3D
+                    if (r.GetComponent<UnityEngine.UI.Graphic>() != null) continue;
+                    if (r.GetComponentInParent<Canvas>() != null) continue;
+                    if (!hasNonCanvasRenderer) { totemBounds = r.bounds; hasNonCanvasRenderer = true; }
+                    else totemBounds.Encapsulate(r.bounds);
+                }
+                if (hasNonCanvasRenderer)
+                {
+                    // Mover el tótem para que el centro XZ del mesh quede en totemPos
+                    Vector3 correction = totemBounds.center - totemPos;
+                    correction.y = 0f; // solo corregir en el plano horizontal
+                    totemObj.transform.position -= correction;
+                }
+
                 InformationTotem totem = totemObj.GetComponent<InformationTotem>();
                 if (totem != null)
                     totem.SetMapGenerator(this);
 
+                Debug.Log($"[Totem] Celda ({cell.x},{cell.y}) → pos mundo: {totemObj.transform.position}");
+
                 placed++;
             }
 
-            Debug.Log($"[Maze] {placed} tótems colocados.");
+            // Actualizar el contador real de tótems colocados
+            // (puede ser menor al estimado si hay pocas intersecciones)
+            totalTotemCount = Mathf.Max(1, placed);
+
+            Debug.Log($"[Maze] {placed} tótems colocados en puntos de decisión.");
+        }
+
+        // ─── Detección de puntos de decisión ─────────────────────────────────────
+
+        /// <summary>
+        /// Devuelve las celdas de la ruta óptima que tienen 3 o más vecinos accesibles.
+        /// Estos son los puntos donde el jugador realmente necesita decidir qué dirección tomar.
+        /// </summary>
+        private List<Vector2Int> FindDecisionPointsOnPath()
+        {
+            var points = new List<Vector2Int>();
+            if (fullPath == null) return points;
+
+            foreach (Vector2Int cell in fullPath)
+                if (GetPassableNeighbors(cell).Count >= 3)
+                    points.Add(cell);
+
+            return points;
+        }
+
+        /// <summary>
+        /// Versión de respaldo: todas las intersecciones del laberinto,
+        /// no solo las que están en la ruta óptima.
+        /// </summary>
+        private List<Vector2Int> FindAllDecisionPoints()
+        {
+            var points = new List<Vector2Int>();
+            for (int x = 0; x < gridWidth; x++)
+            {
+                for (int y = 0; y < gridHeight; y++)
+                {
+                    var cell = new Vector2Int(x, y);
+                    int count = GetPassableNeighbors(cell).Count;
+                    if (count >= 3)
+                    {
+                        points.Add(cell);
+
+                        // DEBUG — pintar el suelo de la intersección de azul
+                        // Quitar este bloque cuando el comportamiento sea correcto
+                        Vector3 center = new Vector3(x * cellSize + cellSize / 2f, 0.05f, y * cellSize + cellSize / 2f);
+                        GameObject debugMarker = GameObject.CreatePrimitive(PrimitiveType.Quad);
+                        debugMarker.name = $"DEBUG_Intersection_{x}_{y}";
+                        debugMarker.transform.parent = transform;
+                        debugMarker.transform.position = center;
+                        debugMarker.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
+                        debugMarker.transform.localScale = new Vector3(cellSize * 0.9f, cellSize * 0.9f, 1f);
+                        Destroy(debugMarker.GetComponent<MeshCollider>());
+                        var r = debugMarker.GetComponent<Renderer>();
+                        if (r != null) { var m = new Material(Shader.Find("Standard")); m.color = new Color(0f, 0.4f, 1f, 1f); r.material = m; }
+
+                        Debug.Log($"[Maze] Intersección detectada en celda ({x},{y}) — vecinos accesibles: {count}");
+                    }
+                }
+            }
+            return points;
+        }
+
+        // ─── Montaje en pared ─────────────────────────────────────────────────────
+
+        /// <summary>
+        /// Cara de pared: posición en el borde de la celda + normal apuntando hacia el interior.
+        /// </summary>
+        private struct WallFace
+        {
+            public Vector3 position;      // centro del borde de la celda (en suelo, y=0)
+            public Vector3 inwardNormal;  // dirección que apunta hacia el centro de la celda
+        }
+
+        /// <summary>
+        /// Busca una cara de pared disponible adyacente a <paramref name="cell"/>.
+        /// Prefiere las paredes internas del laberinto (más naturales visualmente)
+        /// antes que los bordes exteriores.
+        /// </summary>
+        private WallFace? FindAdjacentWallFace(Vector2Int cell)
+        {
+            int x = cell.x, y = cell.y;
+            float cx = x * cellSize + cellSize / 2f;
+            float cz = y * cellSize + cellSize / 2f;
+
+            // Candidatos: (¿hay pared?, posición en el borde, normal hacia adentro)
+            var candidates = new (bool hasWall, Vector3 pos, Vector3 normal)[]
+            {
+                // Sur
+                (wallsHorizontal[x, y],     new Vector3(cx, 0f, y * cellSize),           Vector3.forward),
+                // Norte
+                (wallsHorizontal[x, y + 1], new Vector3(cx, 0f, (y + 1) * cellSize),     Vector3.back),
+                // Oeste
+                (wallsVertical[x, y],       new Vector3(x * cellSize, 0f, cz),            Vector3.right),
+                // Este
+                (wallsVertical[x + 1, y],   new Vector3((x + 1) * cellSize, 0f, cz),     Vector3.left),
+            };
+
+            // Primero buscar paredes internas (no de borde del laberinto)
+            foreach (var c in candidates)
+            {
+                if (!c.hasWall) continue;
+                bool isBorder = (c.normal == Vector3.forward  && y == 0)           ||
+                                (c.normal == Vector3.back     && y == gridHeight-1) ||
+                                (c.normal == Vector3.right    && x == 0)            ||
+                                (c.normal == Vector3.left     && x == gridWidth-1);
+                if (!isBorder)
+                    return new WallFace { position = c.pos, inwardNormal = c.normal };
+            }
+
+            // Si solo hay bordes, usar cualquier pared disponible
+            foreach (var c in candidates)
+                if (c.hasWall)
+                    return new WallFace { position = c.pos, inwardNormal = c.normal };
+
+            return null;
         }
 
         // ─── Ruta parcial desde la posición del jugador ───────────────────────────
@@ -252,32 +406,29 @@ namespace Vortices
                 return;
             }
 
-            // Cuántos pasos mostrar: largo del camino completo dividido por el número de tótems
-            // Así el tramo visible escala con el tamaño del laberinto y la cantidad de tótems
-            int stepsToShow = Mathf.Max(1, fullPath.Count / totalTotemCount);
-
-            // Si el jugador está muy cerca de la meta, mostrar lo que queda
-            int endIdx = Mathf.Min(stepsToShow, pathFromPlayer.Count);
-
-            for (int i = 0; i < endIdx; i++)
+            // Mostrar solo la dirección inmediata: la siguiente celda en el camino
+            // El jugador ve hacia dónde tiene que ir desde donde está, nada más
+            if (pathFromPlayer.Count < 2)
             {
-                Vector2Int cell       = pathFromPlayer[i];
-                bool       isGoalCell = (cell == goalCell);
-
-                // Dirección hacia la siguiente celda del camino
-                Quaternion markerRotation = Quaternion.identity;
-                if (i + 1 < pathFromPlayer.Count)
-                {
-                    Vector2Int next = pathFromPlayer[i + 1];
-                    Vector3 dir = new Vector3(next.x - cell.x, 0f, next.y - cell.y);
-                    markerRotation = Quaternion.LookRotation(dir);
-                }
-
-                pathMarkers.Add(CreatePathMarker(cell, markerRotation, isGoalCell));
+                // El jugador ya está en la meta o adyacente — no hay más que indicar
+                Debug.Log("[Maze] El jugador ya está en la meta o muy cerca.");
+                return;
             }
 
-            Debug.Log($"[Maze] Mostrando {endIdx} de {pathFromPlayer.Count} pasos " +
-                      $"desde celda {playerCell} (máx. permitido: {stepsToShow}).");
+            // pathFromPlayer[0] = celda actual del jugador
+            // pathFromPlayer[1] = siguiente celda a la que debe ir
+            Vector2Int currentCell = pathFromPlayer[0];
+            Vector2Int nextCell    = pathFromPlayer[1];
+            bool isGoalNext        = (nextCell == goalCell);
+
+            Vector3 direction = new Vector3(nextCell.x - currentCell.x, 0f, nextCell.y - currentCell.y);
+            Quaternion arrowRotation = Quaternion.LookRotation(direction);
+
+            // Colocar el marcador en la celda actual apuntando hacia la siguiente
+            pathMarkers.Add(CreatePathMarker(currentCell, arrowRotation, isGoalNext));
+
+            Debug.Log($"[Maze] Dirección indicada: desde {currentCell} hacia {nextCell}" +
+                      (isGoalNext ? " (¡es la meta!)" : ""));
         }
 
         /// <summary>
@@ -353,29 +504,63 @@ namespace Vortices
                 cell.y * cellSize + cellSize / 2f
             );
 
-            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
-            marker.name = $"PathMarker_{cell.x}_{cell.y}";
-            marker.transform.parent = transform;
-            marker.transform.position = worldPos;
-            marker.transform.rotation = Quaternion.Euler(90f, direction.eulerAngles.y, 0f);
+            Color color = isGoalCell ? goalColor : pathColor;
+            float yRot  = direction.eulerAngles.y;
+            float s     = cellSize;
 
-            float w = isGoalCell ? cellSize * 0.6f : cellSize * 0.35f;
-            float l = isGoalCell ? cellSize * 0.6f : cellSize * 0.70f;
-            marker.transform.localScale = new Vector3(w, l, 1f);
+            // Contenedor vacío — la posición es correcta, la rotación la manejan los hijos
+            GameObject arrow = new GameObject($"PathMarker_{cell.x}_{cell.y}");
+            arrow.transform.parent   = transform;
+            arrow.transform.position = worldPos;
 
-            Destroy(marker.GetComponent<MeshCollider>());
+            // Rotación de referencia para desplazar las alas en el plano XZ
+            Quaternion yQ = Quaternion.Euler(0f, yRot, 0f);
 
-            Renderer r = marker.GetComponent<Renderer>();
+            // ── Tronco ──────────────────────────────────────────────────────
+            // Rectángulo angosto que apunta en la dirección de avance
+            AddFlatQuad(arrow.transform, "Stem",
+                localPos: Vector3.zero,
+                scale:    new Vector3(s * 0.15f, s * 0.50f, 1f),
+                worldRot: Quaternion.Euler(90f, yRot, 0f),
+                color:    color);
+
+            // ── Punta de flecha (dos alas en "V") ───────────────────────────
+            // Cada ala va desde la punta delantera hacia la cola lateral-trasera.
+            // Ala izquierda: yRot-135° (atrás-izquierda visto desde la punta)
+            AddFlatQuad(arrow.transform, "WingL",
+                localPos: yQ * new Vector3(-s * 0.10f, 0f,  s * 0.10f),
+                scale:    new Vector3(s * 0.10f, s * 0.32f, 1f),
+                worldRot: Quaternion.Euler(90f, yRot - 135f, 0f),
+                color:    color);
+
+            // Ala derecha: yRot+135° (atrás-derecha visto desde la punta)
+            AddFlatQuad(arrow.transform, "WingR",
+                localPos: yQ * new Vector3( s * 0.10f, 0f,  s * 0.10f),
+                scale:    new Vector3(s * 0.10f, s * 0.32f, 1f),
+                worldRot: Quaternion.Euler(90f, yRot + 135f, 0f),
+                color:    color);
+
+            return arrow;
+        }
+
+        private void AddFlatQuad(Transform parent, string name, Vector3 localPos, Vector3 scale, Quaternion worldRot, Color color)
+        {
+            GameObject q = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            q.name = name;
+            q.transform.parent      = parent;
+            q.transform.localPosition = localPos;
+            q.transform.localScale  = scale;
+            q.transform.rotation    = worldRot;   // rotación en espacio mundo
+            Destroy(q.GetComponent<MeshCollider>());
+            Renderer r = q.GetComponent<Renderer>();
             if (r != null)
             {
                 Material mat = new Material(Shader.Find("Standard"));
-                mat.color = isGoalCell ? goalColor : pathColor;
+                mat.color = color;
                 r.material = mat;
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 r.receiveShadows    = false;
             }
-
-            return marker;
         }
 
         // ─── Utilidades ───────────────────────────────────────────────────────────
