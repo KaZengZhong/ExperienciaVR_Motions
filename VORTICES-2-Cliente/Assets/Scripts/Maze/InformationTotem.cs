@@ -19,22 +19,32 @@ namespace Vortices
         public Button fakeButton;
 
         [Header("Feedback")]
-        public GameObject correctPath;
-        public GameObject incorrectPath;
+        public GameObject correctFeedback;
+        public GameObject incorrectFeedback;
 
         private bool playerInRange = false;
         private bool answered = false;
         private Transform player;
+
+        private ProceduralMapGenerator mapGenerator;
+
+        /// <summary>
+        /// Llamado por ProceduralMapGenerator al instanciar el tótem.
+        /// </summary>
+        public void SetMapGenerator(ProceduralMapGenerator generator)
+        {
+            mapGenerator = generator;
+        }
 
         void Start()
         {
             if (panel != null)
                 panel.SetActive(false);
 
-            if (correctPath != null)
-                correctPath.SetActive(false);
-            if (incorrectPath != null)
-                incorrectPath.SetActive(false);
+            if (correctFeedback != null)
+                correctFeedback.SetActive(false);
+            if (incorrectFeedback != null)
+                incorrectFeedback.SetActive(false);
 
             if (realButton != null)
                 realButton.onClick.AddListener(OnRealSelected);
@@ -45,7 +55,7 @@ namespace Vortices
             if (playerObj != null)
                 player = playerObj.transform;
             else
-                Debug.LogWarning("[Totem] No se encontró objeto con tag Player");
+                Debug.LogWarning("[Totem] No se encontró objeto con tag 'Player'.");
         }
 
         void Update()
@@ -66,16 +76,17 @@ namespace Vortices
             }
         }
 
+        // ─── UI ──────────────────────────────────────────────────────────────────
+
         private void ShowPanel()
         {
-            if (panel != null)
-            {
-                panel.SetActive(true);
-                if (questionText != null)
-                    questionText.text = question;
-                if (displayImage != null && informationImage != null)
-                    displayImage.sprite = informationImage;
-            }
+            if (panel == null) return;
+            panel.SetActive(true);
+
+            if (questionText != null)
+                questionText.text = question;
+            if (displayImage != null && informationImage != null)
+                displayImage.sprite = informationImage;
         }
 
         private void HidePanel()
@@ -83,6 +94,8 @@ namespace Vortices
             if (panel != null)
                 panel.SetActive(false);
         }
+
+        // ─── Respuestas ───────────────────────────────────────────────────────────
 
         public void OnRealSelected()
         {
@@ -92,13 +105,13 @@ namespace Vortices
 
             if (isReal)
             {
-                Debug.Log("[Totem] Respuesta correcta — REAL");
-                OpenCorrectPath();
+                Debug.Log("[Totem] Correcto — la información es REAL.");
+                HandleCorrectAnswer();
             }
             else
             {
-                Debug.Log("[Totem] Respuesta incorrecta — era FALSA");
-                OpenIncorrectPath();
+                Debug.Log("[Totem] Incorrecto — la información era FALSA.");
+                HandleIncorrectAnswer();
             }
         }
 
@@ -110,30 +123,49 @@ namespace Vortices
 
             if (!isReal)
             {
-                Debug.Log("[Totem] Respuesta correcta — FALSA");
-                OpenCorrectPath();
+                Debug.Log("[Totem] Correcto — la información es FALSA.");
+                HandleCorrectAnswer();
             }
             else
             {
-                Debug.Log("[Totem] Respuesta incorrecta — era REAL");
-                OpenIncorrectPath();
+                Debug.Log("[Totem] Incorrecto — la información era REAL.");
+                HandleIncorrectAnswer();
             }
         }
 
-        private void OpenCorrectPath()
+        // ─── Lógica de resultado ──────────────────────────────────────────────────
+
+        private void HandleCorrectAnswer()
         {
-            if (correctPath != null)
-                correctPath.SetActive(true);
-            if (incorrectPath != null)
-                incorrectPath.SetActive(false);
+            if (correctFeedback != null)   correctFeedback.SetActive(true);
+            if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
+
+            if (mapGenerator == null)
+            {
+                Debug.LogWarning("[Totem] No hay referencia al generador de mapa.");
+                return;
+            }
+
+            if (player == null)
+            {
+                Debug.LogWarning("[Totem] No hay referencia al jugador.");
+                return;
+            }
+
+            // Convertir la posición del jugador en el mundo a celda de la grilla
+            Vector2Int playerCell = new Vector2Int(
+                Mathf.FloorToInt(player.position.x / mapGenerator.cellSize),
+                Mathf.FloorToInt(player.position.z / mapGenerator.cellSize)
+            );
+
+            Debug.Log($"[Totem] Mostrando ruta parcial desde celda del jugador: {playerCell}");
+            mapGenerator.ShowPartialPathFrom(playerCell);
         }
 
-        private void OpenIncorrectPath()
+        private void HandleIncorrectAnswer()
         {
-            if (incorrectPath != null)
-                incorrectPath.SetActive(true);
-            if (correctPath != null)
-                correctPath.SetActive(false);
+            if (incorrectFeedback != null) incorrectFeedback.SetActive(true);
+            if (correctFeedback != null)   correctFeedback.SetActive(false);
         }
     }
 }

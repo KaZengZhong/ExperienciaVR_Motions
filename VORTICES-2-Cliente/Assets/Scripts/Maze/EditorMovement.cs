@@ -15,13 +15,14 @@ namespace Vortices
 #if UNITY_EDITOR
             // El CharacterController está en el XR Origin (padre del padre)
             cc = GetComponentInParent<CharacterController>();
+            rotY = transform.parent.eulerAngles.y;
 #endif
         }
 
         void Update()
         {
 #if UNITY_EDITOR
-            if (Input.GetMouseButton(1))
+            if (Input.GetKey(KeyCode.Q))
             {
                 rotY += Input.GetAxis("Mouse X") * lookSpeed;
                 transform.parent.rotation = Quaternion.Euler(0, rotY, 0);

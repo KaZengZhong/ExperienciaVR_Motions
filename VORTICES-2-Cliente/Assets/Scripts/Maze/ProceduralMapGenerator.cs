@@ -17,15 +17,34 @@ namespace Vortices
         public Material floorMaterial;
         public Material ceilingMaterial;
 
-        // Grid de celdas — true = visitada
+        [Header("Tótems")]
+        public GameObject totemPrefab;
+
+        [Header("Ruta")]
+        [Tooltip("Color de los marcadores de ruta")]
+        public Color pathColor = new Color(0.2f, 0.9f, 0.3f, 1f);
+        [Tooltip("Color del marcador en la celda meta")]
+        public Color goalColor = new Color(1f, 0.3f, 0.3f, 1f);
+
+        // Grid de celdas — true = hay pared
         private bool[,] visited;
-        // Paredes — horizontal[x,y] = pared entre (x,y) y (x,y+1)
-        //         — vertical[x,y]   = pared entre (x,y) y (x+1,y)
-        private bool[,] wallsHorizontal; // pared norte de celda (x,y)
-        private bool[,] wallsVertical;   // pared este de celda (x,y)
+        private bool[,] wallsHorizontal;
+        private bool[,] wallsVertical;
 
         private Vector2Int startCell;
         private Vector2Int goalCell;
+        public Vector2Int GoalCell => goalCell;
+
+        // Paredes instanciadas
+        private Dictionary<string, GameObject> wallObjects = new Dictionary<string, GameObject>();
+
+        // Ruta completa inicio→meta, calculada una sola vez al generar
+        // Se usa como referencia para saber cuántos pasos mostrar por tótem
+        private List<Vector2Int> fullPath;
+        private int totalTotemCount;
+
+        // Marcadores de ruta activos
+        private List<GameObject> pathMarkers = new List<GameObject>();
 
         void Start()
         {
@@ -34,12 +53,12 @@ namespace Vortices
 
         public void GenerateMap()
         {
-            // Inicializar grids
-            visited = new bool[gridWidth, gridHeight];
+            visited         = new bool[gridWidth, gridHeight];
             wallsHorizontal = new bool[gridWidth, gridHeight + 1];
-            wallsVertical = new bool[gridWidth + 1, gridHeight];
+            wallsVertical   = new bool[gridWidth + 1, gridHeight];
+            wallObjects.Clear();
+            ClearPathMarkers();
 
-            // Todas las paredes activas al inicio
             for (int x = 0; x <= gridWidth; x++)
                 for (int y = 0; y < gridHeight; y++)
                     wallsVertical[x, y] = true;
@@ -48,17 +67,23 @@ namespace Vortices
                 for (int y = 0; y <= gridHeight; y++)
                     wallsHorizontal[x, y] = true;
 
-            // Celda de inicio: esquina (0,0)
             startCell = Vector2Int.zero;
-            // Celda meta: esquina opuesta
-            goalCell = new Vector2Int(gridWidth - 1, gridHeight - 1);
+            goalCell  = new Vector2Int(gridWidth - 1, gridHeight - 1);
 
-            // Recursive Backtracker DFS
             RecursiveBacktrack(startCell.x, startCell.y);
 
-            SpawnMaze();
+            // Calcular la ruta completa una sola vez — sirve de referencia para el largo parcial
+            fullPath       = FindPath(startCell, goalCell);
+            totalTotemCount = Mathf.Max(1, (gridWidth * gridHeight) / 10);
 
-            Debug.Log($"[Maze] Laberinto {gridWidth}x{gridHeight} generado. Inicio: {startCell}, Meta: {goalCell}");
+            SpawnMaze();
+            SpawnTotems();
+
+            int stepsPerTotem = fullPath != null ? fullPath.Count / totalTotemCount : 0;
+            Debug.Log($"[Maze] {gridWidth}x{gridHeight} generado. " +
+                      $"Ruta completa: {fullPath?.Count} celdas. " +
+                      $"Tótems: {totalTotemCount}. " +
+                      $"Pasos visibles por tótem: {stepsPerTotem}");
 
             GameObject xrOrigin = GameObject.Find("XR Origin");
             if (xrOrigin != null)
@@ -69,11 +94,12 @@ namespace Vortices
                 );
         }
 
+        // ─── Generación del laberinto ─────────────────────────────────────────────
+
         private void RecursiveBacktrack(int x, int y)
         {
             visited[x, y] = true;
 
-            // Direcciones aleatorias
             List<Vector2Int> directions = new List<Vector2Int>
             {
                 Vector2Int.up, Vector2Int.down,
@@ -88,11 +114,10 @@ namespace Vortices
 
                 if (nx >= 0 && nx < gridWidth && ny >= 0 && ny < gridHeight && !visited[nx, ny])
                 {
-                    // Derribar pared entre (x,y) y (nx,ny)
-                    if (dir == Vector2Int.right) wallsVertical[x + 1, y] = false;
-                    if (dir == Vector2Int.left)  wallsVertical[x, y] = false;
+                    if (dir == Vector2Int.right) wallsVertical[x + 1, y]   = false;
+                    if (dir == Vector2Int.left)  wallsVertical[x, y]       = false;
                     if (dir == Vector2Int.up)    wallsHorizontal[x, y + 1] = false;
-                    if (dir == Vector2Int.down)  wallsHorizontal[x, y] = false;
+                    if (dir == Vector2Int.down)  wallsHorizontal[x, y]     = false;
 
                     RecursiveBacktrack(nx, ny);
                 }
@@ -114,7 +139,6 @@ namespace Vortices
                         y * cellSize + cellSize / 2f
                     );
 
-                    // Piso
                     Material fm = floorMaterial;
                     if (x == goalCell.x && y == goalCell.y)
                     {
@@ -123,48 +147,254 @@ namespace Vortices
                     }
                     SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), fm);
 
-                    // Techo
                     SpawnCube(gameObject, $"Ceiling_{x}_{y}",
                         cellCenter + new Vector3(0, wallHeight, 0),
                         new Vector3(cellSize, 0.1f, cellSize), ceilingMaterial, false);
 
-                    // Pared sur (y=0 de cada celda)
                     if (wallsHorizontal[x, y])
-                        SpawnCube(gameObject, $"WallS_{x}_{y}",
+                    {
+                        string key = $"WallS_{x}_{y}";
+                        wallObjects[key] = SpawnCube(gameObject, key,
                             new Vector3(cellCenter.x, wallHeight / 2f, y * cellSize),
                             new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+                    }
 
-                    // Pared oeste (x=0 de cada celda)
                     if (wallsVertical[x, y])
-                        SpawnCube(gameObject, $"WallW_{x}_{y}",
+                    {
+                        string key = $"WallW_{x}_{y}";
+                        wallObjects[key] = SpawnCube(gameObject, key,
                             new Vector3(x * cellSize, wallHeight / 2f, cellCenter.z),
                             new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
+                    }
                 }
             }
 
-            // Paredes del borde norte
             for (int x = 0; x < gridWidth; x++)
-                SpawnCube(gameObject, $"WallN_{x}",
+            {
+                string key = $"WallN_{x}";
+                wallObjects[key] = SpawnCube(gameObject, key,
                     new Vector3(x * cellSize + cellSize / 2f, wallHeight / 2f, gridHeight * cellSize),
                     new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+            }
 
-            // Paredes del borde este
             for (int y = 0; y < gridHeight; y++)
-                SpawnCube(gameObject, $"WallE_{y}",
+            {
+                string key = $"WallE_{y}";
+                wallObjects[key] = SpawnCube(gameObject, key,
                     new Vector3(gridWidth * cellSize, wallHeight / 2f, y * cellSize + cellSize / 2f),
                     new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
-
-            StaticBatchingUtility.Combine(gameObject);
+            }
         }
+
+        private void SpawnTotems()
+        {
+            if (totemPrefab == null)
+            {
+                Debug.LogWarning("[Maze] No hay prefab de tótem asignado.");
+                return;
+            }
+
+            List<Vector2Int> candidates = new List<Vector2Int>();
+            for (int x = 0; x < gridWidth; x++)
+                for (int y = 0; y < gridHeight; y++)
+                    if (!(x == startCell.x && y == startCell.y) && !(x == goalCell.x && y == goalCell.y))
+                        candidates.Add(new Vector2Int(x, y));
+
+            Shuffle(candidates);
+
+            int placed = 0;
+            foreach (Vector2Int cell in candidates)
+            {
+                if (placed >= totalTotemCount) break;
+
+                Vector3 pos = new Vector3(
+                    cell.x * cellSize + cellSize / 2f,
+                    0,
+                    cell.y * cellSize + cellSize / 2f
+                );
+
+                Vector3 center = new Vector3(gridWidth * cellSize / 2f, 0, gridHeight * cellSize / 2f);
+                Quaternion rotation = Quaternion.Euler(0, Quaternion.LookRotation(center - pos).eulerAngles.y, 0);
+
+                GameObject totemObj = Instantiate(totemPrefab, pos, rotation);
+                InformationTotem totem = totemObj.GetComponent<InformationTotem>();
+                if (totem != null)
+                    totem.SetMapGenerator(this);
+
+                placed++;
+            }
+
+            Debug.Log($"[Maze] {placed} tótems colocados.");
+        }
+
+        // ─── Ruta parcial desde la posición del jugador ───────────────────────────
+
+        /// <summary>
+        /// Calcula la ruta desde <paramref name="playerCell"/> hasta la meta
+        /// y muestra solo los primeros (fullPath.Count / totalTotemCount) pasos.
+        /// Reemplaza cualquier ruta visible anterior.
+        /// </summary>
+        public void ShowPartialPathFrom(Vector2Int playerCell)
+        {
+            ClearPathMarkers();
+
+            if (fullPath == null || fullPath.Count == 0)
+            {
+                Debug.LogWarning("[Maze] No hay ruta de referencia calculada.");
+                return;
+            }
+
+            // Ruta desde donde está el jugador ahora
+            List<Vector2Int> pathFromPlayer = FindPath(playerCell, goalCell);
+            if (pathFromPlayer == null || pathFromPlayer.Count == 0)
+            {
+                Debug.LogWarning("[Maze] No se encontró ruta desde la posición del jugador.");
+                return;
+            }
+
+            // Cuántos pasos mostrar: largo del camino completo dividido por el número de tótems
+            // Así el tramo visible escala con el tamaño del laberinto y la cantidad de tótems
+            int stepsToShow = Mathf.Max(1, fullPath.Count / totalTotemCount);
+
+            // Si el jugador está muy cerca de la meta, mostrar lo que queda
+            int endIdx = Mathf.Min(stepsToShow, pathFromPlayer.Count);
+
+            for (int i = 0; i < endIdx; i++)
+            {
+                Vector2Int cell       = pathFromPlayer[i];
+                bool       isGoalCell = (cell == goalCell);
+
+                // Dirección hacia la siguiente celda del camino
+                Quaternion markerRotation = Quaternion.identity;
+                if (i + 1 < pathFromPlayer.Count)
+                {
+                    Vector2Int next = pathFromPlayer[i + 1];
+                    Vector3 dir = new Vector3(next.x - cell.x, 0f, next.y - cell.y);
+                    markerRotation = Quaternion.LookRotation(dir);
+                }
+
+                pathMarkers.Add(CreatePathMarker(cell, markerRotation, isGoalCell));
+            }
+
+            Debug.Log($"[Maze] Mostrando {endIdx} de {pathFromPlayer.Count} pasos " +
+                      $"desde celda {playerCell} (máx. permitido: {stepsToShow}).");
+        }
+
+        /// <summary>
+        /// Elimina todos los marcadores de ruta activos.
+        /// </summary>
+        public void ClearPathMarkers()
+        {
+            foreach (GameObject marker in pathMarkers)
+                if (marker != null) Destroy(marker);
+            pathMarkers.Clear();
+        }
+
+        // ─── Pathfinding (BFS) ────────────────────────────────────────────────────
+
+        private List<Vector2Int> FindPath(Vector2Int start, Vector2Int end)
+        {
+            var queue    = new Queue<Vector2Int>();
+            var cameFrom = new Dictionary<Vector2Int, Vector2Int>();
+
+            queue.Enqueue(start);
+            cameFrom[start] = start;
+
+            while (queue.Count > 0)
+            {
+                Vector2Int current = queue.Dequeue();
+                if (current == end) break;
+
+                foreach (Vector2Int neighbor in GetPassableNeighbors(current))
+                {
+                    if (!cameFrom.ContainsKey(neighbor))
+                    {
+                        cameFrom[neighbor] = current;
+                        queue.Enqueue(neighbor);
+                    }
+                }
+            }
+
+            if (!cameFrom.ContainsKey(end))
+                return null;
+
+            var path = new List<Vector2Int>();
+            Vector2Int node = end;
+            while (node != start)
+            {
+                path.Add(node);
+                node = cameFrom[node];
+            }
+            path.Add(start);
+            path.Reverse();
+            return path;
+        }
+
+        private List<Vector2Int> GetPassableNeighbors(Vector2Int cell)
+        {
+            var neighbors = new List<Vector2Int>();
+            int x = cell.x, y = cell.y;
+
+            if (x + 1 < gridWidth  && !wallsVertical[x + 1, y])   neighbors.Add(new Vector2Int(x + 1, y));
+            if (x > 0              && !wallsVertical[x, y])         neighbors.Add(new Vector2Int(x - 1, y));
+            if (y + 1 < gridHeight && !wallsHorizontal[x, y + 1])  neighbors.Add(new Vector2Int(x, y + 1));
+            if (y > 0              && !wallsHorizontal[x, y])       neighbors.Add(new Vector2Int(x, y - 1));
+
+            return neighbors;
+        }
+
+        // ─── Creación de marcadores ───────────────────────────────────────────────
+
+        private GameObject CreatePathMarker(Vector2Int cell, Quaternion direction, bool isGoalCell)
+        {
+            Vector3 worldPos = new Vector3(
+                cell.x * cellSize + cellSize / 2f,
+                0.06f,
+                cell.y * cellSize + cellSize / 2f
+            );
+
+            GameObject marker = GameObject.CreatePrimitive(PrimitiveType.Quad);
+            marker.name = $"PathMarker_{cell.x}_{cell.y}";
+            marker.transform.parent = transform;
+            marker.transform.position = worldPos;
+            marker.transform.rotation = Quaternion.Euler(90f, direction.eulerAngles.y, 0f);
+
+            float w = isGoalCell ? cellSize * 0.6f : cellSize * 0.35f;
+            float l = isGoalCell ? cellSize * 0.6f : cellSize * 0.70f;
+            marker.transform.localScale = new Vector3(w, l, 1f);
+
+            Destroy(marker.GetComponent<MeshCollider>());
+
+            Renderer r = marker.GetComponent<Renderer>();
+            if (r != null)
+            {
+                Material mat = new Material(Shader.Find("Standard"));
+                mat.color = isGoalCell ? goalColor : pathColor;
+                r.material = mat;
+                r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
+                r.receiveShadows    = false;
+            }
+
+            return marker;
+        }
+
+        // ─── Utilidades ───────────────────────────────────────────────────────────
 
         private void Shuffle(List<Vector2Int> list)
         {
             for (int i = list.Count - 1; i > 0; i--)
             {
                 int j = Random.Range(0, i + 1);
-                Vector2Int temp = list[i];
-                list[i] = list[j];
-                list[j] = temp;
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+        }
+
+        private void Shuffle(List<string> list)
+        {
+            for (int i = list.Count - 1; i > 0; i--)
+            {
+                int j = Random.Range(0, i + 1);
+                (list[i], list[j]) = (list[j], list[i]);
             }
         }
 
@@ -179,7 +409,7 @@ namespace Vortices
                 cube.GetComponent<Renderer>().material = mat;
             if (!hasCollider)
                 Destroy(cube.GetComponent<BoxCollider>());
-            if (name.StartsWith("Wall") || name.StartsWith("Ceiling"))
+            if (name.StartsWith("Ceiling"))
                 cube.isStatic = true;
             return cube;
         }
