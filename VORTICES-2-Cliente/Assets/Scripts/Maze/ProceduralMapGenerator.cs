@@ -259,8 +259,6 @@ namespace Vortices
                 if (totem != null)
                     totem.SetMapGenerator(this);
 
-                Debug.Log($"[Totem] Celda ({cell.x},{cell.y}) → pos mundo: {totemObj.transform.position}");
-
                 placed++;
             }
 
@@ -305,21 +303,6 @@ namespace Vortices
                     if (count >= 3)
                     {
                         points.Add(cell);
-
-                        // DEBUG — pintar el suelo de la intersección de azul
-                        // Quitar este bloque cuando el comportamiento sea correcto
-                        Vector3 center = new Vector3(x * cellSize + cellSize / 2f, 0.05f, y * cellSize + cellSize / 2f);
-                        GameObject debugMarker = GameObject.CreatePrimitive(PrimitiveType.Quad);
-                        debugMarker.name = $"DEBUG_Intersection_{x}_{y}";
-                        debugMarker.transform.parent = transform;
-                        debugMarker.transform.position = center;
-                        debugMarker.transform.rotation = Quaternion.Euler(90f, 0f, 0f);
-                        debugMarker.transform.localScale = new Vector3(cellSize * 0.9f, cellSize * 0.9f, 1f);
-                        Destroy(debugMarker.GetComponent<MeshCollider>());
-                        var r = debugMarker.GetComponent<Renderer>();
-                        if (r != null) { var m = new Material(Shader.Find("Standard")); m.color = new Color(0f, 0.4f, 1f, 1f); r.material = m; }
-
-                        Debug.Log($"[Maze] Intersección detectada en celda ({x},{y}) — vecinos accesibles: {count}");
                     }
                 }
             }

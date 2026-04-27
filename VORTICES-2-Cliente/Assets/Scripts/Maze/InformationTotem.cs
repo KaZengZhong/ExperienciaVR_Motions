@@ -22,9 +22,9 @@ namespace Vortices
         public GameObject correctFeedback;
         public GameObject incorrectFeedback;
 
-        private bool playerInRange = false;
+        private bool xrOriginInRange = false;
         private bool answered = false;
-        private Transform player;
+        private Transform xrOrigin;   // posición real del jugador en el mundo virtual
 
         private ProceduralMapGenerator mapGenerator;
 
@@ -51,27 +51,29 @@ namespace Vortices
             if (fakeButton != null)
                 fakeButton.onClick.AddListener(OnFakeSelected);
 
-            GameObject playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-                player = playerObj.transform;
+            // Usar XR Origin como referencia de posición del jugador
+            // Es el objeto raíz del rig XR y su posición representa dónde está parado el jugador
+            GameObject xrOriginObj = GameObject.Find("XR Origin");
+            if (xrOriginObj != null)
+                xrOrigin = xrOriginObj.transform;
             else
-                Debug.LogWarning("[Totem] No se encontró objeto con tag 'Player'.");
+                Debug.LogWarning("[Totem] No se encontró 'XR Origin' en la escena.");
         }
 
         void Update()
         {
-            if (player == null || answered) return;
+            if (xrOrigin == null || answered) return;
 
-            float distance = Vector3.Distance(transform.position, player.position);
+            float distance = Vector3.Distance(transform.position, xrOrigin.position);
 
-            if (distance < 3f && !playerInRange)
+            if (distance < 3f && !xrOriginInRange)
             {
-                playerInRange = true;
+                xrOriginInRange = true;
                 ShowPanel();
             }
-            else if (distance >= 3f && playerInRange)
+            else if (distance >= 3f && xrOriginInRange)
             {
-                playerInRange = false;
+                xrOriginInRange = false;
                 HidePanel();
             }
         }
@@ -146,20 +148,20 @@ namespace Vortices
                 return;
             }
 
-            if (player == null)
+            if (xrOrigin == null)
             {
                 Debug.LogWarning("[Totem] No hay referencia al jugador.");
                 return;
             }
 
             // Convertir la posición del jugador en el mundo a celda de la grilla
-            Vector2Int playerCell = new Vector2Int(
-                Mathf.FloorToInt(player.position.x / mapGenerator.cellSize),
-                Mathf.FloorToInt(player.position.z / mapGenerator.cellSize)
+            Vector2Int xrOriginCell = new Vector2Int(
+                Mathf.FloorToInt(xrOrigin.position.x / mapGenerator.cellSize),
+                Mathf.FloorToInt(xrOrigin.position.z / mapGenerator.cellSize)
             );
 
-            Debug.Log($"[Totem] Mostrando ruta parcial desde celda del jugador: {playerCell}");
-            mapGenerator.ShowPartialPathFrom(playerCell);
+            Debug.Log($"[Totem] Mostrando ruta parcial desde celda del jugador: {xrOriginCell}");
+            mapGenerator.ShowPartialPathFrom(xrOriginCell);
         }
 
         private void HandleIncorrectAnswer()
