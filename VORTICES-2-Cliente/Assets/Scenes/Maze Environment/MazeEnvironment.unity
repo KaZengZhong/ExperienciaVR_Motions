@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6598815579406187026, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187027, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -834,13 +838,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66eda48e0c588443894f5d2a76d4da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minRooms: 3
-  maxRooms: 5
-  roomSize: 10
+  gridWidth: 12
+  gridHeight: 12
+  cellSize: 3
   wallHeight: 3
+  wallThickness: 0.15
   wallMaterial: {fileID: 2100000, guid: ebbd6e09454bc4746a50db8883717cb3, type: 2}
   floorMaterial: {fileID: 2100000, guid: 23a7dca1502064b488454db6ddd0c91e, type: 2}
   ceilingMaterial: {fileID: 2100000, guid: 23a7dca1502064b488454db6ddd0c91e, type: 2}
+  totemPrefab: {fileID: 5556454674240830927, guid: 9a9e488f774e9af4bbb75134358db65d, type: 3}
+  totemWallHeight: 1.5
+  totemWallOffset: 0.1
+  newsItems:
+  - {fileID: 11400000, guid: 69a7f46c10a5cd84d8893ddf43804152, type: 2}
+  pathColor: {r: 0.2, g: 0.9, b: 0.3, a: 1}
+  goalColor: {r: 1, g: 0.3, b: 0.3, a: 1}
 --- !u!4 &349188643
 Transform:
   m_ObjectHideFlags: 0
@@ -1963,9 +1975,11 @@ GameObject:
   - component: {fileID: 1314018132}
   - component: {fileID: 1314018131}
   - component: {fileID: 1314018134}
+  - component: {fileID: 1314018135}
+  - component: {fileID: 1314018136}
   m_Layer: 2
   m_Name: XR Origin
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2128,7 +2142,7 @@ CharacterController:
   m_Radius: 0.3
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 0.05
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &1314018133
@@ -2187,6 +2201,36 @@ MonoBehaviour:
       m_SingletonActionBindings: []
       m_Flags: 0
     m_Reference: {fileID: -6493913391331992944, guid: c348712bda248c246b8c49b3db54643f, type: 3}
+--- !u!136 &1314018135
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314018123}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.3
+  m_Height: 1.8
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.9, z: 0}
+--- !u!54 &1314018136
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314018123}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1322367717
 GameObject:
   m_ObjectHideFlags: 0

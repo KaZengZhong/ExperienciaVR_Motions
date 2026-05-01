@@ -6,7 +6,11 @@ namespace Vortices
 {
     public class InformationTotem : MonoBehaviour
     {
-        [Header("Configuración")]
+        [Header("Noticia")]
+        [Tooltip("ScriptableObject con el contenido de esta noticia (crea uno en Assets → Create → Vortices → News Item)")]
+        public NewsItem newsItem;
+
+        [Header("Configuración (se sobreescribe con NewsItem si está asignado)")]
         public string question = "¿Esta información es real o falsa?";
         public Sprite informationImage;
         public bool isReal = true;
@@ -17,16 +21,21 @@ namespace Vortices
         public Image displayImage;
         public Button realButton;
         public Button fakeButton;
+        public Button investigarButton;   // nuevo botón para abrir el navegador
 
         [Header("Feedback")]
         public GameObject correctFeedback;
         public GameObject incorrectFeedback;
 
+        // ─── Estado interno ───────────────────────────────────────────────────
         private bool xrOriginInRange = false;
         private bool answered = false;
-        private Transform xrOrigin;   // posición real del jugador en el mundo virtual
+        private Transform xrOrigin;
 
         private ProceduralMapGenerator mapGenerator;
+        private TotemBrowser totemBrowser;
+
+        // ─────────────────────────────────────────────────────────────────────
 
         /// <summary>
         /// Llamado por ProceduralMapGenerator al instanciar el tótem.
@@ -38,21 +47,25 @@ namespace Vortices
 
         void Start()
         {
+            // Aplicar datos del NewsItem si está asignado
+            ApplyNewsItem();
+
             if (panel != null)
                 panel.SetActive(false);
 
-            if (correctFeedback != null)
-                correctFeedback.SetActive(false);
-            if (incorrectFeedback != null)
-                incorrectFeedback.SetActive(false);
+            if (correctFeedback != null)   correctFeedback.SetActive(false);
+            if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
 
-            if (realButton != null)
-                realButton.onClick.AddListener(OnRealSelected);
-            if (fakeButton != null)
-                fakeButton.onClick.AddListener(OnFakeSelected);
+            if (realButton != null)       realButton.onClick.AddListener(OnRealSelected);
+            if (fakeButton != null)       fakeButton.onClick.AddListener(OnFakeSelected);
+            if (investigarButton != null) investigarButton.onClick.AddListener(OnInvestigarSelected);
+
+            // Obtener o crear el componente TotemBrowser en este mismo GameObject
+            totemBrowser = GetComponent<TotemBrowser>();
+            if (totemBrowser == null)
+                totemBrowser = gameObject.AddComponent<TotemBrowser>();
 
             // Usar XR Origin como referencia de posición del jugador
-            // Es el objeto raíz del rig XR y su posición representa dónde está parado el jugador
             GameObject xrOriginObj = GameObject.Find("XR Origin");
             if (xrOriginObj != null)
                 xrOrigin = xrOriginObj.transform;
@@ -78,7 +91,18 @@ namespace Vortices
             }
         }
 
-        // ─── UI ──────────────────────────────────────────────────────────────────
+        // ─── NewsItem ─────────────────────────────────────────────────────────
+
+        private void ApplyNewsItem()
+        {
+            if (newsItem == null) return;
+
+            question         = newsItem.headline;
+            informationImage = newsItem.image;
+            isReal           = newsItem.isReal;
+        }
+
+        // ─── UI ──────────────────────────────────────────────────────────────
 
         private void ShowPanel()
         {
@@ -87,17 +111,37 @@ namespace Vortices
 
             if (questionText != null)
                 questionText.text = question;
+
             if (displayImage != null && informationImage != null)
                 displayImage.sprite = informationImage;
+
+            // Mostrar Investigar solo si hay un NewsItem asignado
+            if (investigarButton != null)
+                investigarButton.gameObject.SetActive(newsItem != null);
         }
 
         private void HidePanel()
         {
             if (panel != null)
                 panel.SetActive(false);
+
+            // El navegador NO se cierra al alejarse — el jugador lo cierra manualmente
+            // con el botón "X Cerrar navegador" cuando termina de investigar.
         }
 
-        // ─── Respuestas ───────────────────────────────────────────────────────────
+        // ─── Botón Investigar ─────────────────────────────────────────────────
+
+        public void OnInvestigarSelected()
+        {
+            if (totemBrowser == null) return;
+
+            string url = (newsItem != null) ? newsItem.searchUrl : "https://www.google.com";
+            totemBrowser.OpenBrowser(url);
+
+            Debug.Log($"[Totem] Abriendo navegador en: {url}");
+        }
+
+        // ─── Respuestas ───────────────────────────────────────────────────────
 
         public void OnRealSelected()
         {
@@ -135,7 +179,7 @@ namespace Vortices
             }
         }
 
-        // ─── Lógica de resultado ──────────────────────────────────────────────────
+        // ─── Lógica de resultado ──────────────────────────────────────────────
 
         private void HandleCorrectAnswer()
         {
@@ -154,7 +198,6 @@ namespace Vortices
                 return;
             }
 
-            // Convertir la posición del jugador en el mundo a celda de la grilla
             Vector2Int xrOriginCell = new Vector2Int(
                 Mathf.FloorToInt(xrOrigin.position.x / mapGenerator.cellSize),
                 Mathf.FloorToInt(xrOrigin.position.z / mapGenerator.cellSize)

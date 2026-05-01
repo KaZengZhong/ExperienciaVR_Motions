@@ -23,6 +23,8 @@ namespace Vortices
         public float totemWallHeight = 1.4f;
         [Tooltip("Separación del tótem respecto a la superficie de la pared")]
         public float totemWallOffset = 0.05f;
+        [Tooltip("Noticias a asignar a los tótems. Se repiten si hay más tótems que noticias.")]
+        public NewsItem[] newsItems;
 
         [Header("Ruta")]
         [Tooltip("Color de los marcadores de ruta")]
@@ -257,7 +259,13 @@ namespace Vortices
 
                 InformationTotem totem = totemObj.GetComponent<InformationTotem>();
                 if (totem != null)
+                {
                     totem.SetMapGenerator(this);
+
+                    // Asignar noticia: cicla por el array si hay más tótems que noticias
+                    if (newsItems != null && newsItems.Length > 0)
+                        totem.newsItem = newsItems[placed % newsItems.Length];
+                }
 
                 placed++;
             }

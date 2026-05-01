@@ -26,14 +26,23 @@ namespace Vortices
 
         private IEnumerator FindSessionManager()
         {
-            while (sessionManager == null)
+            float timeout = 5f;
+            float elapsed = 0f;
+
+            while (sessionManager == null && elapsed < timeout)
             {
                 sessionManager = FindObjectOfType<SessionManager>();
                 if (sessionManager == null)
                 {
-                    Debug.LogWarning("SessionManager no encontrado, esperando...");
-                    yield return null; // Espera un frame antes de intentar de nuevo.
+                    elapsed += Time.deltaTime;
+                    yield return null;
                 }
+            }
+
+            if (sessionManager == null)
+            {
+                Debug.LogWarning("SessionManager no encontrado. InfoPanel desactivado.");
+                yield break;
             }
 
             Debug.Log("SessionManager asignado correctamente en InfoPanel.");

@@ -9,19 +9,26 @@ namespace Vortices
 
         private float rotY = 0f;
         private CharacterController cc;
+        private bool browserMode = false;
 
         void Start()
         {
-#if UNITY_EDITOR
-            // El CharacterController está en el XR Origin (padre del padre)
             cc = GetComponentInParent<CharacterController>();
             rotY = transform.parent.eulerAngles.y;
-#endif
         }
 
         void Update()
         {
-#if UNITY_EDITOR
+            // Tab — alternar entre modo movimiento y modo browser
+            if (Input.GetKeyDown(KeyCode.Tab))
+            {
+                browserMode = !browserMode;
+                Cursor.lockState = browserMode ? CursorLockMode.None : CursorLockMode.Locked;
+                Cursor.visible   = browserMode;
+            }
+
+            if (browserMode) return;
+
             if (Input.GetKey(KeyCode.Q))
             {
                 rotY += Input.GetAxis("Mouse X") * lookSpeed;
@@ -31,13 +38,20 @@ namespace Vortices
             float h = Input.GetAxis("Horizontal");
             float v = Input.GetAxis("Vertical");
             Vector3 forward = transform.parent.forward;
-            Vector3 right = transform.parent.right;
-            Vector3 move = forward * v + right * h;
+            Vector3 right   = transform.parent.right;
+            Vector3 move    = forward * v + right * h;
             move.y = -1f; // gravedad simple
 
             if (cc != null)
                 cc.Move(move * moveSpeed * Time.deltaTime);
-#endif
+        }
+
+        // Llamado desde TotemBrowser al abrir/cerrar el navegador
+        public void SetBrowserMode(bool active)
+        {
+            browserMode      = active;
+            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
+            Cursor.visible   = active;
         }
     }
 }
