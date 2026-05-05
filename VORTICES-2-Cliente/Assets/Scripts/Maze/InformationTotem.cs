@@ -45,6 +45,25 @@ namespace Vortices
             mapGenerator = generator;
         }
 
+        /// <summary>
+        /// Asigna el contenido cargado desde el JSON.
+        /// Reemplaza cualquier NewsItem asignado en el Inspector.
+        /// </summary>
+        public void SetContent(TotemContentItem item)
+        {
+            if (item == null) return;
+            question         = item.headline;
+            isReal           = item.isReal;
+            informationImage = item.sprite;
+
+            // Crear un NewsItem temporal para que el botón Investigar tenga la URL
+            newsItem           = ScriptableObject.CreateInstance<NewsItem>();
+            newsItem.headline  = item.headline;
+            newsItem.isReal    = item.isReal;
+            newsItem.searchUrl = item.searchUrl;
+            newsItem.image     = item.sprite;
+        }
+
         void Start()
         {
             // Aplicar datos del NewsItem si está asignado

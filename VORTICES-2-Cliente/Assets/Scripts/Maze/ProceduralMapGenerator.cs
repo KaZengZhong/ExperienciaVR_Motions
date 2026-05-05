@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -23,8 +24,6 @@ namespace Vortices
         public float totemWallHeight = 1.4f;
         [Tooltip("Separación del tótem respecto a la superficie de la pared")]
         public float totemWallOffset = 0.05f;
-        [Tooltip("Noticias a asignar a los tótems. Se repiten si hay más tótems que noticias.")]
-        public NewsItem[] newsItems;
 
         [Header("Ruta")]
         [Tooltip("Color de los marcadores de ruta")]
@@ -54,6 +53,15 @@ namespace Vortices
 
         void Start()
         {
+            StartCoroutine(WaitAndGenerate());
+        }
+
+        private IEnumerator WaitAndGenerate()
+        {
+            // Esperar a que ContentLoader termine de cargar el JSON y las imágenes
+            while (ContentLoader.Instance == null || !ContentLoader.Instance.IsReady)
+                yield return null;
+
             GenerateMap();
         }
 
@@ -211,8 +219,9 @@ namespace Vortices
             Shuffle(decisionPoints);
 
             int placed = 0;
-            foreach (Vector2Int cell in decisionPoints)
+            for (int i = 0; i < decisionPoints.Count; i += 2) // una intersección sí, una no
             {
+                Vector2Int cell = decisionPoints[i];
                 // Buscar una cara de pared disponible en esta celda para montar el tótem
                 WallFace? face = FindAdjacentWallFace(cell);
                 if (face == null) continue;
@@ -262,9 +271,10 @@ namespace Vortices
                 {
                     totem.SetMapGenerator(this);
 
-                    // Asignar noticia: cicla por el array si hay más tótems que noticias
-                    if (newsItems != null && newsItems.Length > 0)
-                        totem.newsItem = newsItems[placed % newsItems.Length];
+                    // Asignar contenido desde ContentLoader (cicla si hay más tótems que ítems)
+                    var items = ContentLoader.Instance?.Items;
+                    if (items != null && items.Count > 0)
+                        totem.SetContent(items[placed % items.Count]);
                 }
 
                 placed++;

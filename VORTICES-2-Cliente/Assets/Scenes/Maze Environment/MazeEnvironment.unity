@@ -849,8 +849,6 @@ MonoBehaviour:
   totemPrefab: {fileID: 5556454674240830927, guid: 9a9e488f774e9af4bbb75134358db65d, type: 3}
   totemWallHeight: 1.5
   totemWallOffset: 0.1
-  newsItems:
-  - {fileID: 11400000, guid: 69a7f46c10a5cd84d8893ddf43804152, type: 2}
   pathColor: {r: 0.2, g: 0.9, b: 0.3, a: 1}
   goalColor: {r: 1, g: 0.3, b: 0.3, a: 1}
 --- !u!4 &349188643
@@ -3329,6 +3327,52 @@ MonoBehaviour:
       m_Flags: 0
     m_Reference: {fileID: 7779212132400271959, guid: c348712bda248c246b8c49b3db54643f, type: 3}
   m_ButtonPressPoint: 0.5
+--- !u!1 &1693933082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1693933084}
+  - component: {fileID: 1693933083}
+  m_Layer: 0
+  m_Name: ContentLoader
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1693933083
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693933082}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7aa383704a5f91e45831889ce88fbc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  contentJsonUrl: https://raw.githubusercontent.com/KaZengZhong/ExperienciaVR_Motions_Content/refs/heads/main/content.json
+  imagesBaseUrl: https://raw.githubusercontent.com/KaZengZhong/ExperienciaVR_Motions_Content/refs/heads/main/images
+--- !u!4 &1693933084
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1693933082}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 20.442575, y: 1.2365689, z: 21.98425}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1843150183 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 1979505071034685745, guid: 357246bdda27bbb438e89a0b366c0be4, type: 3}
