@@ -6,18 +6,13 @@ using UnityEngine.Networking;
 namespace Vortices
 {
     /// <summary>
-    /// Carga content.json desde una URL externa (p. ej. GitHub raw) al iniciar la escena
+    /// Carga content.json desde una URL externa (GitHub raw u otro host) al iniciar la escena
     /// y pone los ítems disponibles para ProceduralMapGenerator.
     ///
     /// Uso: ContentLoader.Instance.Items
     ///
     /// Coloca este script en un GameObject vacío llamado "ContentLoader" en la escena.
     /// ProceduralMapGenerator esperará a que termine de cargar antes de generar el mapa.
-    ///
-    /// — contentJsonUrl  : URL raw del archivo content.json en GitHub (u otro host)
-    /// — imagesBaseUrl   : URL base donde están las imágenes (sin slash final).
-    ///                     Si imageUrl en el JSON ya es una URL completa (empieza con http),
-    ///                     se usa directamente y se ignora imagesBaseUrl.
     /// </summary>
     public class ContentLoader : MonoBehaviour
     {
@@ -30,7 +25,6 @@ namespace Vortices
         [Tooltip("URL base para las imágenes, ej: https://raw.githubusercontent.com/usuario/repo/main/images")]
         public string imagesBaseUrl  = "https://raw.githubusercontent.com/TU_USUARIO/TU_REPO/main/images";
 
-        // Lista de ítems listos para usar (con sprites cargados)
         public List<TotemContentItem> Items { get; private set; } = new List<TotemContentItem>();
         public bool IsReady { get; private set; } = false;
 
@@ -55,7 +49,7 @@ namespace Vortices
             if (jsonRequest.result != UnityWebRequest.Result.Success)
             {
                 Debug.LogError($"[ContentLoader] No se pudo cargar el JSON: {jsonRequest.error}");
-                IsReady = true; // continuar aunque no haya contenido
+                IsReady = true;
                 yield break;
             }
 
@@ -69,39 +63,84 @@ namespace Vortices
                 yield break;
             }
 
-            // Cargar imágenes para cada ítem
+            // Cargar imagen principal de cada ítem
             foreach (TotemContentItem item in contentList.items)
             {
                 if (!string.IsNullOrEmpty(item.imageUrl))
                 {
-                    // Si imageUrl ya es una URL completa, usarla directamente
-                    string imgUrl = item.imageUrl.StartsWith("http")
-                        ? item.imageUrl
-                        : $"{imagesBaseUrl.TrimEnd('/')}/{item.imageUrl}";
-
-                    Debug.Log($"[ContentLoader] Descargando imagen: {imgUrl}");
-
-                    UnityWebRequest imgRequest = UnityWebRequestTexture.GetTexture(imgUrl);
-                    yield return imgRequest.SendWebRequest();
-
-                    if (imgRequest.result == UnityWebRequest.Result.Success)
-                    {
-                        Texture2D tex = DownloadHandlerTexture.GetContent(imgRequest);
-                        item.sprite = Sprite.Create(tex,
-                            new Rect(0, 0, tex.width, tex.height),
-                            new Vector2(0.5f, 0.5f));
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[ContentLoader] No se pudo cargar imagen '{imgUrl}': {imgRequest.error}");
-                    }
+                    string imgUrl = ResolveUrl(item.imageUrl);
+                    yield return LoadSprite(imgUrl, sprite => item.sprite = sprite);
                 }
+
+                // Resolver URLs de video y audio para que InformationTotem tenga la URL completa
+                if (!string.IsNullOrEmpty(item.videoUrl))
+                    item.videoUrl = ResolveUrl(item.videoUrl);
+                if (!string.IsNullOrEmpty(item.audioUrl))
+                    item.audioUrl = ResolveUrl(item.audioUrl);
 
                 Items.Add(item);
             }
 
             Debug.Log($"[ContentLoader] {Items.Count} ítems cargados correctamente.");
             IsReady = true;
+        }
+
+        /// <summary>
+        /// Si la URL ya es absoluta la devuelve tal cual.
+        /// Si no, la concatena con imagesBaseUrl.
+        /// </summary>
+        private string ResolveUrl(string url)
+        {
+            return url.StartsWith("http")
+                ? url
+                : $"{imagesBaseUrl.TrimEnd('/')}/{url}";
+        }
+
+        /// <summary>
+        /// Descarga una imagen desde una URL y la convierte en Sprite.
+        /// </summary>
+        private IEnumerator LoadSprite(string url, System.Action<Sprite> onLoaded)
+        {
+            UnityWebRequest req = UnityWebRequestTexture.GetTexture(url);
+            yield return req.SendWebRequest();
+
+            if (req.result == UnityWebRequest.Result.Success)
+            {
+                Texture2D tex = DownloadHandlerTexture.GetContent(req);
+                Sprite sprite = Sprite.Create(tex,
+                    new Rect(0, 0, tex.width, tex.height),
+                    new Vector2(0.5f, 0.5f));
+                onLoaded(sprite);
+            }
+            else
+            {
+                Debug.LogWarning($"[ContentLoader] No se pudo cargar imagen '{url}': {req.error}");
+                onLoaded(null);
+            }
+        }
+
+        /// <summary>
+        /// Al cerrar el juego borra los archivos de video y audio descargados en la carpeta temporal.
+        /// </summary>
+        void OnApplicationQuit()
+        {
+            string[] extensions = { "*.mp4", "*.webm", "*.mp3", "*.wav", "*.ogg" };
+            foreach (string ext in extensions)
+            {
+                string[] files = System.IO.Directory.GetFiles(Application.temporaryCachePath, ext);
+                foreach (string file in files)
+                {
+                    try
+                    {
+                        System.IO.File.Delete(file);
+                        Debug.Log($"[ContentLoader] Archivo temporal eliminado: {file}");
+                    }
+                    catch (System.Exception e)
+                    {
+                        Debug.LogWarning($"[ContentLoader] No se pudo eliminar '{file}': {e.Message}");
+                    }
+                }
+            }
         }
     }
 }

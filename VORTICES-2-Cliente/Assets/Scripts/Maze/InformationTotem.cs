@@ -1,4 +1,7 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Networking;
+using UnityEngine.Video;
 using TMPro;
 using UnityEngine.UI;
 
@@ -7,39 +10,49 @@ namespace Vortices
     public class InformationTotem : MonoBehaviour
     {
         [Header("Noticia")]
-        [Tooltip("ScriptableObject con el contenido de esta noticia (crea uno en Assets → Create → Vortices → News Item)")]
+        [Tooltip("ScriptableObject con el contenido (opcional — se sobreescribe con SetContent)")]
         public NewsItem newsItem;
 
-        [Header("Configuración (se sobreescribe con NewsItem si está asignado)")]
+        [Header("Configuración (se sobreescribe con NewsItem o SetContent)")]
         public string question = "¿Esta información es real o falsa?";
         public Sprite informationImage;
         public bool isReal = true;
 
         [Header("Referencias UI")]
         public GameObject panel;
-        public TextMeshProUGUI questionText;
-        public Image displayImage;
+        public TextMeshProUGUI questionText;    // Titular
+        public Image displayImage;             // Imagen principal
+        public RawImage videoDisplay;          // RawImage donde se renderiza el video
         public Button realButton;
         public Button fakeButton;
-        public Button investigarButton;   // nuevo botón para abrir el navegador
+        public Button investigarButton;
+
+        [Header("Reproductor")]
+        public Button playPauseButton;         // Botón play/pause compartido para video y audio
+        public AudioSource audioSource;        // AudioSource para narración o audio
 
         [Header("Feedback")]
         public GameObject correctFeedback;
         public GameObject incorrectFeedback;
 
-        // ─── Estado interno ───────────────────────────────────────────────────
+        // ─── Estado interno ───────────────────────────────────────────────────────
         private bool xrOriginInRange = false;
-        private bool answered = false;
+        private bool answered        = false;
         private Transform xrOrigin;
 
         private ProceduralMapGenerator mapGenerator;
-        private TotemBrowser totemBrowser;
+        private TotemBrowser           totemBrowser;
+        private TotemContentItem       currentContent;
 
-        // ─────────────────────────────────────────────────────────────────────
+        // Video
+        private VideoPlayer   videoPlayer;
+        private RenderTexture videoRenderTexture;
 
-        /// <summary>
-        /// Llamado por ProceduralMapGenerator al instanciar el tótem.
-        /// </summary>
+        // Estado reproductor
+        private bool isPlaying = false;
+
+        // ─────────────────────────────────────────────────────────────────────────
+
         public void SetMapGenerator(ProceduralMapGenerator generator)
         {
             mapGenerator = generator;
@@ -47,16 +60,15 @@ namespace Vortices
 
         /// <summary>
         /// Asigna el contenido cargado desde el JSON.
-        /// Reemplaza cualquier NewsItem asignado en el Inspector.
         /// </summary>
         public void SetContent(TotemContentItem item)
         {
             if (item == null) return;
+            currentContent   = item;
             question         = item.headline;
             isReal           = item.isReal;
             informationImage = item.sprite;
 
-            // Crear un NewsItem temporal para que el botón Investigar tenga la URL
             newsItem           = ScriptableObject.CreateInstance<NewsItem>();
             newsItem.headline  = item.headline;
             newsItem.isReal    = item.isReal;
@@ -66,25 +78,35 @@ namespace Vortices
 
         void Start()
         {
-            // Aplicar datos del NewsItem si está asignado
             ApplyNewsItem();
 
-            if (panel != null)
-                panel.SetActive(false);
-
+            if (panel != null)             panel.SetActive(false);
             if (correctFeedback != null)   correctFeedback.SetActive(false);
             if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
 
             if (realButton != null)       realButton.onClick.AddListener(OnRealSelected);
             if (fakeButton != null)       fakeButton.onClick.AddListener(OnFakeSelected);
             if (investigarButton != null) investigarButton.onClick.AddListener(OnInvestigarSelected);
+            if (playPauseButton != null)  playPauseButton.onClick.AddListener(OnPlayPauseSelected);
 
-            // Obtener o crear el componente TotemBrowser en este mismo GameObject
             totemBrowser = GetComponent<TotemBrowser>();
             if (totemBrowser == null)
                 totemBrowser = gameObject.AddComponent<TotemBrowser>();
 
-            // Usar XR Origin como referencia de posición del jugador
+            // VideoPlayer — solo se inicializa si hay un videoDisplay asignado
+            if (videoDisplay != null)
+            {
+                videoPlayer = GetComponent<VideoPlayer>();
+                if (videoPlayer == null)
+                    videoPlayer = gameObject.AddComponent<VideoPlayer>();
+
+                videoPlayer.playOnAwake     = false;
+                videoPlayer.renderMode      = VideoRenderMode.RenderTexture;
+                videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
+                if (audioSource != null)
+                    videoPlayer.SetTargetAudioSource(0, audioSource);
+            }
+
             GameObject xrOriginObj = GameObject.Find("XR Origin");
             if (xrOriginObj != null)
                 xrOrigin = xrOriginObj.transform;
@@ -110,18 +132,17 @@ namespace Vortices
             }
         }
 
-        // ─── NewsItem ─────────────────────────────────────────────────────────
+        // ─── NewsItem ─────────────────────────────────────────────────────────────
 
         private void ApplyNewsItem()
         {
             if (newsItem == null) return;
-
             question         = newsItem.headline;
             informationImage = newsItem.image;
             isReal           = newsItem.isReal;
         }
 
-        // ─── UI ──────────────────────────────────────────────────────────────
+        // ─── UI ──────────────────────────────────────────────────────────────────
 
         private void ShowPanel()
         {
@@ -131,36 +152,171 @@ namespace Vortices
             if (questionText != null)
                 questionText.text = question;
 
-            if (displayImage != null && informationImage != null)
-                displayImage.sprite = informationImage;
+            if (displayImage != null)
+            {
+                displayImage.gameObject.SetActive(informationImage != null);
+                if (informationImage != null)
+                    displayImage.sprite = informationImage;
+            }
 
-            // Mostrar Investigar solo si hay un NewsItem asignado
             if (investigarButton != null)
                 investigarButton.gameObject.SetActive(newsItem != null);
+
+            if (currentContent == null) return;
+
+            // Mostrar botón play/pause solo si hay video o audio
+            bool hasMedia = !string.IsNullOrEmpty(currentContent.videoUrl) ||
+                            !string.IsNullOrEmpty(currentContent.audioUrl);
+            if (playPauseButton != null)
+                playPauseButton.gameObject.SetActive(hasMedia);
+
+            // Video
+            if (!string.IsNullOrEmpty(currentContent.videoUrl))
+                StartCoroutine(PlayVideo(currentContent.videoUrl));
+            else if (videoDisplay != null)
+                videoDisplay.gameObject.SetActive(false);
+
+            // Audio
+            if (!string.IsNullOrEmpty(currentContent.audioUrl))
+                StartCoroutine(LoadAndPlayAudio(currentContent.audioUrl));
         }
 
         private void HidePanel()
         {
-            if (panel != null)
-                panel.SetActive(false);
+            if (panel != null) panel.SetActive(false);
 
-            // El navegador NO se cierra al alejarse — el jugador lo cierra manualmente
-            // con el botón "X Cerrar navegador" cuando termina de investigar.
+            if (videoPlayer != null && videoPlayer.isPlaying) videoPlayer.Stop();
+            if (audioSource  != null && audioSource.isPlaying)  audioSource.Stop();
         }
 
-        // ─── Botón Investigar ─────────────────────────────────────────────────
+        // ─── Video ────────────────────────────────────────────────────────────────
+
+        private IEnumerator PlayVideo(string url)
+        {
+            if (videoPlayer == null || videoDisplay == null) yield break;
+
+            // GitHub raw no soporta streaming — descargamos primero a caché local
+            string fileName = System.IO.Path.GetFileName(url.Split('?')[0]);
+            string tempPath = System.IO.Path.Combine(Application.temporaryCachePath, fileName);
+
+            // Verificar que el archivo exista y no esté vacío (podría estar corrupto de un intento anterior)
+            bool cacheValid = System.IO.File.Exists(tempPath) &&
+                              new System.IO.FileInfo(tempPath).Length > 1024;
+
+            if (!cacheValid)
+            {
+                Debug.Log($"[Totem] Descargando video a caché: {url}");
+                UnityWebRequest dlReq = UnityWebRequest.Get(url);
+                dlReq.downloadHandler = new DownloadHandlerFile(tempPath);
+                yield return dlReq.SendWebRequest();
+
+                if (dlReq.result != UnityWebRequest.Result.Success)
+                {
+                    Debug.LogWarning($"[Totem] No se pudo descargar el video: {dlReq.error}");
+                    if (videoDisplay != null) videoDisplay.gameObject.SetActive(false);
+                    yield break;
+                }
+                Debug.Log($"[Totem] Video descargado en: {tempPath}");
+            }
+            else
+            {
+                Debug.Log($"[Totem] Video cargado desde caché: {tempPath} ({new System.IO.FileInfo(tempPath).Length / 1024} KB)");
+            }
+
+            if (videoRenderTexture == null)
+                videoRenderTexture = new RenderTexture(1280, 720, 0);
+
+            videoPlayer.targetTexture = videoRenderTexture;
+            videoDisplay.texture      = videoRenderTexture;
+            videoDisplay.gameObject.SetActive(true);
+
+            videoPlayer.url = new System.Uri(tempPath).AbsoluteUri;
+            videoPlayer.Prepare();
+
+            float timeout = 15f;
+            float elapsed = 0f;
+            while (!videoPlayer.isPrepared && elapsed < timeout)
+            {
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (videoPlayer.isPrepared)
+            {
+                videoPlayer.Play();
+                isPlaying = true;
+                SetPlayPauseText("Pausar");
+            }
+            else
+                Debug.LogWarning($"[Totem] Timeout preparando video: {tempPath}");
+        }
+
+        // ─── Audio ────────────────────────────────────────────────────────────────
+
+        private IEnumerator LoadAndPlayAudio(string url)
+        {
+            if (audioSource == null) yield break;
+
+            AudioType audioType = AudioType.MPEG;
+            if (url.EndsWith(".wav", System.StringComparison.OrdinalIgnoreCase)) audioType = AudioType.WAV;
+            if (url.EndsWith(".ogg", System.StringComparison.OrdinalIgnoreCase)) audioType = AudioType.OGGVORBIS;
+
+            UnityWebRequest req = UnityWebRequestMultimedia.GetAudioClip(url, audioType);
+            yield return req.SendWebRequest();
+
+            if (req.result == UnityWebRequest.Result.Success)
+            {
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
+                audioSource.clip = clip;
+                audioSource.Play();
+                isPlaying = true;
+                SetPlayPauseText("Pausar");
+                Debug.Log($"[Totem] Reproduciendo audio: {url}");
+            }
+            else
+            {
+                Debug.LogWarning($"[Totem] No se pudo cargar audio '{url}': {req.error}");
+            }
+        }
+
+        // ─── Botón Play/Pause ─────────────────────────────────────────────────────
+
+        public void OnPlayPauseSelected()
+        {
+            isPlaying = !isPlaying;
+
+            if (isPlaying)
+            {
+                if (videoPlayer != null && videoPlayer.isPrepared) videoPlayer.Play();
+                if (audioSource  != null && audioSource.clip != null) audioSource.Play();
+                SetPlayPauseText("Pausar");
+            }
+            else
+            {
+                if (videoPlayer != null && videoPlayer.isPlaying) videoPlayer.Pause();
+                if (audioSource  != null && audioSource.isPlaying)  audioSource.Pause();
+                SetPlayPauseText("Reanudar");
+            }
+        }
+
+        private void SetPlayPauseText(string text)
+        {
+            if (playPauseButton == null) return;
+            TextMeshProUGUI label = playPauseButton.GetComponentInChildren<TextMeshProUGUI>();
+            if (label != null) label.text = text;
+        }
+
+        // ─── Botón Investigar ─────────────────────────────────────────────────────
 
         public void OnInvestigarSelected()
         {
             if (totemBrowser == null) return;
-
             string url = (newsItem != null) ? newsItem.searchUrl : "https://www.google.com";
             totemBrowser.OpenBrowser(url);
-
             Debug.Log($"[Totem] Abriendo navegador en: {url}");
         }
 
-        // ─── Respuestas ───────────────────────────────────────────────────────
+        // ─── Respuestas ───────────────────────────────────────────────────────────
 
         public void OnRealSelected()
         {
@@ -168,16 +324,8 @@ namespace Vortices
             answered = true;
             HidePanel();
 
-            if (isReal)
-            {
-                Debug.Log("[Totem] Correcto — la información es REAL.");
-                HandleCorrectAnswer();
-            }
-            else
-            {
-                Debug.Log("[Totem] Incorrecto — la información era FALSA.");
-                HandleIncorrectAnswer();
-            }
+            if (isReal) { Debug.Log("[Totem] Correcto — REAL.");    HandleCorrectAnswer(); }
+            else        { Debug.Log("[Totem] Incorrecto — FALSA."); HandleIncorrectAnswer(); }
         }
 
         public void OnFakeSelected()
@@ -186,50 +334,32 @@ namespace Vortices
             answered = true;
             HidePanel();
 
-            if (!isReal)
-            {
-                Debug.Log("[Totem] Correcto — la información es FALSA.");
-                HandleCorrectAnswer();
-            }
-            else
-            {
-                Debug.Log("[Totem] Incorrecto — la información era REAL.");
-                HandleIncorrectAnswer();
-            }
+            if (!isReal) { Debug.Log("[Totem] Correcto — FALSA."); HandleCorrectAnswer(); }
+            else         { Debug.Log("[Totem] Incorrecto — REAL."); HandleIncorrectAnswer(); }
         }
 
-        // ─── Lógica de resultado ──────────────────────────────────────────────
+        // ─── Lógica de resultado ──────────────────────────────────────────────────
 
         private void HandleCorrectAnswer()
         {
             if (correctFeedback != null)   correctFeedback.SetActive(true);
             if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
 
-            if (mapGenerator == null)
-            {
-                Debug.LogWarning("[Totem] No hay referencia al generador de mapa.");
-                return;
-            }
-
-            if (xrOrigin == null)
-            {
-                Debug.LogWarning("[Totem] No hay referencia al jugador.");
-                return;
-            }
+            if (mapGenerator == null) { Debug.LogWarning("[Totem] No hay referencia al generador de mapa."); return; }
+            if (xrOrigin == null)     { Debug.LogWarning("[Totem] No hay referencia al jugador."); return; }
 
             Vector2Int xrOriginCell = new Vector2Int(
                 Mathf.FloorToInt(xrOrigin.position.x / mapGenerator.cellSize),
                 Mathf.FloorToInt(xrOrigin.position.z / mapGenerator.cellSize)
             );
 
-            Debug.Log($"[Totem] Mostrando ruta parcial desde celda del jugador: {xrOriginCell}");
             mapGenerator.ShowPartialPathFrom(xrOriginCell);
         }
 
         private void HandleIncorrectAnswer()
         {
             if (incorrectFeedback != null) incorrectFeedback.SetActive(true);
-            if (correctFeedback != null)   correctFeedback.SetActive(false);
+            if (correctFeedback   != null) correctFeedback.SetActive(false);
         }
     }
 }

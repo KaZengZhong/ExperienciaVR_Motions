@@ -4,7 +4,6 @@ namespace Vortices
 {
     /// <summary>
     /// Representa un ítem de contenido cargado desde content.json.
-    /// Equivale al antiguo ScriptableObject NewsItem, pero se carga en tiempo de ejecución.
     /// </summary>
     [System.Serializable]
     public class TotemContentItem
@@ -14,9 +13,11 @@ namespace Vortices
         public bool   isReal;
         public string category;
         public string imageUrl;
+        public string videoUrl;
+        public string audioUrl;
         public string searchUrl;
 
-        // Imagen cargada en tiempo de ejecución por ContentLoader
+        // Sprite cargado en tiempo de ejecución por ContentLoader
         [System.NonSerialized]
         public Sprite sprite;
     }
