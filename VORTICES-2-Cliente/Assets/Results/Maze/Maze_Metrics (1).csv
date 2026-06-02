@@ -1,0 +1,9 @@
+# Laberinto 15x15 — 2026-06-01 18:59:54
+Timestamp;Fecha;Tipo;Titular;RespuestaJugador;RespuestaCorrecta;Correcto;TiempoRespuesta_s;TiempoTotal_s
+19:00:32;2026-06-01;TotemRespuesta;Video de prueba 2;Falso;Falso;True;5,6;
+19:00:52;2026-06-01;TotemRespuesta;Video de prueba;Falso;Real;False;2,6;
+19:01:01;2026-06-01;TotemRespuesta;Audio de prueba;Falso;Real;False;1,6;
+19:01:10;2026-06-01;TotemRespuesta;El chocolate negro previene enfermedades cardíacas;Falso;Real;False;1,5;
+19:01:22;2026-06-01;TotemRespuesta;Las vacunas causan autismo según nuevos estudios;Falso;Falso;True;1,7;
+19:02:27;2026-06-01;TotemRespuesta;Las vacunas causan autismo según nuevos estudios;Falso;Falso;True;2,3;
+19:03:36;2026-06-01;LaberintoCompletado;;;;;; 222,6

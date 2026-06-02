@@ -1,0 +1,5 @@
+﻿# Laberinto 5x5 — 2026-06-02 00:45:22
+Timestamp;Fecha;Tipo;Titular;RespuestaJugador;RespuestaCorrecta;Correcto;UsoInvestigar;TiempoRespuesta_s;TiempoTotal_s
+00:45:31;2026-06-02;TotemRespuesta;Video de prueba 2;Falsa;Falsa;True;False;2,9;
+00:45:38;2026-06-02;TotemRespuesta;Audio de prueba;Real;Real;True;False;3,6;
+00:45:41;2026-06-02;LaberintoCompletado;;;;;;;18,8

@@ -36,8 +36,10 @@ namespace Vortices
         public GameObject incorrectFeedback;
 
         // ─── Estado interno ───────────────────────────────────────────────────────
-        private bool xrOriginInRange = false;
-        private bool answered        = false;
+        private bool  xrOriginInRange  = false;
+        private bool  answered         = false;
+        private bool  usedInvestigar   = false;
+        private float approachTime;
         private Transform xrOrigin;
 
         private ProceduralMapGenerator mapGenerator;
@@ -118,18 +120,37 @@ namespace Vortices
         {
             if (xrOrigin == null || answered) return;
 
-            float distance = Vector3.Distance(transform.position, xrOrigin.position);
+            bool inRange = IsPlayerInSameCell();
 
-            if (distance < 3f && !xrOriginInRange)
+            if (inRange && !xrOriginInRange)
             {
                 xrOriginInRange = true;
+                approachTime    = Time.time;
+                usedInvestigar  = false;
                 ShowPanel();
             }
-            else if (distance >= 3f && xrOriginInRange)
+            else if (!inRange && xrOriginInRange)
             {
                 xrOriginInRange = false;
                 HidePanel();
             }
+        }
+
+        private bool IsPlayerInSameCell()
+        {
+            if (mapGenerator == null)
+                return Vector3.Distance(transform.position, xrOrigin.position) < 3f;
+
+            float s = mapGenerator.cellSize;
+            Vector2Int playerCell = new Vector2Int(
+                Mathf.FloorToInt(xrOrigin.position.x / s),
+                Mathf.FloorToInt(xrOrigin.position.z / s)
+            );
+            Vector2Int totemCell = new Vector2Int(
+                Mathf.FloorToInt(transform.position.x / s),
+                Mathf.FloorToInt(transform.position.z / s)
+            );
+            return playerCell == totemCell;
         }
 
         // ─── NewsItem ─────────────────────────────────────────────────────────────
@@ -310,6 +331,7 @@ namespace Vortices
 
         public void OnInvestigarSelected()
         {
+            usedInvestigar = true;
             if (totemBrowser == null) return;
             string url = (newsItem != null) ? newsItem.searchUrl : "https://www.google.com";
             totemBrowser.OpenBrowser(url);
@@ -324,6 +346,8 @@ namespace Vortices
             answered = true;
             HidePanel();
 
+            MazeMetricsLogger.Instance?.LogTotemAnswer(question, true, isReal, usedInvestigar, Time.time - approachTime);
+
             if (isReal) { Debug.Log("[Totem] Correcto — REAL.");    HandleCorrectAnswer(); }
             else        { Debug.Log("[Totem] Incorrecto — FALSA."); HandleIncorrectAnswer(); }
         }
@@ -333,6 +357,8 @@ namespace Vortices
             if (answered) return;
             answered = true;
             HidePanel();
+
+            MazeMetricsLogger.Instance?.LogTotemAnswer(question, false, isReal, usedInvestigar, Time.time - approachTime);
 
             if (!isReal) { Debug.Log("[Totem] Correcto — FALSA."); HandleCorrectAnswer(); }
             else         { Debug.Log("[Totem] Incorrecto — REAL."); HandleIncorrectAnswer(); }

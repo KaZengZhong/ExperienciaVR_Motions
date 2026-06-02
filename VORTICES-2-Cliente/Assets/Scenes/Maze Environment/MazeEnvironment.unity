@@ -819,6 +819,7 @@ GameObject:
   m_Component:
   - component: {fileID: 349188643}
   - component: {fileID: 349188642}
+  - component: {fileID: 349188644}
   m_Layer: 0
   m_Name: MazeManager
   m_TagString: Untagged
@@ -838,8 +839,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66eda48e0c588443894f5d2a76d4da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 12
-  gridHeight: 12
+  gridWidth: 10
+  gridHeight: 10
   cellSize: 3
   wallHeight: 3
   wallThickness: 0.15
@@ -849,6 +850,7 @@ MonoBehaviour:
   totemPrefab: {fileID: 5556454674240830927, guid: 9a9e488f774e9af4bbb75134358db65d, type: 3}
   totemWallHeight: 1.5
   totemWallOffset: 0.1
+  maxTotems: -1
   pathColor: {r: 0.2, g: 0.9, b: 0.3, a: 1}
   goalColor: {r: 1, g: 0.3, b: 0.3, a: 1}
 --- !u!4 &349188643
@@ -866,6 +868,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &349188644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 349188641}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 65c196a5080e9074f8d29c669d59f976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &531685814
 GameObject:
   m_ObjectHideFlags: 0

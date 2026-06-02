@@ -18,8 +18,6 @@ public class HandController : MonoBehaviour
     [SerializeField] InputActionProperty aPress;
     [SerializeField] InputActionProperty bPress;
 
-
-
     private void Start()
     {
         righthandTools = FindObjectOfType<RighthandTools>();
@@ -32,14 +30,14 @@ public class HandController : MonoBehaviour
 
         bPress.action.started += OpenChat;
         aPress.action.started += SelectElement;
-
     }
 
     private void OnDisable()
     {
-        aPress.action.started -= SelectElement;
-        bPress.action.started -= OpenChat;
-
+        if (aPress.action != null)
+            aPress.action.started -= SelectElement;
+        if (bPress.action != null)
+            bPress.action.started -= OpenChat;
     }
 
     #region Controller Actions
@@ -63,5 +61,4 @@ public class HandController : MonoBehaviour
     }
 
     #endregion
-
 }

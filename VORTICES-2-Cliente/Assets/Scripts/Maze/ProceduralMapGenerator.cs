@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 
 namespace Vortices
@@ -24,6 +25,8 @@ namespace Vortices
         public float totemWallHeight = 1.4f;
         [Tooltip("Separación del tótem respecto a la superficie de la pared")]
         public float totemWallOffset = 0.05f;
+        [Tooltip("Máximo de tótems a colocar (0 = sin límite)")]
+        public int maxTotems = 0;
 
         [Header("Ruta")]
         [Tooltip("Color de los marcadores de ruta")]
@@ -51,9 +54,58 @@ namespace Vortices
         // Marcadores de ruta activos
         private List<GameObject> pathMarkers = new List<GameObject>();
 
+        // Detección de meta
+        private Transform xrOriginTransform;
+        private bool      mazeCompleted;
+
         void Start()
         {
+            LoadParameters();
             StartCoroutine(WaitAndGenerate());
+        }
+
+        void Update()
+        {
+            if (mazeCompleted || xrOriginTransform == null) return;
+
+            Vector2Int playerCell = new Vector2Int(
+                Mathf.FloorToInt(xrOriginTransform.position.x / cellSize),
+                Mathf.FloorToInt(xrOriginTransform.position.z / cellSize)
+            );
+
+            if (playerCell == goalCell)
+            {
+                mazeCompleted = true;
+                MazeMetricsLogger.Instance?.LogMazeCompleted();
+            }
+        }
+
+        private void LoadParameters()
+        {
+            string path = Path.Combine(Application.dataPath, "../parameters.json");
+            if (!File.Exists(path)) return;
+
+            try
+            {
+                string json = File.ReadAllText(path);
+                MazeParameters p = JsonUtility.FromJson<MazeParameters>(json);
+                if (p.gridWidth > 0)  gridWidth  = p.gridWidth;
+                if (p.gridHeight > 0) gridHeight  = p.gridHeight;
+                if (p.maxTotems >= -1) maxTotems  = p.maxTotems; // -1=todos, 0=ninguno, N=límite
+                Debug.Log($"[Maze] Parámetros cargados: {gridWidth}x{gridHeight}, maxTotems={maxTotems}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Maze] Error leyendo parameters.json: {e.Message}");
+            }
+        }
+
+        [System.Serializable]
+        private class MazeParameters
+        {
+            public int gridWidth  = 0;
+            public int gridHeight = 0;
+            public int maxTotems  = 0;
         }
 
         private IEnumerator WaitAndGenerate()
@@ -92,7 +144,8 @@ namespace Vortices
             totalTotemCount = 1; // valor provisional, se actualiza en SpawnTotems
 
             SpawnMaze();
-            SpawnTotems(); // actualiza totalTotemCount al final
+            SpawnTotems();      // actualiza totalTotemCount al final
+            SpawnGoalMarker();  // pilares en las esquinas de la celda meta
 
             int stepsPerTotem = (fullPath != null && totalTotemCount > 0)
                 ? fullPath.Count / totalTotemCount : 0;
@@ -101,13 +154,19 @@ namespace Vortices
                       $"Tótems en intersecciones: {totalTotemCount}. " +
                       $"Pasos visibles por tótem: {stepsPerTotem}");
 
-            GameObject xrOrigin = GameObject.Find("XR Origin");
-            if (xrOrigin != null)
-                xrOrigin.transform.position = new Vector3(
+            GameObject xrOriginObj = GameObject.Find("XR Origin");
+            if (xrOriginObj != null)
+            {
+                xrOriginObj.transform.position = new Vector3(
                     startCell.x * cellSize + cellSize / 2f,
                     0,
                     startCell.y * cellSize + cellSize / 2f
                 );
+                xrOriginTransform = xrOriginObj.transform;
+            }
+
+            mazeCompleted = false;
+            MazeMetricsLogger.Instance?.Initialize(gridWidth, gridHeight);
         }
 
         // ─── Generación del laberinto ─────────────────────────────────────────────
@@ -155,13 +214,7 @@ namespace Vortices
                         y * cellSize + cellSize / 2f
                     );
 
-                    Material fm = floorMaterial;
-                    if (x == goalCell.x && y == goalCell.y)
-                    {
-                        fm = new Material(floorMaterial != null ? floorMaterial : new Material(Shader.Find("Standard")));
-                        fm.color = new Color(0.8f, 0.2f, 0.2f, 1f);
-                    }
-                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), fm);
+                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), floorMaterial);
 
                     SpawnCube(gameObject, $"Ceiling_{x}_{y}",
                         cellCenter + new Vector3(0, wallHeight, 0),
@@ -218,9 +271,12 @@ namespace Vortices
             decisionPoints.RemoveAll(c => c == startCell || c == goalCell);
             Shuffle(decisionPoints);
 
+            if (maxTotems == 0) { totalTotemCount = 0; return; }
+
             int placed = 0;
-            for (int i = 0; i < decisionPoints.Count; i += 2) // una intersección sí, una no
+            for (int i = 0; i < decisionPoints.Count; i++)
             {
+                if (maxTotems > 0 && placed >= maxTotems) break;
                 Vector2Int cell = decisionPoints[i];
                 // Buscar una cara de pared disponible en esta celda para montar el tótem
                 WallFace? face = FindAdjacentWallFace(cell);
@@ -562,6 +618,64 @@ namespace Vortices
                 r.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.Off;
                 r.receiveShadows    = false;
             }
+        }
+
+        // ─── Marcador de meta ─────────────────────────────────────────────────────
+
+        private void SpawnGoalMarker()
+        {
+            float gapWidth    = cellSize * 0.65f;
+            float segWidth    = (cellSize - gapWidth) / 2f;
+            float northZ      = gridHeight * cellSize;
+            float goalOriginX = goalCell.x * cellSize;
+            float gapCenterX  = goalOriginX + cellSize / 2f;
+
+            // Eliminar la pared norte completa del goal y dejar un hueco central
+            string northKey = $"WallN_{goalCell.x}";
+            if (wallObjects.ContainsKey(northKey) && wallObjects[northKey] != null)
+            {
+                Destroy(wallObjects[northKey]);
+                wallObjects.Remove(northKey);
+            }
+
+            // Segmentos laterales de pared (material normal del laberinto)
+            SpawnCube(gameObject, "GoalWallL",
+                new Vector3(goalOriginX + segWidth / 2f, wallHeight / 2f, northZ),
+                new Vector3(segWidth, wallHeight, wallThickness), wallMaterial);
+
+            SpawnCube(gameObject, "GoalWallR",
+                new Vector3(goalOriginX + cellSize - segWidth / 2f, wallHeight / 2f, northZ),
+                new Vector3(segWidth, wallHeight, wallThickness), wallMaterial);
+
+            // Marco de puerta — color neutro apagado que combina con el laberinto
+            Material frameMat = new Material(Shader.Find("Standard"));
+            frameMat.color = new Color(0.62f, 0.58f, 0.52f);
+
+            float jambW = 0.3f;
+            float lintH = 0.3f;
+            float depth = wallThickness * 2.5f;
+
+            // Jamba izquierda
+            SpawnCube(gameObject, "DoorJambaL",
+                new Vector3(gapCenterX - gapWidth / 2f, wallHeight / 2f, northZ),
+                new Vector3(jambW, wallHeight, depth), frameMat);
+
+            // Jamba derecha
+            SpawnCube(gameObject, "DoorJambaR",
+                new Vector3(gapCenterX + gapWidth / 2f, wallHeight / 2f, northZ),
+                new Vector3(jambW, wallHeight, depth), frameMat);
+
+            // Dintel
+            SpawnCube(gameObject, "DoorLintel",
+                new Vector3(gapCenterX, wallHeight - lintH / 2f, northZ),
+                new Vector3(gapWidth + jambW, lintH, depth), frameMat);
+
+            // Fondo oscuro detrás del vano — impide ver el exterior
+            Material voidMat = new Material(Shader.Find("Standard"));
+            voidMat.color = new Color(0.03f, 0.03f, 0.03f);
+            SpawnCube(gameObject, "DoorBackdrop",
+                new Vector3(gapCenterX, wallHeight / 2f, northZ + depth / 2f + 0.02f),
+                new Vector3(gapWidth - jambW * 0.5f, wallHeight, 0.05f), voidMat);
         }
 
         // ─── Utilidades ───────────────────────────────────────────────────────────
