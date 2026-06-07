@@ -14,10 +14,13 @@ namespace Vortices
         public float wallHeight = 3f;
         public float wallThickness = 0.2f;
 
-        [Header("Materiales")]
+        [Header("Materiales (Skin por defecto)")]
         public Material wallMaterial;
         public Material floorMaterial;
         public Material ceilingMaterial;
+
+        [Header("Skins")]
+        public SkinDefinition[] skins;
 
         [Header("Tótems")]
         public GameObject totemPrefab;
@@ -27,6 +30,10 @@ namespace Vortices
         public float totemWallOffset = 0.05f;
         [Tooltip("Máximo de tótems a colocar (0 = sin límite)")]
         public int maxTotems = 0;
+
+        [Header("Debug")]
+        [Tooltip("Sobreescribe el skin del parameters.json solo en el editor")]
+        public string debugSkin = "";
 
         [Header("Ruta")]
         [Tooltip("Color de los marcadores de ruta")]
@@ -58,9 +65,22 @@ namespace Vortices
         private Transform xrOriginTransform;
         private bool      mazeCompleted;
 
+        // Skin activo
+        private string   currentSkin        = "Dungeon";
+        private Material skinWallMaterial;
+        private Material skinFloorMaterial;
+        private Material skinCeilingMaterial;
+
         void Start()
         {
             LoadParameters();
+
+            // Pre-posicionar el jugador en la celda de inicio antes de que el laberinto genere,
+            // para evitar que aparezca fuera de los límites mientras carga el ContentLoader
+            GameObject xrOriginObj = GameObject.Find("XR Origin");
+            if (xrOriginObj != null)
+                xrOriginObj.transform.position = new Vector3(cellSize / 2f, 0f, cellSize / 2f);
+
             StartCoroutine(WaitAndGenerate());
         }
 
@@ -83,29 +103,37 @@ namespace Vortices
         private void LoadParameters()
         {
             string path = Path.Combine(Application.dataPath, "../parameters.json");
-            if (!File.Exists(path)) return;
+            if (!File.Exists(path))
+            {
+                if (!string.IsNullOrEmpty(debugSkin)) currentSkin = debugSkin;
+                return;
+            }
 
             try
             {
                 string json = File.ReadAllText(path);
                 MazeParameters p = JsonUtility.FromJson<MazeParameters>(json);
-                if (p.gridWidth > 0)  gridWidth  = p.gridWidth;
-                if (p.gridHeight > 0) gridHeight  = p.gridHeight;
-                if (p.maxTotems >= -1) maxTotems  = p.maxTotems; // -1=todos, 0=ninguno, N=límite
-                Debug.Log($"[Maze] Parámetros cargados: {gridWidth}x{gridHeight}, maxTotems={maxTotems}");
+                if (p.gridWidth > 0)   gridWidth   = p.gridWidth;
+                if (p.gridHeight > 0)  gridHeight  = p.gridHeight;
+                if (p.maxTotems >= -1) maxTotems   = p.maxTotems;
+                if (!string.IsNullOrEmpty(p.skinName)) currentSkin = p.skinName;
+                Debug.Log($"[Maze] Parámetros cargados: {gridWidth}x{gridHeight}, maxTotems={maxTotems}, skin={currentSkin}");
             }
             catch (System.Exception e)
             {
                 Debug.LogWarning($"[Maze] Error leyendo parameters.json: {e.Message}");
             }
+
+            if (!string.IsNullOrEmpty(debugSkin)) currentSkin = debugSkin;
         }
 
         [System.Serializable]
         private class MazeParameters
         {
-            public int gridWidth  = 0;
-            public int gridHeight = 0;
-            public int maxTotems  = 0;
+            public int    gridWidth  = 0;
+            public int    gridHeight = 0;
+            public int    maxTotems  = 0;
+            public string skinName   = "";
         }
 
         private IEnumerator WaitAndGenerate()
@@ -143,9 +171,10 @@ namespace Vortices
             fullPath        = FindPath(startCell, goalCell);
             totalTotemCount = 1; // valor provisional, se actualiza en SpawnTotems
 
+            ApplySkin();
             SpawnMaze();
-            SpawnTotems();      // actualiza totalTotemCount al final
-            SpawnGoalMarker();  // pilares en las esquinas de la celda meta
+            SpawnTotems();
+            SpawnGoalMarker();
 
             int stepsPerTotem = (fullPath != null && totalTotemCount > 0)
                 ? fullPath.Count / totalTotemCount : 0;
@@ -167,6 +196,22 @@ namespace Vortices
 
             mazeCompleted = false;
             MazeMetricsLogger.Instance?.Initialize(gridWidth, gridHeight);
+        }
+
+        // ─── Skins ───────────────────────────────────────────────────────────────
+
+        private void ApplySkin()
+        {
+            // Buscar skin por nombre en el array del Inspector
+            SkinDefinition match = null;
+            if (skins != null)
+                foreach (SkinDefinition s in skins)
+                    if (s.skinName == currentSkin) { match = s; break; }
+
+            // Usar materiales del skin encontrado, o los materiales por defecto si no hay coincidencia
+            skinWallMaterial    = (match?.wallMaterial    != null ? match.wallMaterial    : wallMaterial);
+            skinFloorMaterial   = (match?.floorMaterial   != null ? match.floorMaterial   : floorMaterial);
+            skinCeilingMaterial = (match?.ceilingMaterial != null ? match.ceilingMaterial : ceilingMaterial);
         }
 
         // ─── Generación del laberinto ─────────────────────────────────────────────
@@ -214,18 +259,18 @@ namespace Vortices
                         y * cellSize + cellSize / 2f
                     );
 
-                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), floorMaterial);
+                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), skinFloorMaterial);
 
                     SpawnCube(gameObject, $"Ceiling_{x}_{y}",
                         cellCenter + new Vector3(0, wallHeight, 0),
-                        new Vector3(cellSize, 0.1f, cellSize), ceilingMaterial, false);
+                        new Vector3(cellSize, 0.1f, cellSize), skinCeilingMaterial, false);
 
                     if (wallsHorizontal[x, y])
                     {
                         string key = $"WallS_{x}_{y}";
                         wallObjects[key] = SpawnCube(gameObject, key,
                             new Vector3(cellCenter.x, wallHeight / 2f, y * cellSize),
-                            new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+                            new Vector3(cellSize, wallHeight, wallThickness), skinWallMaterial);
                     }
 
                     if (wallsVertical[x, y])
@@ -233,7 +278,7 @@ namespace Vortices
                         string key = $"WallW_{x}_{y}";
                         wallObjects[key] = SpawnCube(gameObject, key,
                             new Vector3(x * cellSize, wallHeight / 2f, cellCenter.z),
-                            new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
+                            new Vector3(wallThickness, wallHeight, cellSize), skinWallMaterial);
                     }
                 }
             }
@@ -243,7 +288,7 @@ namespace Vortices
                 string key = $"WallN_{x}";
                 wallObjects[key] = SpawnCube(gameObject, key,
                     new Vector3(x * cellSize + cellSize / 2f, wallHeight / 2f, gridHeight * cellSize),
-                    new Vector3(cellSize, wallHeight, wallThickness), wallMaterial);
+                    new Vector3(cellSize, wallHeight, wallThickness), skinWallMaterial);
             }
 
             for (int y = 0; y < gridHeight; y++)
@@ -251,7 +296,7 @@ namespace Vortices
                 string key = $"WallE_{y}";
                 wallObjects[key] = SpawnCube(gameObject, key,
                     new Vector3(gridWidth * cellSize, wallHeight / 2f, y * cellSize + cellSize / 2f),
-                    new Vector3(wallThickness, wallHeight, cellSize), wallMaterial);
+                    new Vector3(wallThickness, wallHeight, cellSize), skinWallMaterial);
             }
         }
 
@@ -641,11 +686,11 @@ namespace Vortices
             // Segmentos laterales de pared (material normal del laberinto)
             SpawnCube(gameObject, "GoalWallL",
                 new Vector3(goalOriginX + segWidth / 2f, wallHeight / 2f, northZ),
-                new Vector3(segWidth, wallHeight, wallThickness), wallMaterial);
+                new Vector3(segWidth, wallHeight, wallThickness), skinWallMaterial);
 
             SpawnCube(gameObject, "GoalWallR",
                 new Vector3(goalOriginX + cellSize - segWidth / 2f, wallHeight / 2f, northZ),
-                new Vector3(segWidth, wallHeight, wallThickness), wallMaterial);
+                new Vector3(segWidth, wallHeight, wallThickness), skinWallMaterial);
 
             // Marco de puerta — color neutro apagado que combina con el laberinto
             Material frameMat = new Material(Shader.Find("Standard"));
@@ -713,5 +758,14 @@ namespace Vortices
                 cube.isStatic = true;
             return cube;
         }
+    }
+
+    [System.Serializable]
+    public class SkinDefinition
+    {
+        public string   skinName;
+        public Material wallMaterial;
+        public Material floorMaterial;
+        public Material ceilingMaterial;
     }
 }
