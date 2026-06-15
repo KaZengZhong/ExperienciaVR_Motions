@@ -1,6 +1,0 @@
-﻿# Laberinto 10x10 — 2026-06-02 00:51:34
-Timestamp;Fecha;Tipo;Titular;RespuestaJugador;RespuestaCorrecta;Correcto;UsoInvestigar;TiempoRespuesta_s;TiempoTotal_s
-00:52:05;2026-06-02;TotemRespuesta;Las vacunas causan autismo según nuevos estudios;Falsa;Falsa;True;False;5,2;
-00:52:11;2026-06-02;TotemRespuesta;Video de prueba;Real;Real;True;False;2,5;
-00:52:15;2026-06-02;TotemRespuesta;El chocolate negro previene enfermedades cardíacas;Falsa;Real;False;False;1,7;
-00:52:45;2026-06-02;TotemRespuesta;Video de prueba 2;Falsa;Falsa;True;False;3,8;

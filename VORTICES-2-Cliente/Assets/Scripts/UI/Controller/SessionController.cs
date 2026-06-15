@@ -70,6 +70,8 @@ namespace Vortices
             LoadSessions();
             // Categories will be added to UI Components
             UpdateSessions(true);
+            // Pre-fill fields from launcher session.json if available
+            TryLoadLauncherConfig();
         }
 
         #region Data Operation;
@@ -434,6 +436,99 @@ namespace Vortices
 
             }
         }
+        #endregion
+
+        #region Launcher Config
+
+        private void TryLoadLauncherConfig()
+        {
+            string path = Path.Combine(Application.dataPath, "../session.json");
+            if (!File.Exists(path)) return;
+
+            try
+            {
+                var data = JsonUtility.FromJson<LauncherSessionData>(File.ReadAllText(path));
+                if (data == null) return;
+
+                // 1. Session name
+                if (!string.IsNullOrEmpty(data.sessionName))
+                {
+                    if (!sessions.Contains(data.sessionName))
+                    {
+                        sessions.Add(data.sessionName);
+                        SaveSessions();
+                        UpdateSessions(true);
+                    }
+                    selectedSession = data.sessionName;
+                    foreach (UISession uiSession in UISessions)
+                    {
+                        if (uiSession.sessionName == data.sessionName)
+                        {
+                            uiSession.SelectedToggle();
+                            Toggle t = uiSession.GetComponentInChildren<Toggle>(true);
+                            if (t != null) t.isOn = true;
+                            break;
+                        }
+                    }
+                }
+
+                // 2. User ID
+                if (data.userId >= 0)
+                {
+                    selectedUserId = data.userId;
+                    userIdInputField.inputfield.text = data.userId.ToString();
+                    userIdInputField.placeholder.enabled = false;
+                }
+
+                // 3. Environment
+                if (!string.IsNullOrEmpty(data.environmentName))
+                {
+                    string addonName = null;
+                    if (data.environmentName == "Circular")       addonName = "Circular Environment";
+                    else if (data.environmentName == "Museum")    addonName = "Museum Environment";
+
+                    if (addonName != null)
+                    {
+                        foreach (Transform child in environmentScrollviewContent.transform)
+                        {
+                            TextMeshProUGUI label = child.GetComponentInChildren<TextMeshProUGUI>(true);
+                            if (label != null && label.text == addonName)
+                            {
+                                Toggle t = child.GetComponentInChildren<Toggle>(true);
+                                if (t != null) t.isOn = true;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        selectedEnvironment = data.environmentName; // "Maze" u otro built-in
+                    }
+                }
+
+                // 4. Online mode
+                isOnlineMode = data.isOnlineSession;
+
+                UnlockContinueButton();
+                if (!alertCoroutineRunning)
+                    StartCoroutine(SetAlert("Pre-configurado desde el launcher"));
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning("[SessionController] Error leyendo session.json del launcher: " + e.Message);
+            }
+        }
+
+        [System.Serializable]
+        private class LauncherSessionData
+        {
+            public string sessionName;
+            public int    userId;
+            public string environmentName;
+            public bool   isOnlineSession;
+            public string ipAddress;
+        }
+
         #endregion
 
         #region UI Alert
