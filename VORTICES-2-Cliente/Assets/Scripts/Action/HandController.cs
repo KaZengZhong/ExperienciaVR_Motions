@@ -28,8 +28,15 @@ public class HandController : MonoBehaviour
             return;
         }
 
-        bPress.action.started += OpenChat;
-        aPress.action.started += SelectElement;
+        if (bPress.action != null)
+            bPress.action.started += OpenChat;
+        else
+            Debug.LogWarning("[HandController] bPress no tiene acción asignada.");
+
+        if (aPress.action != null)
+            aPress.action.started += SelectElement;
+        else
+            Debug.LogWarning("[HandController] aPress no tiene acción asignada.");
     }
 
     private void OnDisable()

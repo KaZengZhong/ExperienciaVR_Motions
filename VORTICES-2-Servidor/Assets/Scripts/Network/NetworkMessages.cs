@@ -23,3 +23,11 @@ public struct ChatMessage : NetworkMessage
     public string content;
 }
 
+public struct TotemAnsweredMessage : NetworkMessage
+{
+    public Vector3 totemPosition;
+    public bool    answeredReal;
+    public int     senderCellX;
+    public int     senderCellZ;
+}
+

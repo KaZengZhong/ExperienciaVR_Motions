@@ -4,6 +4,7 @@ using UnityEngine.Networking;
 using UnityEngine.Video;
 using TMPro;
 using UnityEngine.UI;
+using Mirror;
 
 namespace Vortices
 {
@@ -51,7 +52,9 @@ namespace Vortices
         private RenderTexture videoRenderTexture;
 
         // Estado reproductor
-        private bool isPlaying = false;
+        private bool      isPlaying        = false;
+        private Coroutine audioCoroutine   = null;
+        private Coroutine videoCoroutine   = null;
 
         // ─────────────────────────────────────────────────────────────────────────
 
@@ -193,21 +196,26 @@ namespace Vortices
 
             // Video
             if (!string.IsNullOrEmpty(currentContent.videoUrl))
-                StartCoroutine(PlayVideo(currentContent.videoUrl));
+                videoCoroutine = StartCoroutine(PlayVideo(currentContent.videoUrl));
             else if (videoDisplay != null)
                 videoDisplay.gameObject.SetActive(false);
 
             // Audio
             if (!string.IsNullOrEmpty(currentContent.audioUrl))
-                StartCoroutine(LoadAndPlayAudio(currentContent.audioUrl));
+                audioCoroutine = StartCoroutine(LoadAndPlayAudio(currentContent.audioUrl));
         }
 
         private void HidePanel()
         {
             if (panel != null) panel.SetActive(false);
 
+            if (audioCoroutine != null) { StopCoroutine(audioCoroutine); audioCoroutine = null; }
+            if (videoCoroutine != null) { StopCoroutine(videoCoroutine); videoCoroutine = null; }
+
             if (videoPlayer != null && videoPlayer.isPlaying) videoPlayer.Stop();
             if (audioSource  != null && audioSource.isPlaying)  audioSource.Stop();
+
+            isPlaying = false;
         }
 
         // ─── Video ────────────────────────────────────────────────────────────────
@@ -287,6 +295,8 @@ namespace Vortices
 
             if (req.result == UnityWebRequest.Result.Success)
             {
+                if (!xrOriginInRange) yield break;
+
                 AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
                 audioSource.clip = clip;
                 audioSource.Play();
@@ -350,6 +360,8 @@ namespace Vortices
 
             if (isReal) { Debug.Log("[Totem] Correcto — REAL.");    HandleCorrectAnswer(); }
             else        { Debug.Log("[Totem] Incorrecto — FALSA."); HandleIncorrectAnswer(); }
+
+            SendNetworkAnswer(true);
         }
 
         public void OnFakeSelected()
@@ -362,6 +374,51 @@ namespace Vortices
 
             if (!isReal) { Debug.Log("[Totem] Correcto — FALSA."); HandleCorrectAnswer(); }
             else         { Debug.Log("[Totem] Incorrecto — REAL."); HandleIncorrectAnswer(); }
+
+            SendNetworkAnswer(false);
+        }
+
+        private void SendNetworkAnswer(bool answeredReal)
+        {
+            if (!NetworkClient.isConnected)
+            {
+                Debug.LogWarning("[Totem] No conectado al servidor — modo offline, no se sincroniza.");
+                return;
+            }
+
+            float cellSize = mapGenerator != null ? mapGenerator.cellSize : 1f;
+            int cx = xrOrigin != null ? Mathf.FloorToInt(xrOrigin.position.x / cellSize) : 0;
+            int cz = xrOrigin != null ? Mathf.FloorToInt(xrOrigin.position.z / cellSize) : 0;
+
+            NetworkClient.Send(new TotemAnsweredMessage
+            {
+                totemPosition = transform.position,
+                answeredReal  = answeredReal,
+                senderCellX   = cx,
+                senderCellZ   = cz
+            });
+            Debug.Log($"[Totem] TotemAnsweredMessage enviado — pos={transform.position}, real={answeredReal}, cell=({cx},{cz})");
+        }
+
+        // Llamado desde el RPC en todos los clientes remotos
+        public void ApplyNetworkAnswer(bool answeredReal, Vector2Int senderCell)
+        {
+            if (answered) return; // el jugador local ya lo aplicó, ignorar
+            answered = true;
+            HidePanel();
+
+            bool isCorrect = (answeredReal == isReal);
+            if (isCorrect)
+            {
+                if (correctFeedback != null)   correctFeedback.SetActive(true);
+                if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
+                if (mapGenerator != null)      mapGenerator.ShowPartialPathFrom(senderCell);
+            }
+            else
+            {
+                if (incorrectFeedback != null) incorrectFeedback.SetActive(true);
+                if (correctFeedback != null)   correctFeedback.SetActive(false);
+            }
         }
 
         // ─── Lógica de resultado ──────────────────────────────────────────────────

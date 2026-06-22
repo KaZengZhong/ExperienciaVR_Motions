@@ -125,6 +125,21 @@ public class VivoxVoiceManager : MonoBehaviour
         }
     }
 
+    public void ToggleMute()
+    {
+        if (!IsVivoxReady) return;
+        if (VivoxService.Instance.IsInputDeviceMuted)
+        {
+            VivoxService.Instance.UnmuteInputDevice();
+            Debug.Log("[VoiceChat] Micrófono activado.");
+        }
+        else
+        {
+            VivoxService.Instance.MuteInputDevice();
+            Debug.Log("[VoiceChat] Micrófono silenciado.");
+        }
+    }
+
     public async Task LogoutAsync()
     {
         try
@@ -137,6 +152,8 @@ public class VivoxVoiceManager : MonoBehaviour
             Debug.LogError($"Failed to logout of Vivox: {ex.Message}");
         }
     }
+
+    public bool IsVivoxReady { get; private set; } = false;
 
     public async Task EnsureVivoxInitialized()
     {
@@ -151,6 +168,7 @@ public class VivoxVoiceManager : MonoBehaviour
         await UnityServices.InitializeAsync(options);
         await VivoxService.Instance.InitializeAsync();
 
+        IsVivoxReady = true;
         Debug.Log("[VoiceChat] Vivox Service inicializado correctamente.");
     }
 

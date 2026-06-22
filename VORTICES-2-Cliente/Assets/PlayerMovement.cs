@@ -12,54 +12,36 @@ public class PlayerMovement : NetworkBehaviour
 
     private void Start()
     {
-        if (!isLocalPlayer)
-        {
-            return; // Solo el jugador local actualiza su propia posición
-        }
+        if (!isLocalPlayer) return;
 
-        StartCoroutine(WaitForMuseumBaseAndCamera());
+        // El Cube del prefab tiene BoxCollider — deshabilitarlo en el jugador local
+        // para que no bloquee el CharacterController de EditorMovement
+        foreach (var col in GetComponentsInChildren<Collider>())
+            col.enabled = false;
+
+        StartCoroutine(WaitForCamera());
     }
 
     private void Update()
     {
-        if (!isLocalPlayer || cameraTransform == null)
-        {
-            return;
-        }
+        if (!isLocalPlayer || cameraTransform == null) return;
 
-        // Mueve el PlayerPrefab a la posición de la cámara
         transform.position = cameraTransform.position;
 
-        // Asegura que el Cube esté en la posición correcta dentro del PlayerPrefab
-        Transform cubeTransform = transform.Find("Cube"); // Asegúrate de que el nombre es correcto
+        Transform cubeTransform = transform.Find("Cube");
         if (cubeTransform != null)
-        {
-            cubeTransform.localPosition = Vector3.zero; // Asegura que el Cube esté alineado
-        }
+            cubeTransform.localPosition = Vector3.zero;
     }
 
-
-    IEnumerator WaitForMuseumBaseAndCamera()
+    private IEnumerator WaitForCamera()
     {
-        Debug.Log("[Cliente] Esperando a que MuseumBase cargue...");
-
-        MuseumBase localMuseumBase = null;
-        while (localMuseumBase == null)
-        {
-            yield return null;
-            localMuseumBase = FindObjectOfType<MuseumBase>();
-        }
-
-        Debug.Log("[Cliente] MuseumBase encontrado. Buscando XR Origin y cámara...");
-
+        Debug.Log("[PlayerMovement] Buscando cámara principal...");
         while (cameraTransform == null)
         {
             cameraTransform = Camera.main?.transform;
             yield return null;
         }
-        Debug.Log($"[PlayerSync] Cámara encontrada: {cameraTransform.name}");
-
-        Debug.Log("[Cliente] XR Origin y cámara vinculados correctamente.");
+        Debug.Log($"[PlayerMovement] Cámara vinculada: {cameraTransform.name}");
     }
 
 }

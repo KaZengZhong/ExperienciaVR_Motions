@@ -6,17 +6,8 @@ using Vortices;
 
 public class PlayerChatController : NetworkBehaviour
 {
-    private SessionManager sessionManager;
-
     private void Start()
     {
-        sessionManager = FindObjectOfType<SessionManager>();
-
-        if (sessionManager == null)
-        {
-            Debug.LogError("[PlayerChatController] SessionManager no encontrado en la escena.");
-        }
-
         DontDestroyOnLoad(gameObject);
     }
 
@@ -55,7 +46,34 @@ public class PlayerChatController : NetworkBehaviour
         chatManager.RpcReceiveMessage(userId, message);
     }
 
+    // ── Sincronización de tótems ──────────────────────────────────────────────
 
+    [Command]
+    public void CmdTotemAnswered(Vector3 totemPosition, bool answeredReal, int cellX, int cellZ)
+    {
+        Debug.Log($"[PlayerChatController] Servidor recibió CmdTotemAnswered — pos={totemPosition}, real={answeredReal}");
+        RpcTotemAnswered(totemPosition, answeredReal, cellX, cellZ);
+    }
+
+    [ClientRpc]
+    private void RpcTotemAnswered(Vector3 totemPosition, bool answeredReal, int cellX, int cellZ)
+    {
+        Debug.Log($"[PlayerChatController] RPC recibido — buscando tótem en pos={totemPosition}");
+        InformationTotem[] totems = FindObjectsOfType<InformationTotem>();
+        Debug.Log($"[PlayerChatController] Tótems en escena: {totems.Length}");
+        foreach (var totem in totems)
+        {
+            float dist = Vector3.Distance(totem.transform.position, totemPosition);
+            Debug.Log($"[PlayerChatController]   tótem en {totem.transform.position}, distancia={dist:F3}");
+            if (dist < 1f)
+            {
+                Debug.Log($"[PlayerChatController] Tótem encontrado — aplicando respuesta.");
+                totem.ApplyNetworkAnswer(answeredReal, new Vector2Int(cellX, cellZ));
+                return;
+            }
+        }
+        Debug.LogWarning($"[PlayerChatController] No se encontró ningún tótem cerca de {totemPosition}");
+    }
 }
 
 

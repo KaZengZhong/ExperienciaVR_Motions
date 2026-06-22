@@ -298,12 +298,17 @@ namespace Vortices
             if (environmentName == "Circular Environment")
             {
                 selectedEnvironment = "Circular";
-                AddonsController.instance.SetEnvironment(0);
+                AddonsController.instance.SetEnvironment(environmentId);
             }
             else if (environmentName == "Museum Environment")
             {
                 selectedEnvironment = "Museum";
-                AddonsController.instance.SetEnvironment(1);
+                AddonsController.instance.SetEnvironment(environmentId);
+            }
+            else if (environmentName == "Maze Environment")
+            {
+                selectedEnvironment = "Maze";
+                AddonsController.instance.SetEnvironment(environmentId);
             }
             mainMenuPanel.currentEnvironmentId = environmentId;
         }

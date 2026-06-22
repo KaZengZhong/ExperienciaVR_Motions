@@ -23,7 +23,7 @@ namespace Vortices
             NetworkIdentity identity = GetComponent<NetworkIdentity>();
             if (identity != null)
             {
-                Debug.Log($"ChatCanvas - hasAuthority: {identity.hasAuthority}");
+                Debug.Log($"ChatCanvas - isOwned: {identity.isOwned}");
             }
             else
             {
@@ -73,7 +73,7 @@ namespace Vortices
         [Command]
         void CmdSendMessage(string message)
         {
-            if (!hasAuthority)
+            if (!isOwned)
             {
                 Debug.LogWarning("El cliente no tiene autoridad para enviar mensajes desde este objeto.");
                 return;

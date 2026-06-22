@@ -6,17 +6,8 @@ using Vortices;
 
 public class PlayerChatController : NetworkBehaviour
 {
-    private SessionManager sessionManager;
-
     private void Start()
     {
-        sessionManager = FindObjectOfType<SessionManager>();
-
-        if (sessionManager == null)
-        {
-            Debug.LogError("[PlayerChatController] SessionManager no encontrado en la escena.");
-        }
-
         DontDestroyOnLoad(gameObject);
     }
 

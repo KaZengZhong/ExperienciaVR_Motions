@@ -8,6 +8,9 @@ public class CustomNetworkManager : NetworkManager
 
     public GameObject chatCanvasPrefab;
 
+    [Tooltip("Si está marcado, el servidor se inicia automáticamente al arrancar la aplicación (útil para pruebas en localhost).")]
+    [SerializeField] private bool autoStartServer = false;
+
     public override void Awake()
     {
         base.Awake();
@@ -18,11 +21,20 @@ public class CustomNetworkManager : NetworkManager
     {
         base.Start();
         Debug.Log("CustomNetworkManager - Start");
+
+        if (autoStartServer)
+        {
+            Debug.Log("[CustomNetworkManager] autoStartServer = true — iniciando servidor automáticamente.");
+            StartServer();
+        }
     }
 
     public override void OnStartServer()
     {
         base.OnStartServer();
+
+        NetworkServer.RegisterHandler<TotemAnsweredMessage>(OnServerTotemAnswered);
+        Debug.Log("[CustomNetworkManager] Handler de tótems registrado en el servidor.");
 
         if (chatCanvasPrefab != null)
         {
@@ -46,6 +58,12 @@ public class CustomNetworkManager : NetworkManager
     }
 
 
+
+    private void OnServerTotemAnswered(NetworkConnectionToClient conn, TotemAnsweredMessage msg)
+    {
+        Debug.Log($"[CustomNetworkManager] Servidor recibió TotemAnswered — pos={msg.totemPosition}, real={msg.answeredReal}. Rebroadcasting...");
+        NetworkServer.SendToAll(msg);
+    }
 
     public override void OnServerAddPlayer(NetworkConnectionToClient conn)
     {

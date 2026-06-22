@@ -10,6 +10,8 @@ namespace Vortices
         private float rotY = 0f;
         private CharacterController cc;
         private bool browserMode = false;
+        private float verticalVelocity = 0f;
+        private const float gravity = 20f;
 
         void Start()
         {
@@ -40,10 +42,18 @@ namespace Vortices
             Vector3 forward = transform.parent.forward;
             Vector3 right   = transform.parent.right;
             Vector3 move    = forward * v + right * h;
-            move.y = -1f; // gravedad simple
+
+            // Gravedad acumulada — se detiene al tocar el suelo
+            if (cc != null && cc.isGrounded)
+                verticalVelocity = -2f;
+            else
+                verticalVelocity -= gravity * Time.deltaTime;
 
             if (cc != null)
+            {
                 cc.Move(move * moveSpeed * Time.deltaTime);
+                cc.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+            }
         }
 
         // Llamado desde TotemBrowser al abrir/cerrar el navegador

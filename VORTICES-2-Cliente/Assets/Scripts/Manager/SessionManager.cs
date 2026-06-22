@@ -230,7 +230,7 @@ namespace Vortices
                 {
                     if (!NetworkClient.isConnected)
                     {
-                        NetworkManager.singleton.networkAddress = "127.0.0.1"; // 134.65.228.226 Oracle
+                        NetworkManager.singleton.networkAddress = SessionJsonLoader.GetServerIp();
                         NetworkManager.singleton.StartClient();
 
                         float timeout = 10f;
@@ -268,6 +268,10 @@ namespace Vortices
                     else if (environmentName == "Museum")
                     {
                         environmentName = "Museum Environment";
+                    }
+                    else if (environmentName == "Maze")
+                    {
+                        environmentName = "Maze Environment";
                     }
 
                     yield return StartCoroutine(actualTransitionManager.GoToSceneRoutine());

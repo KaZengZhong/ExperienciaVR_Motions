@@ -71,17 +71,52 @@ namespace Vortices
         private Material skinFloorMaterial;
         private Material skinCeilingMaterial;
 
+        private GameObject loadingCanvas;
+
         void Start()
         {
             LoadParameters();
 
-            // Pre-posicionar el jugador en la celda de inicio antes de que el laberinto genere,
-            // para evitar que aparezca fuera de los límites mientras carga el ContentLoader
             GameObject xrOriginObj = GameObject.Find("XR Origin");
             if (xrOriginObj != null)
                 xrOriginObj.transform.position = new Vector3(cellSize / 2f, 0f, cellSize / 2f);
 
+            CreateLoadingIndicator(xrOriginObj);
             StartCoroutine(WaitAndGenerate());
+        }
+
+        private void CreateLoadingIndicator(GameObject xrOriginObj)
+        {
+            loadingCanvas = new GameObject("LoadingCanvas");
+            Canvas canvas = loadingCanvas.AddComponent<Canvas>();
+            canvas.renderMode = RenderMode.WorldSpace;
+            loadingCanvas.AddComponent<UnityEngine.UI.CanvasScaler>();
+
+            RectTransform rt = loadingCanvas.GetComponent<RectTransform>();
+            rt.sizeDelta = new Vector2(2f, 0.5f);
+
+            // Posicionar frente al jugador
+            if (xrOriginObj != null)
+            {
+                loadingCanvas.transform.position = xrOriginObj.transform.position + Vector3.forward * 3f + Vector3.up * 1.6f;
+                loadingCanvas.transform.rotation = Quaternion.LookRotation(loadingCanvas.transform.position - xrOriginObj.transform.position);
+            }
+            else
+            {
+                loadingCanvas.transform.position = new Vector3(cellSize / 2f, 1.6f, cellSize / 2f + 3f);
+            }
+            loadingCanvas.transform.localScale = Vector3.one * 0.01f;
+
+            GameObject textObj = new GameObject("LoadingText");
+            textObj.transform.SetParent(loadingCanvas.transform, false);
+            TMPro.TextMeshProUGUI tmp = textObj.AddComponent<TMPro.TextMeshProUGUI>();
+            tmp.text = "Generando laberinto...";
+            tmp.fontSize = 48;
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+            RectTransform textRt = textObj.GetComponent<RectTransform>();
+            textRt.sizeDelta = new Vector2(200f, 50f);
+            textRt.anchoredPosition = Vector2.zero;
         }
 
         void Update()
@@ -136,13 +171,65 @@ namespace Vortices
             public string skinName   = "";
         }
 
+        // Lee session.json y usa el sessionName como semilla determinista.
+        // Ambos clientes con el mismo sessionName generarán el mismo laberinto.
+        private void InitMazeSeed()
+        {
+            string path = Path.GetDirectoryName(Application.dataPath) + "/session.json";
+            if (!File.Exists(path)) return;
+
+            try
+            {
+                MazeSeedData data = JsonUtility.FromJson<MazeSeedData>(File.ReadAllText(path));
+                if (!string.IsNullOrEmpty(data.sessionName))
+                {
+                    int seed = Mathf.Abs(data.sessionName.GetHashCode());
+                    Random.InitState(seed);
+                    Debug.Log($"[Maze] Semilla de sesión '{data.sessionName}': {seed}");
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogWarning($"[Maze] No se pudo leer semilla de session.json: {e.Message}");
+            }
+        }
+
+        [System.Serializable]
+        private class MazeSeedData { public string sessionName = ""; }
+
         private IEnumerator WaitAndGenerate()
         {
-            // Esperar a que ContentLoader termine de cargar el JSON y las imágenes
-            while (ContentLoader.Instance == null || !ContentLoader.Instance.IsReady)
-                yield return null;
+            float elapsed = 0f;
+            const float timeout = 15f;
 
-            GenerateMap();
+            Debug.Log("[Maze] Esperando ContentLoader...");
+
+            while ((ContentLoader.Instance == null || !ContentLoader.Instance.IsReady) && elapsed < timeout)
+            {
+                if (elapsed == 0f)
+                    Debug.Log($"[Maze] ContentLoader.Instance = {ContentLoader.Instance}");
+                elapsed += Time.deltaTime;
+                yield return null;
+            }
+
+            if (ContentLoader.Instance == null)
+                Debug.LogError("[Maze] ContentLoader.Instance es NULL tras esperar — ¿falta el GameObject en la escena?");
+            else if (!ContentLoader.Instance.IsReady)
+                Debug.LogWarning($"[Maze] Timeout ({timeout}s) — ContentLoader aún no está listo. Generando mapa sin contenido.");
+            else
+                Debug.Log($"[Maze] ContentLoader listo tras {elapsed:F1}s. Ítems cargados: {ContentLoader.Instance.Items.Count}");
+
+            try
+            {
+                GenerateMap();
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError($"[Maze] Excepción en GenerateMap: {e}");
+            }
+
+            if (loadingCanvas != null)
+                Destroy(loadingCanvas);
         }
 
         public void GenerateMap()
@@ -164,6 +251,7 @@ namespace Vortices
             startCell = Vector2Int.zero;
             goalCell  = new Vector2Int(gridWidth - 1, gridHeight - 1);
 
+            InitMazeSeed();
             RecursiveBacktrack(startCell.x, startCell.y);
 
             // Calcular la ruta completa una sola vez — sirve de referencia para el largo parcial

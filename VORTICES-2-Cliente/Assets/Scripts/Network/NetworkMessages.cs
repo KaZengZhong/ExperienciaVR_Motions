@@ -18,3 +18,11 @@ public struct ChatMessage : NetworkMessage
     public string senderName;
     public string message;
 }
+
+public struct TotemAnsweredMessage : NetworkMessage
+{
+    public Vector3 totemPosition;
+    public bool    answeredReal;
+    public int     senderCellX;
+    public int     senderCellZ;
+}

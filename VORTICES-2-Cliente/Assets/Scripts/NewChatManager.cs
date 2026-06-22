@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using TMPro;
 using Mirror;
@@ -18,11 +19,10 @@ public class NewChatManager : NetworkBehaviour
 
     private void Start()
     {
-        // Solo desactivar el ChatCanvas si no es el servidor
-        if (!isServer)
-        {
-            chatCanvas.SetActive(false);
-        }
+        // Forzar Screen Space Overlay para que el chat aparezca en pantalla en desktop
+        Canvas canvas = GetComponentInChildren<Canvas>(true);
+        if (canvas != null)
+            canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
         Debug.Log($"[NewChatManager] Inicializado en: {gameObject.name}. Es servidor: {isServer}");
 
@@ -43,11 +43,36 @@ public class NewChatManager : NetworkBehaviour
     }
 
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.T))
+            ToggleChat();
+
+        if (Input.GetKeyDown(KeyCode.M))
+            VivoxVoiceManager.Instance?.ToggleMute();
+
+        if (Input.GetKeyDown(KeyCode.Return) && chatCanvas != null)
+        {
+            Canvas c = chatCanvas.GetComponent<Canvas>();
+            if (c != null && c.enabled)
+                OnSendButtonPressed();
+        }
+    }
+
     public void ToggleChat()
     {
-        // Alternar visibilidad del chat
-        chatCanvas.SetActive(!chatCanvas.activeSelf);
-        Debug.Log($"Chat {(chatCanvas.activeSelf ? "activado" : "desactivado")}");
+        Canvas canvas = chatCanvas.GetComponent<Canvas>();
+        if (canvas != null)
+        {
+            canvas.enabled = !canvas.enabled;
+            if (canvas.enabled)
+                chatInputField?.ActivateInputField();
+            Debug.Log($"Chat {(canvas.enabled ? "activado" : "desactivado")}");
+        }
+        else
+        {
+            chatCanvas.SetActive(!chatCanvas.activeSelf);
+        }
     }
 
     // Llamado cuando se presiona el botón de enviar
@@ -77,8 +102,8 @@ public class NewChatManager : NetworkBehaviour
             return;
         }
 
-        // Obtener el userId desde el SessionManager
-        string userId = FindObjectOfType<SessionManager>()?.userId.ToString();
+        // Obtener userId desde session.json (no depende de SessionManager)
+        string userId = GetUserIdFromSession();
         if (string.IsNullOrEmpty(userId))
         {
             Debug.LogError("[NewChatManager] UserID no configurado.");
@@ -96,6 +121,21 @@ public class NewChatManager : NetworkBehaviour
 
 
 
+
+    private string GetUserIdFromSession()
+    {
+        string path = Path.GetDirectoryName(Application.dataPath) + "/session.json";
+        if (!File.Exists(path)) return "0";
+        try
+        {
+            SessionData data = JsonUtility.FromJson<SessionData>(File.ReadAllText(path));
+            return data.userId.ToString();
+        }
+        catch { return "0"; }
+    }
+
+    [System.Serializable]
+    private class SessionData { public int userId = 0; }
 
     [ClientRpc]
     public void RpcReceiveMessage(string userId, string message)

@@ -100,12 +100,13 @@ public class ServerSessionManager : NetworkBehaviour
         {
             msg.environmentName = "Circular Environment";
         }
+        else if (msg.environmentName == "Maze")
+        {
+            msg.environmentName = "Maze Environment";
+        }
         else
         {
             Debug.LogError($"Nombre de escena desconocido: {msg.environmentName}");
-            Debug.Log("[Server] Enviando mensaje: SessionCreatedMessage");
-
-
             conn.Send(new SessionCreatedMessage { success = false });
             return;
         }

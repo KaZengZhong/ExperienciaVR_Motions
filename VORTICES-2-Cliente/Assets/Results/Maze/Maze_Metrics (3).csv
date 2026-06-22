@@ -1,0 +1,4 @@
+﻿# Laberinto 10x10 — 2026-06-22 13:02:06
+Timestamp;Fecha;Tipo;Titular;RespuestaJugador;RespuestaCorrecta;Correcto;UsoInvestigar;TiempoRespuesta_s;TiempoTotal_s
+13:02:43;2026-06-22;TotemRespuesta;Audio de prueba;Real;Real;True;False;8,8;
+13:03:01;2026-06-22;TotemRespuesta;Las vacunas causan autismo según nuevos estudios;Falsa;Falsa;True;False;12,7;

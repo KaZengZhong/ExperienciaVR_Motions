@@ -44,6 +44,7 @@ namespace Vortices
             Debug.Log($"[ContentLoader] Descargando JSON desde: {contentJsonUrl}");
 
             UnityWebRequest jsonRequest = UnityWebRequest.Get(contentJsonUrl);
+            jsonRequest.timeout = 10;
             yield return jsonRequest.SendWebRequest();
 
             if (jsonRequest.result != UnityWebRequest.Result.Success)
@@ -102,6 +103,7 @@ namespace Vortices
         private IEnumerator LoadSprite(string url, System.Action<Sprite> onLoaded)
         {
             UnityWebRequest req = UnityWebRequestTexture.GetTexture(url);
+            req.timeout = 10;
             yield return req.SendWebRequest();
 
             if (req.result == UnityWebRequest.Result.Success)

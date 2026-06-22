@@ -35,6 +35,9 @@ public class CustomNetworkManager : NetworkManager
     {
         base.OnStartServer();
 
+        NetworkServer.RegisterHandler<TotemAnsweredMessage>(OnServerTotemAnswered);
+        Debug.Log("[CustomNetworkManager] Handler de tótems registrado en el servidor.");
+
         if (chatCanvasPrefab != null)
         {
             // Crear el ChatCanvas
@@ -94,6 +97,12 @@ public class CustomNetworkManager : NetworkManager
         {
             Debug.LogError("[ChatCanvas] No se encontró el ChatCanvas en el servidor.");
         }
+    }
+
+    private void OnServerTotemAnswered(NetworkConnectionToClient conn, TotemAnsweredMessage msg)
+    {
+        Debug.Log($"[CustomNetworkManager] Servidor recibió TotemAnswered — pos={msg.totemPosition}, real={msg.answeredReal}. Rebroadcasting...");
+        NetworkServer.SendToAll(msg);
     }
 
     private IEnumerator InitializeVivox(VivoxVoiceManager vivoxManager)
