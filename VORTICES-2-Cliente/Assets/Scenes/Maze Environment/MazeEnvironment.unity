@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 3
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 2100000, guid: 51fa663476204cb428b78cf7bdfbf0ff, type: 2}
+  m_SkyboxMaterial: {fileID: 2100000, guid: 81f714daf7144784b8a2f42f1cd30927, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -132,7 +132,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6598815579406187026, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187027, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_RootOrder
@@ -184,7 +184,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6598815579406187037, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f5a24a380916d14db9775daab4fe333, type: 3}
@@ -771,7 +771,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 300680139}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c0f4fdbe51a5ffc478d9708f43713707, type: 3}
   m_Name: 
@@ -883,8 +883,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e66eda48e0c588443894f5d2a76d4da9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridWidth: 10
-  gridHeight: 10
+  gridWidth: 5
+  gridHeight: 5
   cellSize: 3
   wallHeight: 3
   wallThickness: 0.15
@@ -892,38 +892,36 @@ MonoBehaviour:
   floorMaterial: {fileID: 2100000, guid: efbd8e8e6dfb68343bb51c254bc8c0d6, type: 2}
   ceilingMaterial: {fileID: 2100000, guid: e945cefdb14681c4fb9399d5b26ebf7b, type: 2}
   skins:
-  - skinName: Madera
-    wallMaterial: {fileID: 2100000, guid: ebbd6e09454bc4746a50db8883717cb3, type: 2}
-    floorMaterial: {fileID: 2100000, guid: 23a7dca1502064b488454db6ddd0c91e, type: 2}
-    ceilingMaterial: {fileID: 2100000, guid: ebbd6e09454bc4746a50db8883717cb3, type: 2}
   - skinName: Castillo
     wallMaterial: {fileID: 2100000, guid: e945cefdb14681c4fb9399d5b26ebf7b, type: 2}
     floorMaterial: {fileID: 2100000, guid: efbd8e8e6dfb68343bb51c254bc8c0d6, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: e945cefdb14681c4fb9399d5b26ebf7b, type: 2}
-  - skinName: Simple
+    noCeiling: 0
+  - skinName: Madera
+    wallMaterial: {fileID: 2100000, guid: ebbd6e09454bc4746a50db8883717cb3, type: 2}
+    floorMaterial: {fileID: 2100000, guid: 23a7dca1502064b488454db6ddd0c91e, type: 2}
+    ceilingMaterial: {fileID: 2100000, guid: ebbd6e09454bc4746a50db8883717cb3, type: 2}
+    noCeiling: 0
+  - skinName: Granito
     wallMaterial: {fileID: 2100000, guid: 2178c756e86fff04bb97c7baba595725, type: 2}
     floorMaterial: {fileID: 2100000, guid: 8371c83196e52c749a19a1a624749c45, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 2178c756e86fff04bb97c7baba595725, type: 2}
+    noCeiling: 0
   - skinName: Artistico
     wallMaterial: {fileID: 2100000, guid: f12773fb41d7fd14c8ce4f155ae3ecc4, type: 2}
     floorMaterial: {fileID: 2100000, guid: 50fdd94bfa67caf4daa4eae50673fb2e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: f12773fb41d7fd14c8ce4f155ae3ecc4, type: 2}
-  - skinName: Bosque
-    wallMaterial: {fileID: 2100000, guid: 9092948c8969b0a46b72751d48aed835, type: 2}
-    floorMaterial: {fileID: 2100000, guid: b3e696aee067d5c4c90e89d4620a7836, type: 2}
-    ceilingMaterial: {fileID: 2100000, guid: 9092948c8969b0a46b72751d48aed835, type: 2}
+    noCeiling: 0
   - skinName: Verde
     wallMaterial: {fileID: 2100000, guid: 4d0b2a3402ca45c4594bf4ba0bb6ea08, type: 2}
     floorMaterial: {fileID: 2100000, guid: 4d0b2a3402ca45c4594bf4ba0bb6ea08, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 4d0b2a3402ca45c4594bf4ba0bb6ea08, type: 2}
-  - skinName: Infierno
-    wallMaterial: {fileID: 2100000, guid: 091c1b5a9ea4b6448b78ef52ff40f497, type: 2}
-    floorMaterial: {fileID: 2100000, guid: 7f8d3e0928dc1bf4db180d82fa69ba36, type: 2}
-    ceilingMaterial: {fileID: 2100000, guid: 091c1b5a9ea4b6448b78ef52ff40f497, type: 2}
-  - skinName: Cueva
+    noCeiling: 0
+  - skinName: Transparente
     wallMaterial: {fileID: 2100000, guid: 38e00fa00653d4948834ffa718b8c19e, type: 2}
-    floorMaterial: {fileID: 2100000, guid: 49d2d1b6404cd264f9e184d6048047c5, type: 2}
+    floorMaterial: {fileID: 2100000, guid: 38e00fa00653d4948834ffa718b8c19e, type: 2}
     ceilingMaterial: {fileID: 2100000, guid: 38e00fa00653d4948834ffa718b8c19e, type: 2}
+    noCeiling: 0
   totemPrefab: {fileID: 5556454674240830927, guid: 9a9e488f774e9af4bbb75134358db65d, type: 3}
   totemWallHeight: 1.5
   totemWallOffset: 0.1
@@ -2069,7 +2067,7 @@ MonoBehaviour:
   bPress:
     m_UseReference: 0
     m_Action:
-      m_Name: 
+      m_Name: B Press
       m_Type: 0
       m_ExpectedControlType: 
       m_Id: 229c5609-b0bb-475a-acc5-2b1ff75a4ad1
@@ -2159,12 +2157,12 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314018123}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 919e39492806b334982b6b84c90dd927, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_System: {fileID: 0}
+  m_System: {fileID: 1314018127}
   m_TurnSpeed: 90
   m_LeftHandTurnAction:
     m_UseReference: 0
@@ -2197,13 +2195,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314018123}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0bf296fc962d7184ab14ad1841598d5f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_System: {fileID: 0}
-  m_MoveSpeed: 5
+  m_System: {fileID: 1314018127}
+  m_MoveSpeed: 4
   m_EnableStrafe: 1
   m_UseGravity: 1
   m_GravityApplicationMode: 0
@@ -2261,7 +2259,7 @@ MonoBehaviour:
   m_Camera: {fileID: 1322367721}
   m_OriginBaseGameObject: {fileID: 1314018123}
   m_CameraFloorOffsetObject: {fileID: 300680139}
-  m_RequestedTrackingOriginMode: 0
+  m_RequestedTrackingOriginMode: 2
   m_CameraYOffset: 1.1176
 --- !u!114 &1314018131
 MonoBehaviour:
@@ -2317,7 +2315,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1314018123}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2213c36610e3b1c4bbf886810ed9db12, type: 3}
   m_Name: 
@@ -2329,7 +2327,7 @@ MonoBehaviour:
   m_EnableTurnAround: 1
   m_DelayTime: 0
   m_LeftHandSnapTurnAction:
-    m_UseReference: 1
+    m_UseReference: 0
     m_Action:
       m_Name: Left Hand Snap Turn
       m_Type: 0

@@ -14,7 +14,13 @@ public struct CreateSessionMessage : NetworkMessage
     public bool volumetric;
     public Vector3Int dimension;
     public List<string> elementPaths;
-    public List<string> categories; // Categorías seleccionadas
+    public List<string> categories; // Categorï¿½as seleccionadas
+    // ParÃ¡metros del laberinto
+    public string skinName;
+    public bool   noCeiling;
+    public int    gridWidth;
+    public int    gridHeight;
+    public int    maxTotems;
 }
 
 

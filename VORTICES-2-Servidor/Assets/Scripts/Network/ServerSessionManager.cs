@@ -122,7 +122,12 @@ public class ServerSessionManager : NetworkBehaviour
             volumetric = msg.volumetric,
             dimension = msg.dimension,
             categories = msg.categories ?? new List<string>(),
-            elementPaths = msg.elementPaths ?? new List<string>()
+            elementPaths = msg.elementPaths ?? new List<string>(),
+            skinName = msg.skinName,
+            noCeiling = msg.noCeiling,
+            gridWidth = msg.gridWidth,
+            gridHeight = msg.gridHeight,
+            maxTotems = msg.maxTotems
         };
         activeSessions[msg.sessionName] = sessionData;
 

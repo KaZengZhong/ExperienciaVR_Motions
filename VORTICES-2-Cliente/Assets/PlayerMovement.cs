@@ -27,10 +27,7 @@ public class PlayerMovement : NetworkBehaviour
         if (!isLocalPlayer || cameraTransform == null) return;
 
         transform.position = cameraTransform.position;
-
-        Transform cubeTransform = transform.Find("Cube");
-        if (cubeTransform != null)
-            cubeTransform.localPosition = Vector3.zero;
+        transform.rotation = Quaternion.Euler(0f, cameraTransform.eulerAngles.y, 0f);
     }
 
     private IEnumerator WaitForCamera()

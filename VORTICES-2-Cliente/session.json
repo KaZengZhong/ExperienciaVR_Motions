@@ -1,10 +1,1 @@
-{
-    "sessionName": "TestMazee",
-    "userId": 0,
-    "environmentName": "Maze",
-    "isOnlineSession": true,
-    "ipAddress": "127.0.0.1"
-}
-
-
-
+{"sessionName":"66","userId":0,"environmentName":"Maze","isOnlineSession":false,"ipAddress":"127.0.0.1"}

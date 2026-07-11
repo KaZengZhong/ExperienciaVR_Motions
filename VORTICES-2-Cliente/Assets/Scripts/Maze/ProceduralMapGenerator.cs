@@ -62,13 +62,16 @@ namespace Vortices
         private List<GameObject> pathMarkers = new List<GameObject>();
 
         // Detección de meta
-        private Transform xrOriginTransform;
-        private bool      mazeCompleted;
+        private Transform  xrOriginTransform;
+        private bool       mazeCompleted;
+        private float      mazeStartTime;
+        private int        playerUserId;
 
         // Skin activo
         private string   currentSkin        = "Dungeon";
         private Material skinWallMaterial;
         private Material skinFloorMaterial;
+        private bool     skinNoCeiling;
         private Material skinCeilingMaterial;
 
         private GameObject loadingCanvas;
@@ -123,21 +126,17 @@ namespace Vortices
         {
             if (mazeCompleted || xrOriginTransform == null) return;
 
-            Vector2Int playerCell = new Vector2Int(
-                Mathf.FloorToInt(xrOriginTransform.position.x / cellSize),
-                Mathf.FloorToInt(xrOriginTransform.position.z / cellSize)
-            );
-
-            if (playerCell == goalCell)
+            if (xrOriginTransform.position.z >= gridHeight * cellSize - 0.3f)
             {
                 mazeCompleted = true;
                 MazeMetricsLogger.Instance?.LogMazeCompleted();
+                ShowCompletionMessage();
             }
         }
 
         private void LoadParameters()
         {
-            string path = Path.Combine(Application.dataPath, "../parameters.json");
+            string path = PlatformPaths.ParametersJson;
             if (!File.Exists(path))
             {
                 if (!string.IsNullOrEmpty(debugSkin)) currentSkin = debugSkin;
@@ -152,7 +151,8 @@ namespace Vortices
                 if (p.gridHeight > 0)  gridHeight  = p.gridHeight;
                 if (p.maxTotems >= -1) maxTotems   = p.maxTotems;
                 if (!string.IsNullOrEmpty(p.skinName)) currentSkin = p.skinName;
-                Debug.Log($"[Maze] Parámetros cargados: {gridWidth}x{gridHeight}, maxTotems={maxTotems}, skin={currentSkin}");
+                if (p.noCeiling) skinNoCeiling = true;
+                Debug.Log($"[Maze] Parámetros cargados: {gridWidth}x{gridHeight}, maxTotems={maxTotems}, skin={currentSkin}, noCeiling={skinNoCeiling}");
             }
             catch (System.Exception e)
             {
@@ -169,13 +169,14 @@ namespace Vortices
             public int    gridHeight = 0;
             public int    maxTotems  = 0;
             public string skinName   = "";
+            public bool   noCeiling  = false;
         }
 
         // Lee session.json y usa el sessionName como semilla determinista.
         // Ambos clientes con el mismo sessionName generarán el mismo laberinto.
         private void InitMazeSeed()
         {
-            string path = Path.GetDirectoryName(Application.dataPath) + "/session.json";
+            string path = PlatformPaths.SessionJson;
             if (!File.Exists(path)) return;
 
             try
@@ -187,6 +188,7 @@ namespace Vortices
                     Random.InitState(seed);
                     Debug.Log($"[Maze] Semilla de sesión '{data.sessionName}': {seed}");
                 }
+                playerUserId = Mathf.Abs(data.userId);
             }
             catch (System.Exception e)
             {
@@ -195,7 +197,7 @@ namespace Vortices
         }
 
         [System.Serializable]
-        private class MazeSeedData { public string sessionName = ""; }
+        private class MazeSeedData { public string sessionName = ""; public int userId = 0; }
 
         private IEnumerator WaitAndGenerate()
         {
@@ -219,6 +221,19 @@ namespace Vortices
             else
                 Debug.Log($"[Maze] ContentLoader listo tras {elapsed:F1}s. Ítems cargados: {ContentLoader.Instance.Items.Count}");
 
+            // Esperar a MazeOnlineConnector para que el joiner tenga los params del servidor
+            float netTimeout = 10f;
+            while (!Vortices.MazeOnlineConnector.IsReady && netTimeout > 0f)
+            {
+                netTimeout -= Time.deltaTime;
+                yield return null;
+            }
+            if (!Vortices.MazeOnlineConnector.IsReady)
+                Debug.LogWarning("[Maze] MazeOnlineConnector no respondió a tiempo — usando parámetros locales.");
+
+            // Re-leer parameters.json (puede haber sido actualizado por MazeOnlineConnector)
+            LoadParameters();
+
             try
             {
                 GenerateMap();
@@ -230,6 +245,29 @@ namespace Vortices
 
             if (loadingCanvas != null)
                 Destroy(loadingCanvas);
+
+            // Re-aplicar posición y altura de cámara durante 3 frames por si el sistema XR
+            // inicializa tarde y sobreescribe la posición seteada en GenerateMap.
+            for (int i = 0; i < 3; i++)
+            {
+                yield return null;
+                if (xrOriginTransform != null)
+                {
+                    Vector3 target = new Vector3(
+                        startCell.x * cellSize + cellSize / 2f + playerUserId * 0.4f,
+                        0f,
+                        startCell.y * cellSize + cellSize / 2f
+                    );
+                    xrOriginTransform.position = target;
+
+                    Camera cam = Camera.main;
+                    if (cam != null && cam.transform.position.y < 0.5f)
+                    {
+                        Vector3 lp = cam.transform.localPosition;
+                        cam.transform.localPosition = new Vector3(lp.x, 1.6f, lp.z);
+                    }
+                }
+            }
         }
 
         public void GenerateMap()
@@ -275,14 +313,24 @@ namespace Vortices
             if (xrOriginObj != null)
             {
                 xrOriginObj.transform.position = new Vector3(
-                    startCell.x * cellSize + cellSize / 2f,
+                    startCell.x * cellSize + cellSize / 2f + playerUserId * 0.4f,
                     0,
                     startCell.y * cellSize + cellSize / 2f
                 );
                 xrOriginTransform = xrOriginObj.transform;
+
+                // Si la cámara queda por debajo de 0.5m (modo desktop sin headset activo),
+                // aplicar altura de ojos por defecto para que el jugador vea el laberinto.
+                Camera cam = Camera.main;
+                if (cam != null && cam.transform.position.y < 0.5f)
+                {
+                    Vector3 lp = cam.transform.localPosition;
+                    cam.transform.localPosition = new Vector3(lp.x, 1.6f, lp.z);
+                }
             }
 
             mazeCompleted = false;
+            mazeStartTime = Time.time;
             MazeMetricsLogger.Instance?.Initialize(gridWidth, gridHeight);
         }
 
@@ -300,6 +348,7 @@ namespace Vortices
             skinWallMaterial    = (match?.wallMaterial    != null ? match.wallMaterial    : wallMaterial);
             skinFloorMaterial   = (match?.floorMaterial   != null ? match.floorMaterial   : floorMaterial);
             skinCeilingMaterial = (match?.ceilingMaterial != null ? match.ceilingMaterial : ceilingMaterial);
+            skinNoCeiling       = skinNoCeiling || (match?.noCeiling ?? false);
         }
 
         // ─── Generación del laberinto ─────────────────────────────────────────────
@@ -349,9 +398,10 @@ namespace Vortices
 
                     SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), skinFloorMaterial);
 
-                    SpawnCube(gameObject, $"Ceiling_{x}_{y}",
-                        cellCenter + new Vector3(0, wallHeight, 0),
-                        new Vector3(cellSize, 0.1f, cellSize), skinCeilingMaterial, false);
+                    if (!skinNoCeiling)
+                        SpawnCube(gameObject, $"Ceiling_{x}_{y}",
+                            cellCenter + new Vector3(0, wallHeight, 0),
+                            new Vector3(cellSize, 0.1f, cellSize), skinCeilingMaterial, false);
 
                     if (wallsHorizontal[x, y])
                     {
@@ -753,6 +803,43 @@ namespace Vortices
             }
         }
 
+        // ─── Mensaje de completación ──────────────────────────────────────────────
+
+        private void ShowCompletionMessage()
+        {
+            float elapsed = Time.time - mazeStartTime;
+            int   minutes = (int)(elapsed / 60);
+            int   seconds = (int)(elapsed % 60);
+
+            float northZ     = gridHeight * cellSize;
+            float gapCenterX = goalCell.x * cellSize + cellSize / 2f;
+
+            GameObject canvas = new GameObject("CompletionCanvas");
+            Canvas c = canvas.AddComponent<Canvas>();
+            c.renderMode = RenderMode.WorldSpace;
+            canvas.AddComponent<UnityEngine.UI.CanvasScaler>();
+            canvas.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 70f);
+
+            // Afuera del laberinto, 3m más allá de la pared norte, mirando hacia el jugador
+            canvas.transform.position = new Vector3(gapCenterX, 1.6f, northZ + 3f);
+            canvas.transform.rotation = Quaternion.LookRotation(Vector3.forward);
+            canvas.transform.localScale = Vector3.one * 0.01f;
+
+            GameObject textObj = new GameObject("Text");
+            textObj.transform.SetParent(canvas.transform, false);
+            var tmp = textObj.AddComponent<TMPro.TextMeshProUGUI>();
+            tmp.text = $"¡Llegaste al final!\n{minutes:00}:{seconds:00}";
+            tmp.enableAutoSizing = true;
+            tmp.fontSizeMin = 6;
+            tmp.fontSizeMax = 20;
+            tmp.fontStyle = TMPro.FontStyles.Bold;
+            tmp.alignment = TMPro.TextAlignmentOptions.Center;
+            tmp.color = Color.white;
+            RectTransform textRt = textObj.GetComponent<RectTransform>();
+            textRt.sizeDelta = new Vector2(190f, 60f);
+            textRt.anchoredPosition = Vector2.zero;
+        }
+
         // ─── Marcador de meta ─────────────────────────────────────────────────────
 
         private void SpawnGoalMarker()
@@ -788,27 +875,28 @@ namespace Vortices
             float lintH = 0.3f;
             float depth = wallThickness * 2.5f;
 
+            // Pared invisible 0.6m más allá — el jugador cruza la puerta pero no cae al vacío
+            GameObject stopWall = new GameObject("DoorStopWall");
+            stopWall.transform.parent = transform;
+            stopWall.transform.position = new Vector3(gapCenterX, wallHeight / 2f, northZ + 0.6f);
+            BoxCollider stopCol = stopWall.AddComponent<BoxCollider>();
+            stopCol.size = new Vector3(gapWidth, wallHeight, 0.1f);
+
             // Jamba izquierda
             SpawnCube(gameObject, "DoorJambaL",
                 new Vector3(gapCenterX - gapWidth / 2f, wallHeight / 2f, northZ),
-                new Vector3(jambW, wallHeight, depth), frameMat);
+                new Vector3(jambW, wallHeight, depth), frameMat, false);
 
             // Jamba derecha
             SpawnCube(gameObject, "DoorJambaR",
                 new Vector3(gapCenterX + gapWidth / 2f, wallHeight / 2f, northZ),
-                new Vector3(jambW, wallHeight, depth), frameMat);
+                new Vector3(jambW, wallHeight, depth), frameMat, false);
 
             // Dintel
             SpawnCube(gameObject, "DoorLintel",
                 new Vector3(gapCenterX, wallHeight - lintH / 2f, northZ),
-                new Vector3(gapWidth + jambW, lintH, depth), frameMat);
+                new Vector3(gapWidth + jambW, lintH, depth), frameMat, false);
 
-            // Fondo oscuro detrás del vano — impide ver el exterior
-            Material voidMat = new Material(Shader.Find("Standard"));
-            voidMat.color = new Color(0.03f, 0.03f, 0.03f);
-            SpawnCube(gameObject, "DoorBackdrop",
-                new Vector3(gapCenterX, wallHeight / 2f, northZ + depth / 2f + 0.02f),
-                new Vector3(gapWidth - jambW * 0.5f, wallHeight, 0.05f), voidMat);
         }
 
         // ─── Utilidades ───────────────────────────────────────────────────────────
@@ -855,5 +943,6 @@ namespace Vortices
         public Material wallMaterial;
         public Material floorMaterial;
         public Material ceilingMaterial;
+        public bool     noCeiling;
     }
 }

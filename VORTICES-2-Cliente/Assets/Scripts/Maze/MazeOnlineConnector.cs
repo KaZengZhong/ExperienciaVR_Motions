@@ -12,6 +12,8 @@ namespace Vortices
     // En modo offline no hace nada — el laberinto se genera normalmente.
     public class MazeOnlineConnector : MonoBehaviour
     {
+        public static bool IsReady { get; private set; } = false;
+
         private LauncherSessionData sessionData;
 
         private void Start()
@@ -21,6 +23,7 @@ namespace Vortices
             if (sessionData == null)
             {
                 Debug.Log("[MazeOnlineConnector] No se encontró session.json — modo offline.");
+                IsReady = true;
                 return;
             }
 
@@ -28,6 +31,8 @@ namespace Vortices
 
             if (sessionData.isOnlineSession)
                 StartCoroutine(ConnectAndRegisterSession());
+            else
+                IsReady = true;
         }
 
         private IEnumerator ConnectAndRegisterSession()
@@ -69,6 +74,9 @@ namespace Vortices
             NetworkClient.RegisterHandler<TotemAnsweredMessage>(OnClientTotemAnswered);
             Debug.Log("[MazeOnlineConnector] Handlers registrados (sesión + tótems).");
 
+            // Leer parámetros del laberinto para incluirlos en el mensaje
+            LocalMazeParams mp = ReadMazeParams();
+
             // Intentar crear sesión primero
             NetworkClient.Send(new CreateSessionMessage
             {
@@ -78,7 +86,12 @@ namespace Vortices
                 isOnlineSession = true,
                 browsingMode    = "Online",
                 categories      = new List<string>(),
-                elementPaths    = new List<string>()
+                elementPaths    = new List<string>(),
+                skinName        = mp.skinName,
+                noCeiling       = mp.noCeiling,
+                gridWidth       = mp.gridWidth,
+                gridHeight      = mp.gridHeight,
+                maxTotems       = mp.maxTotems
             });
         }
 
@@ -117,6 +130,7 @@ namespace Vortices
             if (msg.success)
             {
                 Debug.Log($"[MazeOnlineConnector] Sesión '{msg.sessionName}' creada en el servidor.");
+                IsReady = true; // creador: usa sus propios parameters.json locales
             }
             else
             {
@@ -129,9 +143,38 @@ namespace Vortices
         private void OnActiveSessionResponse(ActiveSessionResponseMessage msg)
         {
             if (msg.success)
+            {
                 Debug.Log($"[MazeOnlineConnector] Unido a sesión activa: '{msg.sessionData.sessionName}'.");
+                // Sobreescribir parameters.json con los parámetros del creador de la sesión
+                WriteMazeParams(msg.sessionData);
+            }
             else
+            {
                 Debug.LogError("[MazeOnlineConnector] No hay sesión activa en el servidor.");
+            }
+            IsReady = true;
+        }
+
+        private void WriteMazeParams(SessionData sd)
+        {
+            string path = PlatformPaths.ParametersJson;
+            try
+            {
+                var p = new SerializableMazeParams
+                {
+                    skinName  = sd.skinName,
+                    noCeiling = sd.noCeiling,
+                    gridWidth  = sd.gridWidth,
+                    gridHeight = sd.gridHeight,
+                    maxTotems  = sd.maxTotems
+                };
+                File.WriteAllText(path, JsonUtility.ToJson(p));
+                Debug.Log($"[MazeOnlineConnector] parameters.json actualizado desde servidor: skin={sd.skinName}, noCeiling={sd.noCeiling}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogWarning("[MazeOnlineConnector] Error escribiendo parameters.json: " + e.Message);
+            }
         }
 
         private void OnClientTotemAnswered(TotemAnsweredMessage msg)
@@ -151,6 +194,7 @@ namespace Vortices
 
         private void OnDestroy()
         {
+            IsReady = false;
             if (NetworkClient.isConnected)
             {
                 NetworkClient.UnregisterHandler<SessionCreatedMessage>();
@@ -163,7 +207,7 @@ namespace Vortices
 
         private static LauncherSessionData ReadSessionJson()
         {
-            string path = Path.GetDirectoryName(Application.dataPath) + "/session.json";
+            string path = PlatformPaths.SessionJson;
             if (!File.Exists(path)) return null;
 
             try
@@ -177,6 +221,16 @@ namespace Vortices
             }
         }
 
+        // ── Lectura de parameters.json ────────────────────────────────────────
+
+        private static LocalMazeParams ReadMazeParams()
+        {
+            string path = PlatformPaths.ParametersJson;
+            if (!File.Exists(path)) return new LocalMazeParams();
+            try { return JsonUtility.FromJson<LocalMazeParams>(File.ReadAllText(path)); }
+            catch { return new LocalMazeParams(); }
+        }
+
         // ── Datos del launcher ─────────────────────────────────────────────────
 
         [Serializable]
@@ -187,6 +241,26 @@ namespace Vortices
             public string environmentName = "Maze";
             public bool   isOnlineSession = false;
             public string ipAddress       = "127.0.0.1";
+        }
+
+        [Serializable]
+        private class LocalMazeParams
+        {
+            public string skinName  = "";
+            public bool   noCeiling = false;
+            public int    gridWidth  = 0;
+            public int    gridHeight = 0;
+            public int    maxTotems  = 0;
+        }
+
+        [Serializable]
+        private class SerializableMazeParams
+        {
+            public string skinName;
+            public bool   noCeiling;
+            public int    gridWidth;
+            public int    gridHeight;
+            public int    maxTotems;
         }
     }
 }

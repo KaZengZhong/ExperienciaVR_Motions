@@ -13,7 +13,13 @@ public struct SessionData
     public bool volumetric; // Opcional
     public Vector3Int dimension; // X, Y, Z
     public List<string> elementPaths; // Rutas o URLs
-    public List<string> categories; // Categor�as seleccionadas
+    public List<string> categories; // Categor�as seleccionadas
+    // Parámetros del laberinto — sincronizados desde el creador de la sesión
+    public string skinName;
+    public bool   noCeiling;
+    public int    gridWidth;
+    public int    gridHeight;
+    public int    maxTotems;
 }
 
 
