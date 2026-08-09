@@ -61,7 +61,7 @@ public class CustomNetworkManager : NetworkManager
 
     private void OnServerTotemAnswered(NetworkConnectionToClient conn, TotemAnsweredMessage msg)
     {
-        Debug.Log($"[CustomNetworkManager] Servidor recibió TotemAnswered — pos={msg.totemPosition}, real={msg.answeredReal}. Rebroadcasting...");
+        Debug.Log($"[CustomNetworkManager] Servidor recibio TotemAnswered — pos={msg.totemPosition}, real={msg.answeredReal}. Rebroadcasting...");
         NetworkServer.SendToAll(msg);
     }
 

@@ -8,8 +8,8 @@ namespace Vortices
     public class ProceduralMapGenerator : MonoBehaviour
     {
         [Header("Configuración del laberinto")]
-        public int gridWidth = 7;
-        public int gridHeight = 7;
+        public int gridWidth = 10;
+        public int gridHeight = 10;
         public float cellSize = 4f;
         public float wallHeight = 3f;
         public float wallThickness = 0.2f;
@@ -29,7 +29,7 @@ namespace Vortices
         [Tooltip("Separación del tótem respecto a la superficie de la pared")]
         public float totemWallOffset = 0.05f;
         [Tooltip("Máximo de tótems a colocar (0 = sin límite)")]
-        public int maxTotems = 0;
+        public int maxTotems = -1;
 
         [Header("Debug")]
         [Tooltip("Sobreescribe el skin del parameters.json solo en el editor")]
@@ -66,9 +66,10 @@ namespace Vortices
         private bool       mazeCompleted;
         private float      mazeStartTime;
         private int        playerUserId;
+        private string     sessionName = "";
 
         // Skin activo
-        private string   currentSkin        = "Dungeon";
+        private string   currentSkin        = "Castillo";
         private Material skinWallMaterial;
         private Material skinFloorMaterial;
         private bool     skinNoCeiling;
@@ -136,7 +137,7 @@ namespace Vortices
 
         private void LoadParameters()
         {
-            string path = PlatformPaths.ParametersJson;
+            string path = PlatformPaths.ConfigJson;
             if (!File.Exists(path))
             {
                 if (!string.IsNullOrEmpty(debugSkin)) currentSkin = debugSkin;
@@ -176,7 +177,7 @@ namespace Vortices
         // Ambos clientes con el mismo sessionName generarán el mismo laberinto.
         private void InitMazeSeed()
         {
-            string path = PlatformPaths.SessionJson;
+            string path = PlatformPaths.ConfigJson;
             if (!File.Exists(path)) return;
 
             try
@@ -184,11 +185,12 @@ namespace Vortices
                 MazeSeedData data = JsonUtility.FromJson<MazeSeedData>(File.ReadAllText(path));
                 if (!string.IsNullOrEmpty(data.sessionName))
                 {
-                    int seed = Mathf.Abs(data.sessionName.GetHashCode());
+                    int seed = DeterministicHash(data.sessionName);
                     Random.InitState(seed);
                     Debug.Log($"[Maze] Semilla de sesión '{data.sessionName}': {seed}");
                 }
                 playerUserId = Mathf.Abs(data.userId);
+                sessionName  = data.sessionName;
             }
             catch (System.Exception e)
             {
@@ -231,7 +233,7 @@ namespace Vortices
             if (!Vortices.MazeOnlineConnector.IsReady)
                 Debug.LogWarning("[Maze] MazeOnlineConnector no respondió a tiempo — usando parámetros locales.");
 
-            // Re-leer parameters.json (puede haber sido actualizado por MazeOnlineConnector)
+            // Re-leer config.json (puede haber sido actualizado por MazeOnlineConnector)
             LoadParameters();
 
             try
@@ -331,7 +333,7 @@ namespace Vortices
 
             mazeCompleted = false;
             mazeStartTime = Time.time;
-            MazeMetricsLogger.Instance?.Initialize(gridWidth, gridHeight);
+            MazeMetricsLogger.Instance?.Initialize(gridWidth, gridHeight, xrOriginTransform, cellSize, playerUserId, sessionName);
         }
 
         // ─── Skins ───────────────────────────────────────────────────────────────
@@ -396,7 +398,9 @@ namespace Vortices
                         y * cellSize + cellSize / 2f
                     );
 
-                    SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), skinFloorMaterial);
+                    var floorTile = SpawnCube(gameObject, $"Floor_{x}_{y}", cellCenter, new Vector3(cellSize, 0.1f, cellSize), skinFloorMaterial);
+                    if (PlayerPrefs.GetInt("movementMode", 0) == 1)
+                        floorTile.AddComponent<UnityEngine.XR.Interaction.Toolkit.TeleportationArea>();
 
                     if (!skinNoCeiling)
                         SpawnCube(gameObject, $"Ceiling_{x}_{y}",
@@ -528,26 +532,6 @@ namespace Vortices
 
         // ─── Detección de puntos de decisión ─────────────────────────────────────
 
-        /// <summary>
-        /// Devuelve las celdas de la ruta óptima que tienen 3 o más vecinos accesibles.
-        /// Estos son los puntos donde el jugador realmente necesita decidir qué dirección tomar.
-        /// </summary>
-        private List<Vector2Int> FindDecisionPointsOnPath()
-        {
-            var points = new List<Vector2Int>();
-            if (fullPath == null) return points;
-
-            foreach (Vector2Int cell in fullPath)
-                if (GetPassableNeighbors(cell).Count >= 3)
-                    points.Add(cell);
-
-            return points;
-        }
-
-        /// <summary>
-        /// Versión de respaldo: todas las intersecciones del laberinto,
-        /// no solo las que están en la ruta óptima.
-        /// </summary>
         private List<Vector2Int> FindAllDecisionPoints()
         {
             var points = new List<Vector2Int>();
@@ -901,16 +885,18 @@ namespace Vortices
 
         // ─── Utilidades ───────────────────────────────────────────────────────────
 
-        private void Shuffle(List<Vector2Int> list)
+        public static int DeterministicHash(string s)
         {
-            for (int i = list.Count - 1; i > 0; i--)
+            unchecked
             {
-                int j = Random.Range(0, i + 1);
-                (list[i], list[j]) = (list[j], list[i]);
+                int hash = 17;
+                foreach (char c in s)
+                    hash = hash * 31 + c;
+                return Mathf.Abs(hash);
             }
         }
 
-        private void Shuffle(List<string> list)
+        private void Shuffle(List<Vector2Int> list)
         {
             for (int i = list.Count - 1; i > 0; i--)
             {

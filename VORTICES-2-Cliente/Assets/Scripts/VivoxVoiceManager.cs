@@ -11,7 +11,10 @@ public class VivoxVoiceManager : MonoBehaviour
 {
     public const string LobbyChannelName = "VoRTIcESVoiceChat";
 
+    public static event Action<bool> OnLocalSpeakingChanged;
+
     private static VivoxVoiceManager _instance;
+    private VivoxParticipant _selfParticipant;
 
     [SerializeField] private string _key;
     [SerializeField] private string _issuer;
@@ -103,6 +106,10 @@ public class VivoxVoiceManager : MonoBehaviour
     {
         try
         {
+            VivoxService.Instance.ParticipantAddedToChannel -= OnParticipantAdded;
+            VivoxService.Instance.ParticipantAddedToChannel += OnParticipantAdded;
+            VivoxService.Instance.ParticipantRemovedFromChannel -= OnParticipantRemoved;
+            VivoxService.Instance.ParticipantRemovedFromChannel += OnParticipantRemoved;
             await VivoxService.Instance.JoinGroupChannelAsync(channelName, ChatCapability.AudioOnly);
             Debug.Log($"Joined Vivox channel: {channelName}.");
         }
@@ -112,10 +119,36 @@ public class VivoxVoiceManager : MonoBehaviour
         }
     }
 
+    private void OnParticipantAdded(VivoxParticipant participant)
+    {
+        if (!participant.IsSelf) return;
+        _selfParticipant = participant;
+        participant.ParticipantSpeechDetected += OnSelfSpeechDetected;
+    }
+
+    private void OnParticipantRemoved(VivoxParticipant participant)
+    {
+        if (!participant.IsSelf || _selfParticipant == null) return;
+        _selfParticipant.ParticipantSpeechDetected -= OnSelfSpeechDetected;
+        _selfParticipant = null;
+    }
+
+    private void OnSelfSpeechDetected()
+    {
+        OnLocalSpeakingChanged?.Invoke(_selfParticipant?.SpeechDetected ?? false);
+    }
+
     public async Task LeaveChannelAsync(string channelName)
     {
         try
         {
+            if (_selfParticipant != null)
+            {
+                _selfParticipant.ParticipantSpeechDetected -= OnSelfSpeechDetected;
+                _selfParticipant = null;
+            }
+            VivoxService.Instance.ParticipantAddedToChannel -= OnParticipantAdded;
+            VivoxService.Instance.ParticipantRemovedFromChannel -= OnParticipantRemoved;
             await VivoxService.Instance.LeaveChannelAsync(channelName);
             Debug.Log($"Left Vivox channel: {channelName}.");
         }
@@ -159,14 +192,16 @@ public class VivoxVoiceManager : MonoBehaviour
     {
         Debug.Log("[VoiceChat] Inicializando Vivox Service...");
 
-        var options = new InitializationOptions();
-        if (CheckManualCredentials())
+        if (!UnityServices.State.Equals(ServicesInitializationState.Initialized))
         {
-            options.SetVivoxCredentials(_server, _domain, _issuer, _key);
+            var options = new InitializationOptions();
+            if (CheckManualCredentials())
+                options.SetVivoxCredentials(_server, _domain, _issuer, _key);
+            await UnityServices.InitializeAsync(options);
         }
 
-        await UnityServices.InitializeAsync(options);
-        await VivoxService.Instance.InitializeAsync();
+        try { await VivoxService.Instance.InitializeAsync(); }
+        catch (Exception ex) { Debug.LogWarning("[VoiceChat] VivoxService.InitializeAsync: " + ex.Message); }
 
         IsVivoxReady = true;
         Debug.Log("[VoiceChat] Vivox Service inicializado correctamente.");

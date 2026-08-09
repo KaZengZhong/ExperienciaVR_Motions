@@ -69,15 +69,15 @@ namespace Vortices
             {
                 if (!string.IsNullOrEmpty(item.imageUrl))
                 {
-                    string imgUrl = ResolveUrl(item.imageUrl);
+                    string imgUrl = ResolveUrl(item.imageUrl, imagesBaseUrl);
                     yield return LoadSprite(imgUrl, sprite => item.sprite = sprite);
                 }
 
                 // Resolver URLs de video y audio para que InformationTotem tenga la URL completa
                 if (!string.IsNullOrEmpty(item.videoUrl))
-                    item.videoUrl = ResolveUrl(item.videoUrl);
+                    item.videoUrl = ResolveUrl(item.videoUrl, imagesBaseUrl);
                 if (!string.IsNullOrEmpty(item.audioUrl))
-                    item.audioUrl = ResolveUrl(item.audioUrl);
+                    item.audioUrl = ResolveUrl(item.audioUrl, imagesBaseUrl);
 
                 Items.Add(item);
             }
@@ -90,11 +90,11 @@ namespace Vortices
         /// Si la URL ya es absoluta la devuelve tal cual.
         /// Si no, la concatena con imagesBaseUrl.
         /// </summary>
-        private string ResolveUrl(string url)
+        public static string ResolveUrl(string url, string baseUrl)
         {
             return url.StartsWith("http")
                 ? url
-                : $"{imagesBaseUrl.TrimEnd('/')}/{url}";
+                : $"{baseUrl.TrimEnd('/')}/{url}";
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace Vortices
         /// </summary>
         void OnApplicationQuit()
         {
-            string[] extensions = { "*.mp4", "*.webm", "*.mp3", "*.wav", "*.ogg" };
+            string[] extensions = { "*.mp4", "*.webm" };
             foreach (string ext in extensions)
             {
                 string[] files = System.IO.Directory.GetFiles(Application.temporaryCachePath, ext);

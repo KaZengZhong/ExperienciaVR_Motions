@@ -16,13 +16,21 @@ namespace Vortices
 
         private LauncherSessionData sessionData;
 
+        private void Awake()
+        {
+            var p = ReadMazeParams();
+            PlayerPrefs.SetInt("rotationMode", p.rotationMode);
+            PlayerPrefs.SetInt("movementMode", p.movementMode);
+            PlayerPrefs.Save();
+        }
+
         private void Start()
         {
             sessionData = ReadSessionJson();
 
             if (sessionData == null)
             {
-                Debug.Log("[MazeOnlineConnector] No se encontró session.json — modo offline.");
+                Debug.Log("[MazeOnlineConnector] No se encontró config.json — modo offline.");
                 IsReady = true;
                 return;
             }
@@ -130,7 +138,7 @@ namespace Vortices
             if (msg.success)
             {
                 Debug.Log($"[MazeOnlineConnector] Sesión '{msg.sessionName}' creada en el servidor.");
-                IsReady = true; // creador: usa sus propios parameters.json locales
+                IsReady = true; // creador: usa su propio config.json local
             }
             else
             {
@@ -145,7 +153,7 @@ namespace Vortices
             if (msg.success)
             {
                 Debug.Log($"[MazeOnlineConnector] Unido a sesión activa: '{msg.sessionData.sessionName}'.");
-                // Sobreescribir parameters.json con los parámetros del creador de la sesión
+                // Sobreescribir config.json con los parámetros del creador de la sesión
                 WriteMazeParams(msg.sessionData);
             }
             else
@@ -157,23 +165,26 @@ namespace Vortices
 
         private void WriteMazeParams(SessionData sd)
         {
-            string path = PlatformPaths.ParametersJson;
+            string path = PlatformPaths.ConfigJson;
             try
             {
-                var p = new SerializableMazeParams
-                {
-                    skinName  = sd.skinName,
-                    noCeiling = sd.noCeiling,
-                    gridWidth  = sd.gridWidth,
-                    gridHeight = sd.gridHeight,
-                    maxTotems  = sd.maxTotems
-                };
-                File.WriteAllText(path, JsonUtility.ToJson(p));
-                Debug.Log($"[MazeOnlineConnector] parameters.json actualizado desde servidor: skin={sd.skinName}, noCeiling={sd.noCeiling}");
+                // Leer config existente para no perder otros campos (session, locomotion, etc.)
+                FullConfig cfg = File.Exists(path)
+                    ? JsonUtility.FromJson<FullConfig>(File.ReadAllText(path))
+                    : new FullConfig();
+
+                cfg.skinName  = sd.skinName;
+                cfg.noCeiling = sd.noCeiling;
+                cfg.gridWidth  = sd.gridWidth;
+                cfg.gridHeight = sd.gridHeight;
+                cfg.maxTotems  = sd.maxTotems;
+
+                File.WriteAllText(path, JsonUtility.ToJson(cfg));
+                Debug.Log($"[MazeOnlineConnector] config.json actualizado desde servidor: skin={sd.skinName}, grid={sd.gridWidth}x{sd.gridHeight}");
             }
             catch (Exception e)
             {
-                Debug.LogWarning("[MazeOnlineConnector] Error escribiendo parameters.json: " + e.Message);
+                Debug.LogWarning("[MazeOnlineConnector] Error escribiendo config.json: " + e.Message);
             }
         }
 
@@ -207,7 +218,7 @@ namespace Vortices
 
         private static LauncherSessionData ReadSessionJson()
         {
-            string path = PlatformPaths.SessionJson;
+            string path = PlatformPaths.ConfigJson;
             if (!File.Exists(path)) return null;
 
             try
@@ -221,11 +232,11 @@ namespace Vortices
             }
         }
 
-        // ── Lectura de parameters.json ────────────────────────────────────────
+        // ── Lectura de config.json ────────────────────────────────────────────
 
         private static LocalMazeParams ReadMazeParams()
         {
-            string path = PlatformPaths.ParametersJson;
+            string path = PlatformPaths.ConfigJson;
             if (!File.Exists(path)) return new LocalMazeParams();
             try { return JsonUtility.FromJson<LocalMazeParams>(File.ReadAllText(path)); }
             catch { return new LocalMazeParams(); }
@@ -246,21 +257,30 @@ namespace Vortices
         [Serializable]
         private class LocalMazeParams
         {
-            public string skinName  = "";
-            public bool   noCeiling = false;
-            public int    gridWidth  = 0;
-            public int    gridHeight = 0;
-            public int    maxTotems  = 0;
+            public string skinName     = "";
+            public bool   noCeiling    = false;
+            public int    gridWidth    = 0;
+            public int    gridHeight   = 0;
+            public int    maxTotems    = 0;
+            public int    rotationMode = 0;
+            public int    movementMode = 0;
         }
 
         [Serializable]
-        private class SerializableMazeParams
+        private class FullConfig
         {
-            public string skinName;
-            public bool   noCeiling;
-            public int    gridWidth;
-            public int    gridHeight;
-            public int    maxTotems;
+            public string sessionName     = "";
+            public int    userId          = 0;
+            public string environmentName = "Maze";
+            public bool   isOnlineSession = false;
+            public string ipAddress       = "";
+            public string skinName        = "";
+            public bool   noCeiling       = false;
+            public int    gridWidth       = 0;
+            public int    gridHeight      = 0;
+            public int    maxTotems       = 0;
+            public int    rotationMode    = 0;
+            public int    movementMode    = 0;
         }
     }
 }

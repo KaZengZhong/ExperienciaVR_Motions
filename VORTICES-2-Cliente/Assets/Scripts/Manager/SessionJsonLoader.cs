@@ -21,8 +21,14 @@ namespace Vortices
 
         private void Start()
         {
-            LauncherSessionData data = Load();
-            if (data == null) return;
+            LauncherSessionData data = Load() ?? new LauncherSessionData
+            {
+                sessionName     = "Local",
+                userId          = 0,
+                environmentName = "Maze",
+                isOnlineSession = false,
+                ipAddress       = ""
+            };
 
             if (sessionManager == null)
                 sessionManager = FindObjectOfType<SessionManager>();
@@ -81,13 +87,7 @@ namespace Vortices
 
         private static string GetSessionJsonPath()
         {
-#if UNITY_EDITOR
-            // En editor: busca en la raíz del proyecto para facilitar pruebas manuales
-            return Path.GetDirectoryName(Application.dataPath) + "/session.json";
-#else
-            // En build: mismo directorio que el .exe
-            return Path.GetDirectoryName(Application.dataPath) + "/session.json";
-#endif
+            return PlatformPaths.ConfigJson;
         }
 
         [Serializable]

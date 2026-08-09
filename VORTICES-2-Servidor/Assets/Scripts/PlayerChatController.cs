@@ -12,6 +12,12 @@ public class PlayerChatController : NetworkBehaviour
     }
 
     [Command]
+    private void CmdSetSpeaking(bool speaking)
+    {
+        GetComponent<PlayerAvatarController>()?.SetSpeaking(speaking);
+    }
+
+    [Command]
     public void CmdSendMessageToChat(string userId, string message)
     {
         if (string.IsNullOrEmpty(userId))

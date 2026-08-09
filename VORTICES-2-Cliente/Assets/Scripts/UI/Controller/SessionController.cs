@@ -447,7 +447,7 @@ namespace Vortices
 
         private void TryLoadLauncherConfig()
         {
-            string path = Path.Combine(Application.dataPath, "../session.json");
+            string path = PlatformPaths.ConfigJson;
             if (!File.Exists(path)) return;
 
             try

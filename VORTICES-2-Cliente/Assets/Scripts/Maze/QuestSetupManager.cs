@@ -46,15 +46,23 @@ namespace Vortices
         [Header("No Ceiling")]
         [SerializeField] private Toggle noCeilingToggle;
 
+        // ── Rotación ───────────────────────────────────────────────────────────
+        [Header("Rotación")]
+        [SerializeField] private TMP_Text rotationModeLabel;
+        [SerializeField] private Button prevRotationBtn;
+        [SerializeField] private Button nextRotationBtn;
+
+        // ── Movimiento ─────────────────────────────────────────────────────────
+        [Header("Movimiento")]
+        [SerializeField] private TMP_Text movementModeLabel;
+        [SerializeField] private Button prevMovementBtn;
+        [SerializeField] private Button nextMovementBtn;
+
         // ── Grilla ─────────────────────────────────────────────────────────────
         [Header("Grilla")]
-        [SerializeField] private TMP_Text gridWidthLabel;
-        [SerializeField] private Button gridWidthMinusBtn;
-        [SerializeField] private Button gridWidthPlusBtn;
-
-        [SerializeField] private TMP_Text gridHeightLabel;
-        [SerializeField] private Button gridHeightMinusBtn;
-        [SerializeField] private Button gridHeightPlusBtn;
+        [SerializeField] private TMP_Text gridSizeLabel;
+        [SerializeField] private Button gridSizeMinusBtn;
+        [SerializeField] private Button gridSizePlusBtn;
 
         // ── Max Tótems ─────────────────────────────────────────────────────────
         [Header("Tótems")]
@@ -89,9 +97,13 @@ namespace Vortices
         private string ipAddress = "192.168.0.100";
         private int skinIdx = 0;
         private bool noCeiling = false;
-        private int gridWidth = 8;
-        private int gridHeight = 8;
-        private int maxTotems = 0;   // 0 = sin límite
+        private int rotationMode = 0;  // 0=Controller, 1=Head
+        private int movementMode = 0;  // 0=Joystick, 1=Teleportación
+        private int gridSize = 8;
+
+        private static readonly string[] RotationModeNames = { "Joystick", "Head" };
+        private static readonly string[] MovementModeNames = { "Joystick", "Teleport", "Walk" };
+        private int maxTotems = -1;   // -1 = sin límite
 
         private enum KeyboardTarget { None, SessionName, IP }
         private KeyboardTarget kbTarget = KeyboardTarget.None;
@@ -101,7 +113,6 @@ namespace Vortices
 
         private void Awake()
         {
-            Debug.Log("[QuestSetup] Awake. startBtn=" + (startBtn != null ? startBtn.name : "NULL"));
             LoadSavedData();
             WireButtons();
             BuildKeyboard();
@@ -132,12 +143,16 @@ namespace Vortices
 
             noCeilingToggle?.onValueChanged.AddListener(v => noCeiling = v);
 
-            gridWidthMinusBtn?.onClick.AddListener(() => { gridWidth = Mathf.Max(3, gridWidth - 1); RefreshGrid(); });
-            gridWidthPlusBtn?.onClick.AddListener(() => { gridWidth = Mathf.Min(30, gridWidth + 1); RefreshGrid(); });
-            gridHeightMinusBtn?.onClick.AddListener(() => { gridHeight = Mathf.Max(3, gridHeight - 1); RefreshGrid(); });
-            gridHeightPlusBtn?.onClick.AddListener(() => { gridHeight = Mathf.Min(30, gridHeight + 1); RefreshGrid(); });
+            prevRotationBtn?.onClick.AddListener(() => { rotationMode = (rotationMode - 1 + RotationModeNames.Length) % RotationModeNames.Length; RefreshRotation(); });
+            nextRotationBtn?.onClick.AddListener(() => { rotationMode = (rotationMode + 1) % RotationModeNames.Length; RefreshRotation(); });
 
-            maxTotemsMinusBtn?.onClick.AddListener(() => { maxTotems = Mathf.Max(0, maxTotems - 1); RefreshTotems(); });
+            prevMovementBtn?.onClick.AddListener(() => { movementMode = (movementMode - 1 + MovementModeNames.Length) % MovementModeNames.Length; RefreshMovement(); });
+            nextMovementBtn?.onClick.AddListener(() => { movementMode = (movementMode + 1) % MovementModeNames.Length; RefreshMovement(); });
+
+            gridSizeMinusBtn?.onClick.AddListener(() => { gridSize = Mathf.Max(3, gridSize - 1); RefreshGrid(); });
+            gridSizePlusBtn?.onClick.AddListener(() => { gridSize = Mathf.Min(30, gridSize + 1); RefreshGrid(); });
+
+            maxTotemsMinusBtn?.onClick.AddListener(() => { maxTotems = Mathf.Max(-1, maxTotems - 1); RefreshTotems(); });
             maxTotemsPlusBtn?.onClick.AddListener(() => { maxTotems++; RefreshTotems(); });
 
             startBtn?.onClick.AddListener(OnStart);
@@ -157,6 +172,24 @@ namespace Vortices
         private void BuildKeyboard()
         {
             if (keyboardButtonsGrid == null) return;
+            if (keyboardPanel != null) keyboardPanel.SetActive(false);
+
+            // Backspace: ancho fijo; el display toma el espacio restante
+            if (keyboardBackspaceBtn != null)
+            {
+                var le = keyboardBackspaceBtn.GetComponent<LayoutElement>()
+                         ?? keyboardBackspaceBtn.gameObject.AddComponent<LayoutElement>();
+                le.preferredWidth = 120f;
+                le.flexibleWidth  = 0f;
+
+                var hlg = keyboardBackspaceBtn.transform.parent
+                                              ?.GetComponent<HorizontalLayoutGroup>();
+                if (hlg != null) hlg.childForceExpandWidth = false;
+            }
+
+            // Más espacio entre la fila de display y la grilla de teclas
+            var vlg = keyboardPanel?.GetComponent<VerticalLayoutGroup>();
+            if (vlg != null) vlg.spacing = 20f;
 
             string[] keys = {
                 "1","2","3","4","5","6","7","8","9","0",".",
@@ -289,6 +322,9 @@ namespace Vortices
                 return;
             }
 
+            PlayerPrefs.SetInt("rotationMode", rotationMode);
+            PlayerPrefs.SetInt("movementMode", movementMode);
+            PlayerPrefs.Save();
             SaveData();
             SceneManager.LoadScene(MazeScene);
         }
@@ -314,38 +350,34 @@ namespace Vortices
                 catch { }
             }
 
-            // Cargar session.json para userId / online / ip
-            if (File.Exists(PlatformPaths.SessionJson))
+            // Cargar config.json
+            if (File.Exists(PlatformPaths.ConfigJson))
             {
                 try
                 {
-                    var sd = JsonUtility.FromJson<SavedSession>(
-                        File.ReadAllText(PlatformPaths.SessionJson));
-                    userId    = sd.userId;
-                    isOnline  = sd.isOnlineSession;
-                    ipAddress = sd.ipAddress;
+                    var cfg = JsonUtility.FromJson<SavedConfig>(
+                        File.ReadAllText(PlatformPaths.ConfigJson));
+                    userId    = cfg.userId;
+                    isOnline  = cfg.isOnlineSession;
+                    ipAddress = cfg.ipAddress;
 
-                    int idx = sessions.IndexOf(sd.sessionName);
+                    int idx = sessions.IndexOf(cfg.sessionName);
                     if (idx >= 0) sessionIdx = idx;
+
+                    int sIdx = Array.IndexOf(SkinNames, cfg.skinName);
+                    skinIdx   = sIdx >= 0 ? sIdx : 0;
+                    noCeiling = cfg.noCeiling;
+                    gridSize  = cfg.gridWidth > 0 ? cfg.gridWidth : gridSize;
+                    maxTotems = cfg.maxTotems >= -1 ? cfg.maxTotems : -1;
+                    rotationMode = cfg.rotationMode;
+                    movementMode = cfg.movementMode;
                 }
                 catch { }
             }
-
-            // Cargar parameters.json para skin / noCeiling / grilla / tótems
-            if (File.Exists(PlatformPaths.ParametersJson))
+            else
             {
-                try
-                {
-                    var p = JsonUtility.FromJson<SavedParams>(
-                        File.ReadAllText(PlatformPaths.ParametersJson));
-                    int sIdx = Array.IndexOf(SkinNames, p.skinName);
-                    skinIdx    = sIdx >= 0 ? sIdx : 0;
-                    noCeiling  = p.noCeiling;
-                    gridWidth  = p.gridWidth  > 0 ? p.gridWidth  : gridWidth;
-                    gridHeight = p.gridHeight > 0 ? p.gridHeight : gridHeight;
-                    maxTotems  = p.maxTotems;
-                }
-                catch { }
+                rotationMode = PlayerPrefs.GetInt("rotationMode", 0);
+                movementMode = PlayerPrefs.GetInt("movementMode", 0);
             }
         }
 
@@ -355,25 +387,22 @@ namespace Vortices
             File.WriteAllText(PlatformPaths.LauncherSessions,
                 JsonUtility.ToJson(new SessionListWrapper { sessions = sessions }));
 
-            // session.json — lo lee MazeOnlineConnector
+            // config.json — contiene todos los campos (session + params)
             string sessName = sessions.Count > 0 ? sessions[sessionIdx] : "Sesion1";
-            File.WriteAllText(PlatformPaths.SessionJson, JsonUtility.ToJson(new SavedSession
+            File.WriteAllText(PlatformPaths.ConfigJson, JsonUtility.ToJson(new SavedConfig
             {
                 sessionName     = sessName,
                 userId          = userId,
                 environmentName = "Maze",
                 isOnlineSession = isOnline,
-                ipAddress       = ipAddress
-            }));
-
-            // parameters.json — lo lee ProceduralMapGenerator
-            File.WriteAllText(PlatformPaths.ParametersJson, JsonUtility.ToJson(new SavedParams
-            {
-                skinName   = SkinNames[skinIdx],
-                noCeiling  = noCeiling,
-                gridWidth  = gridWidth,
-                gridHeight = gridHeight,
-                maxTotems  = maxTotems
+                ipAddress       = ipAddress,
+                skinName        = SkinNames[skinIdx],
+                noCeiling       = noCeiling,
+                gridWidth       = gridSize,
+                gridHeight      = gridSize,
+                maxTotems       = maxTotems,
+                rotationMode    = rotationMode,
+                movementMode    = movementMode
             }));
         }
 
@@ -386,6 +415,8 @@ namespace Vortices
             RefreshOnline();
             RefreshSkin();
             if (noCeilingToggle != null) noCeilingToggle.isOn = noCeiling;
+            RefreshRotation();
+            RefreshMovement();
             RefreshGrid();
             RefreshTotems();
             if (alertLabel != null) alertLabel.text = "";
@@ -394,7 +425,7 @@ namespace Vortices
         private void RefreshSession()
         {
             if (sessionLabel != null)
-                sessionLabel.text = sessions.Count > 0 ? sessions[sessionIdx] : "— (sin sesiones) —";
+                sessionLabel.text = sessions.Count > 0 ? sessions[sessionIdx] : "no sessions";
         }
 
         private void RefreshUserId()
@@ -414,16 +445,27 @@ namespace Vortices
             if (skinLabel != null) skinLabel.text = SkinNames[skinIdx];
         }
 
+        private void RefreshRotation()
+        {
+            if (rotationModeLabel != null)
+                rotationModeLabel.text = RotationModeNames[rotationMode];
+        }
+
+        private void RefreshMovement()
+        {
+            if (movementModeLabel != null)
+                movementModeLabel.text = MovementModeNames[movementMode];
+        }
+
         private void RefreshGrid()
         {
-            if (gridWidthLabel  != null) gridWidthLabel.text  = gridWidth.ToString();
-            if (gridHeightLabel != null) gridHeightLabel.text = gridHeight.ToString();
+            if (gridSizeLabel != null) gridSizeLabel.text = gridSize.ToString();
         }
 
         private void RefreshTotems()
         {
             if (maxTotemsLabel != null)
-                maxTotemsLabel.text = maxTotems == 0 ? "Sin límite" : maxTotems.ToString();
+                maxTotemsLabel.text = maxTotems == -1 ? "No limits" : maxTotems.ToString();
         }
 
         // ── Clases de serialización ────────────────────────────────────────────
@@ -431,23 +473,20 @@ namespace Vortices
         [Serializable] private class SessionListWrapper { public List<string> sessions; }
 
         [Serializable]
-        private class SavedSession
+        private class SavedConfig
         {
             public string sessionName     = "";
             public int    userId          = 0;
             public string environmentName = "Maze";
             public bool   isOnlineSession = false;
             public string ipAddress       = "";
-        }
-
-        [Serializable]
-        private class SavedParams
-        {
-            public string skinName   = "Dungeon";
-            public bool   noCeiling  = false;
-            public int    gridWidth  = 8;
-            public int    gridHeight = 8;
-            public int    maxTotems  = 0;
+            public string skinName        = "Dungeon";
+            public bool   noCeiling       = false;
+            public int    gridWidth       = 8;
+            public int    gridHeight      = 8;
+            public int    maxTotems       = 0;
+            public int    rotationMode    = 0;
+            public int    movementMode    = 0;
         }
     }
 }

@@ -56,12 +56,6 @@ namespace Vortices
             }
         }
 
-        // Llamado desde TotemBrowser al abrir/cerrar el navegador
-        public void SetBrowserMode(bool active)
-        {
-            browserMode      = active;
-            Cursor.lockState = active ? CursorLockMode.None : CursorLockMode.Locked;
-            Cursor.visible   = active;
-        }
+
     }
 }

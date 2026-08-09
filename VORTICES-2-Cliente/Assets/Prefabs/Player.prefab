@@ -136,3 +136,4 @@ MonoBehaviour:
   - {fileID: 6839065564630337043, guid: 950f64c9c1d51e14b84b4e4d4a7b775a, type: 3}
   - {fileID: 6540681369557983152, guid: d77999c19b7f3294599d4029e5b08ace, type: 3}
   - {fileID: 280795203805598139, guid: ea51c68b84abbd9468f49487e060e9d4, type: 3}
+  avatarGroundY: 0.3

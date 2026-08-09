@@ -10,11 +10,7 @@ namespace Vortices
 {
     public class InformationTotem : MonoBehaviour
     {
-        [Header("Noticia")]
-        [Tooltip("ScriptableObject con el contenido (opcional — se sobreescribe con SetContent)")]
-        public NewsItem newsItem;
-
-        [Header("Configuración (se sobreescribe con NewsItem o SetContent)")]
+        [Header("Configuración (se sobreescribe con SetContent)")]
         public string question = "¿Esta información es real o falsa?";
         public Sprite informationImage;
         public bool isReal = true;
@@ -73,18 +69,10 @@ namespace Vortices
             question         = item.headline;
             isReal           = item.isReal;
             informationImage = item.sprite;
-
-            newsItem           = ScriptableObject.CreateInstance<NewsItem>();
-            newsItem.headline  = item.headline;
-            newsItem.isReal    = item.isReal;
-            newsItem.searchUrl = item.searchUrl;
-            newsItem.image     = item.sprite;
         }
 
         void Start()
         {
-            ApplyNewsItem();
-
             if (panel != null)             panel.SetActive(false);
             if (correctFeedback != null)   correctFeedback.SetActive(false);
             if (incorrectFeedback != null) incorrectFeedback.SetActive(false);
@@ -156,16 +144,6 @@ namespace Vortices
             return playerCell == totemCell;
         }
 
-        // ─── NewsItem ─────────────────────────────────────────────────────────────
-
-        private void ApplyNewsItem()
-        {
-            if (newsItem == null) return;
-            question         = newsItem.headline;
-            informationImage = newsItem.image;
-            isReal           = newsItem.isReal;
-        }
-
         // ─── UI ──────────────────────────────────────────────────────────────────
 
         private void ShowPanel()
@@ -184,7 +162,7 @@ namespace Vortices
             }
 
             if (investigarButton != null)
-                investigarButton.gameObject.SetActive(newsItem != null);
+                investigarButton.gameObject.SetActive(currentContent != null && !string.IsNullOrEmpty(currentContent.searchUrl));
 
             if (currentContent == null) return;
 
@@ -343,7 +321,8 @@ namespace Vortices
         {
             usedInvestigar = true;
             if (totemBrowser == null) return;
-            string url = (newsItem != null) ? newsItem.searchUrl : "https://www.google.com";
+            string url = (currentContent != null && !string.IsNullOrEmpty(currentContent.searchUrl))
+                ? currentContent.searchUrl : "https://www.google.com";
             totemBrowser.OpenBrowser(url);
             Debug.Log($"[Totem] Abriendo navegador en: {url}");
         }

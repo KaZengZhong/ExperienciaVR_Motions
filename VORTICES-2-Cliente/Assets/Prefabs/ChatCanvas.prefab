@@ -691,7 +691,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.0018363037, y: -0.00043226202}
+  m_AnchoredPosition: {x: -0.00091409916, y: -0.00043226202}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &6495203708408984277
@@ -855,8 +855,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 830812415400198305}
   m_HandleRect: {fileID: 7101485849803833797}
   m_Direction: 0
-  m_Value: -0.73239434
-  m_Size: 0.9999941
+  m_Value: 0.53521127
+  m_Size: 0.999979
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1853,7 +1853,7 @@ Canvas:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8039182486620635618}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 3
   m_RenderMode: 2
   m_Camera: {fileID: 0}
@@ -1904,6 +1904,8 @@ MonoBehaviour:
   chatInputField: {fileID: 5919585337857377638}
   chatDisplay: {fileID: 6735209544017940562}
   sendButton: {fileID: 6660800249045800573}
+  toggleChatButton: {fileID: 0}
+  vrKeyboard: {fileID: 0}
 --- !u!114 &4137711894524887644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1911,7 +1913,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8039182486620635618}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
   m_Name: 

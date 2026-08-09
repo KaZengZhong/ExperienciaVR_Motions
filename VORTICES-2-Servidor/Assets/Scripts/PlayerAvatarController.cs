@@ -10,6 +10,9 @@ public class PlayerAvatarController : NetworkBehaviour
     [SyncVar(hook = nameof(OnAvatarIndexChanged))]
     private int avatarIndex = -1;
 
+    [SyncVar(hook = nameof(OnSpeakingChanged))]
+    private bool _isSpeaking;
+
     private GameObject currentAvatar;
 
     void Awake()
@@ -34,6 +37,14 @@ public class PlayerAvatarController : NetworkBehaviour
         if (avatarIndex >= 0)
             SpawnAvatar(avatarIndex);
     }
+
+    public void SetSpeaking(bool speaking)
+    {
+        if (!isServer) return;
+        _isSpeaking = speaking;
+    }
+
+    private void OnSpeakingChanged(bool _, bool newVal) { }
 
     [Command]
     private void CmdSetAvatar(int index)

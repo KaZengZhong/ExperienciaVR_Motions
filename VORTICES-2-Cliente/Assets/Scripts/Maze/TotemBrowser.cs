@@ -32,6 +32,7 @@ namespace Vortices
         // ─── Estado interno ───────────────────────────────────────────────────
         private GameObject browserCanvas;
         private bool isOpen = false;
+        private bool editorMovementWasEnabled = false;
 
         // ─────────────────────────────────────────────────────────────────────
 
@@ -46,7 +47,15 @@ namespace Vortices
         {
             if (browserCanvas != null) Destroy(browserCanvas);
             isOpen = false;
+            StartCoroutine(RestoreMovementDelayed());
+        }
+
+        private IEnumerator RestoreMovementDelayed()
+        {
+            yield return new WaitForSeconds(0.2f);
             SetMovementMode(true);
+            LocomotionSettings ls = FindObjectOfType<LocomotionSettings>();
+            if (ls != null) ls.ApplySettings();
         }
 
         private void SetMovementMode(bool moving)
@@ -57,17 +66,46 @@ namespace Vortices
 
             // Deshabilitar EditorMovement (WASD / mouse look)
             EditorMovement em = FindObjectOfType<EditorMovement>();
-            if (em != null) em.enabled = moving;
+            if (em != null)
+            {
+                if (!moving)
+                {
+                    editorMovementWasEnabled = em.enabled;
+                    em.enabled = false;
+                }
+                else
+                {
+                    em.enabled = editorMovementWasEnabled;
+                }
+            }
 
-            // Deshabilitar proveedores de locomoción XR
+            // Deshabilitar/restaurar proveedores de locomoción XR
             GameObject xrOrigin = GameObject.Find("XR Origin");
             if (xrOrigin != null)
             {
-                foreach (MonoBehaviour comp in xrOrigin.GetComponents<MonoBehaviour>())
+                if (!moving)
                 {
-                    string t = comp.GetType().Name;
-                    if (t.Contains("MoveProvider") || t.Contains("TurnProvider") || t.Contains("LocomotionProvider"))
-                        comp.enabled = moving;
+                    foreach (MonoBehaviour comp in xrOrigin.GetComponents<MonoBehaviour>())
+                    {
+                        string t = comp.GetType().Name;
+                        if (t.Contains("MoveProvider") || t.Contains("TurnProvider") || t.Contains("LocomotionProvider"))
+                            comp.enabled = false;
+                    }
+                }
+                else
+                {
+                    bool joystick      = PlayerPrefs.GetInt("movementMode", 0) == 0;
+                    bool teleportation = PlayerPrefs.GetInt("movementMode", 0) == 1;
+                    bool headRotation  = PlayerPrefs.GetInt("rotationMode",  0) == 1;
+
+                    foreach (MonoBehaviour comp in xrOrigin.GetComponents<MonoBehaviour>())
+                    {
+                        string t = comp.GetType().Name;
+                        if      (t.Contains("ContinuousMoveProvider"))  comp.enabled = joystick;
+                        else if (t.Contains("TeleportationProvider"))    comp.enabled = teleportation;
+                        else if (t.Contains("ContinuousTurnProvider"))   comp.enabled = !headRotation;
+                        else if (t.Contains("LocomotionProvider"))       comp.enabled = true;
+                    }
                 }
             }
         }

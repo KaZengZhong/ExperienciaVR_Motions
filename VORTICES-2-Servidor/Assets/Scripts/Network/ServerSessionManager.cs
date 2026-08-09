@@ -24,7 +24,7 @@ public class ServerSessionManager : NetworkBehaviour
         {
             if (_instance == null)
             {
-                Debug.LogError("ServerSessionManager no est� en la escena.");
+                Debug.LogError("ServerSessionManager no esta en la escena.");
             }
             return _instance;
         }
@@ -58,7 +58,7 @@ public class ServerSessionManager : NetworkBehaviour
             // Si no hay conexiones activas
             if (NetworkServer.connections.Count == 0 || !NetworkServer.connections.Any(c => c.Value.isAuthenticated))
             {
-                //Debug.Log("Todos los clientes est�n desconectados.");
+                //Debug.Log("Todos los clientes estan desconectados.");
                 HandleAllClientsDisconnected();
             }
         }
@@ -84,7 +84,7 @@ public class ServerSessionManager : NetworkBehaviour
 
         if (activeSessions.ContainsKey(msg.sessionName))
         {
-            Debug.LogWarning($"Sesi�n '{msg.sessionName}' ya existe.");
+            Debug.LogWarning($"Sesion '{msg.sessionName}' ya existe.");
             Debug.Log("[Server] Enviando mensaje: SessionCreatedMessage");
 
 
@@ -173,7 +173,7 @@ public class ServerSessionManager : NetworkBehaviour
 
     private void HandleRequestActiveSessionMessage(NetworkConnectionToClient conn, RequestActiveSessionMessage msg)
     {
-        Debug.Log($"Servidor recibi� RequestActiveSessionMessage del cliente {conn.connectionId}.");
+        Debug.Log($"Servidor recibio RequestActiveSessionMessage del cliente {conn.connectionId}.");
 
         if (activeSessions.Count == 0)
         {
@@ -186,7 +186,7 @@ public class ServerSessionManager : NetworkBehaviour
         }
 
         var sessionData = activeSessions.Values.First();
-        Debug.Log($"Enviando datos de la sesi�n activa al cliente {conn.connectionId}: {sessionData.sessionName}");
+        Debug.Log($"Enviando datos de la sesion activa al cliente {conn.connectionId}: {sessionData.sessionName}");
         Debug.Log("[Server] Enviando mensaje: ActiveSessionResponseMessage");
 
 
@@ -198,7 +198,7 @@ public class ServerSessionManager : NetworkBehaviour
         Debug.Log($"Mensaje enviado al cliente {conn.connectionId}: {sessionData.sessionName}, {sessionData.environmentName}, {string.Join(", ", sessionData.categories)}, {sessionData.dimension}");
     }
 
-    // Comando para unirse a una sesi�n existente
+    // Comando para unirse a una sesion existente
     [Command]
     public void CmdJoinSession(NetworkConnectionToClient conn)
     {
@@ -212,10 +212,10 @@ public class ServerSessionManager : NetworkBehaviour
             return;
         }
 
-        // Selecciona la primera sesi�n activa (puedes cambiar esto si necesitas algo m�s espec�fico)
+        // Selecciona la primera sesion activa (puedes cambiar esto si necesitas algo mas especifico)
         var sessionData = activeSessions.Values.First();
 
-        Debug.Log($"Cliente {conn.connectionId} unido a la sesi�n '{sessionData.sessionName}'.");
+        Debug.Log($"Cliente {conn.connectionId} unido a la sesion '{sessionData.sessionName}'.");
 
         Debug.Log("[Server] Enviando mensaje: SessionCreatedMessage");
 
@@ -272,7 +272,7 @@ public class ServerSessionManager : NetworkBehaviour
 
     #endregion
 
-    #region Sincronizaci�n con el Cliente
+    #region Sincronizacion con el Cliente
 
     // Notificar al cliente que la sesi�n fue creada exitosamente
     [TargetRpc]
@@ -283,17 +283,17 @@ public class ServerSessionManager : NetworkBehaviour
             sessionData.categories = new List<string>(); // Asegurarse de que no sea nulo
         }
 
-        Debug.Log($"Sesi�n '{sessionData.sessionName}' creada en el cliente.");
-        Debug.Log($"Datos enviados: Nombre: {sessionData.sessionName}, Usuario ID: {sessionData.userId}, Entorno: {sessionData.environmentName}, Categor�as: {string.Join(", ", sessionData.categories)}");
+        Debug.Log($"Sesion '{sessionData.sessionName}' creada en el cliente.");
+        Debug.Log($"Datos enviados: Nombre: {sessionData.sessionName}, Usuario ID: {sessionData.userId}, Entorno: {sessionData.environmentName}, Categorias: {string.Join(", ", sessionData.categories)}");
     }
 
 
-    // Notificar al cliente que se uni� exitosamente a una sesi�n
+    // Notificar al cliente que se unio exitosamente a una sesion
     [TargetRpc]
     private void TargetNotifySessionJoined(NetworkConnection target, SessionData sessionData)
     {
-        Debug.Log($"Cliente unido a la sesi�n '{sessionData.sessionName}'.");
-        // Aqu� puedes sincronizar datos de la sesi�n con el cliente.
+        Debug.Log($"Cliente unido a la sesion '{sessionData.sessionName}'.");
+        // Aqui puedes sincronizar datos de la sesion con el cliente.
     }
 
     // Notificar al cliente de un error

@@ -11,6 +11,27 @@ public class PlayerChatController : NetworkBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    public override void OnStartLocalPlayer()
+    {
+        VivoxVoiceManager.OnLocalSpeakingChanged += HandleSpeakingChanged;
+    }
+
+    private void OnDestroy()
+    {
+        VivoxVoiceManager.OnLocalSpeakingChanged -= HandleSpeakingChanged;
+    }
+
+    private void HandleSpeakingChanged(bool speaking)
+    {
+        CmdSetSpeaking(speaking);
+    }
+
+    [Command]
+    private void CmdSetSpeaking(bool speaking)
+    {
+        GetComponent<PlayerAvatarController>()?.SetSpeaking(speaking);
+    }
+
     [Command]
     public void CmdSendMessageToChat(string userId, string message)
     {
